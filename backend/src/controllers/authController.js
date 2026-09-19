@@ -22,14 +22,14 @@ const generateToken = (res, userId) => {
 export const signup = async (req, res) => {
   const { name, email, password } = req.body;
 
-  if (!name || !email || !password) {
+  if (!name || !name.trim() || !email || !email.trim() || !password) {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  // REAL COMPANY SECURITY: Name validation
-  const nameRegex = /^[a-zA-Z\s]+$/;
+  // REAL COMPANY SECURITY: Name validation (Must contain at least one letter)
+  const nameRegex = /^[a-zA-Z\s]*[a-zA-Z][a-zA-Z\s]*$/;
   if (!nameRegex.test(name)) {
-    return res.status(400).json({ message: 'Name can only contain letters and spaces' });
+    return res.status(400).json({ message: 'Name must contain letters' });
   }
 
   try { 
@@ -65,6 +65,11 @@ export const signup = async (req, res) => {
     }
 
   } catch (error) {
+    // Agar MongoDB ka apna validation error aaye, toh 400 bhejein
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(val => val.message);
+      return res.status(400).json({ message: messages.join(', ') });
+    }
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };

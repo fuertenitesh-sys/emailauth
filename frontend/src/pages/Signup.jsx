@@ -54,10 +54,10 @@ const Signup = () => {
     setNameError('');
     setSuccessMsg('');
 
-    // Frontend strict validation
-    const nameRegex = /^[a-zA-Z\s]+$/;
+    // Frontend strict validation (must contain at least one letter)
+    const nameRegex = /^[a-zA-Z\s]*[a-zA-Z][a-zA-Z\s]*$/;
     if (!nameRegex.test(name)) {
-      setNameError('Name can only contain letters and spaces');
+      setNameError('Name must contain letters');
       return;
     }
 
@@ -148,18 +148,18 @@ const Signup = () => {
                   onChange={(e) => {
                     const val = e.target.value;
                     setName(val);
-                    const nameRegex = /^[a-zA-Z\s]+$/;
+                    const nameRegex = /^[a-zA-Z\s]*[a-zA-Z][a-zA-Z\s]*$/;
                     if (val && !nameRegex.test(val)) {
-                      setNameError('Name can only contain letters and spaces');
+                      setNameError('Name must contain letters');
                     } else {
                       setNameError('');
                     }
                   }}
                   onBlur={(e) => {
                     // Real-time feedback on blur
-                    const nameRegex = /^[a-zA-Z\s]+$/;
+                    const nameRegex = /^[a-zA-Z\s]*[a-zA-Z][a-zA-Z\s]*$/;
                     if (e.target.value && !nameRegex.test(e.target.value)) {
-                      setNameError('Name can only contain letters and spaces');
+                      setNameError('Name must contain letters');
                     }
                   }}
                   required
