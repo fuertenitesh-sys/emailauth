@@ -26,6 +26,12 @@ export const signup = async (req, res) => {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
+  // REAL COMPANY SECURITY: Name validation
+  const nameRegex = /^[a-zA-Z\s]+$/;
+  if (!nameRegex.test(name)) {
+    return res.status(400).json({ message: 'Name can only contain letters and spaces' });
+  }
+
   try { 
     // Check if user already exists
     const userExists = await User.findOne({ email });

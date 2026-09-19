@@ -23,6 +23,7 @@ const Signup = () => {
   const [otp, setOtp] = useState('');
   
   const [error, setError] = useState('');
+  const [nameError, setNameError] = useState(''); // State for name validation error
   const [successMsg, setSuccessMsg] = useState('');
   const [loading, setLoading] = useState(false);
   
@@ -50,7 +51,15 @@ const Signup = () => {
     e.preventDefault();
     if (loading) return;
     setError('');
+    setNameError('');
     setSuccessMsg('');
+
+    // Frontend strict validation
+    const nameRegex = /^[a-zA-Z\s]+$/;
+    if (!nameRegex.test(name)) {
+      setNameError('Name can only contain letters and spaces');
+      return;
+    }
 
     if (password !== confirmPassword) {
       return setError('Passwords do not match');
@@ -133,13 +142,28 @@ const Signup = () => {
                   type="text" 
                   id="name" 
                   name="name"
-                  className="input-field" 
+                  className={`input-field ${nameError ? 'border-red-500 focus:border-red-500' : ''}`} 
                   placeholder="Jane Doe" 
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    if (nameError) setNameError(''); // Clear error when typing
+                  }}
+                  onBlur={(e) => {
+                    // Real-time feedback on blur
+                    const nameRegex = /^[a-zA-Z\s]+$/;
+                    if (e.target.value && !nameRegex.test(e.target.value)) {
+                      setNameError('Name can only contain letters and spaces');
+                    }
+                  }}
                   required
                   autoComplete="name"
                 />
+                {nameError && (
+                  <div className="validation-msg error animate-fade-in mt-1 text-red-500 text-sm">
+                    {nameError}
+                  </div>
+                )}
               </div>
               
               <div className="input-group">

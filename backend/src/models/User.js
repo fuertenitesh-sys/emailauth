@@ -8,6 +8,9 @@ const userSchema = new mongoose.Schema(
       type: String, // Naam ek text string hoga
       required: [true, 'Name is required'], // Ye dena zaruri hai, warna 'Name is required' error aayega
       trim: true, // Aage peeche ke extra spaces (jaise " Nitesh ") ko automatically hata dega
+      minlength: [2, 'Name must be at least 2 characters long'],
+      maxlength: [50, 'Name cannot exceed 50 characters'],
+      match: [/^[a-zA-Z\s]+$/, 'Name can only contain letters and spaces'], // REAL COMPANY SECURITY: Sirf letters allow honge
     },
     email: {
       type: String, // Email bhi ek text string hogi
