@@ -10,8 +10,8 @@ const generateToken = (res, userId) => {
 
   res.cookie('jwt', token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV !== 'development',
-    sameSite: 'strict',
+    secure: true, // Render par hamesha https hota hai, isliye true rakhein
+    sameSite: 'none', // CROSS-DOMAIN support ke liye ye zaroori hai (frontend alag link par hai, backend alag par)
     maxAge: 30 * 24 * 60 * 60 * 1000,
   });
 };
@@ -158,7 +158,12 @@ export const login = async (req, res) => {
 // 3. LOGOUT API
 // ==========================================
 export const logout = (req, res) => {
-  res.cookie('jwt', '', { httpOnly: true, expires: new Date(0) });
+  res.cookie('jwt', '', { 
+    httpOnly: true, 
+    secure: true, 
+    sameSite: 'none', 
+    expires: new Date(0) 
+  });
   res.json({ message: 'Logged out successfully' });
 };
 
