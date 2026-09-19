@@ -9,7 +9,8 @@ export const AuthProvider = ({ children }) => {
 
   // Setup axios defaults for cookies
   axios.defaults.withCredentials = true;
-  axios.defaults.baseURL = 'http://localhost:5000';
+  // Use the live backend URL
+  axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'https://emailauth-dhfg.onrender.com';
 
   useEffect(() => {
     checkAuth();
