@@ -1,0 +1,189 @@
+/* ui.css - Shared UI component styles */
+
+/* Password Input */
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrapper .input-field {
+  padding-right: 2.5rem; /* Space for the eye icon */
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  color: var(--color-text-muted);
+  transition: color 0.2s;
+}
+
+.password-toggle-btn:hover,
+.password-toggle-btn:focus-visible {
+  color: var(--color-text-main);
+  outline: none;
+}
+
+.icon-muted {
+  color: currentColor;
+}
+
+/* Password Strength */
+.password-strength-container {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.strength-bars {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+  margin-right: 12px;
+}
+
+.strength-bar {
+  height: 4px;
+  flex: 1;
+  background-color: var(--color-border);
+  border-radius: 2px;
+  transition: background-color 0.3s ease;
+}
+
+.strength-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  min-width: 48px;
+  text-align: right;
+  transition: color 0.3s ease;
+}
+
+/* Loading Button */
+.loading-state {
+  position: relative;
+  color: transparent !important; /* Hide text but maintain width */
+  pointer-events: none;
+}
+
+.loading-spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+  color: var(--color-white);
+}
+
+.spinner-track {
+  opacity: 0.25;
+}
+
+.spinner-head {
+  opacity: 0.75;
+}
+
+@keyframes spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Auth Intro Animation */
+.auth-intro-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg);
+  z-index: 50;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.stage-enter {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.stage-exit {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.auth-intro-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: scale(0.95) translateY(10px);
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stage-enter .auth-intro-content {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+.auth-intro-icon-wrapper {
+  color: var(--color-primary);
+  margin-bottom: 1.5rem;
+  transform: scale(0.5);
+  opacity: 0;
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s;
+}
+
+.stage-enter .auth-intro-icon-wrapper {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.auth-intro-title {
+  font-size: 2.25rem;
+  color: var(--color-navy);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.6s ease-out 0.3s;
+}
+
+.stage-enter .auth-intro-title {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.auth-intro-subtitle {
+  font-size: 1.125rem;
+  color: var(--color-text-muted);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.6s ease-out 0.4s;
+}
+
+.stage-enter .auth-intro-subtitle {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-intro-container,
+  .auth-intro-content,
+  .auth-intro-icon-wrapper,
+  .auth-intro-title,
+  .auth-intro-subtitle {
+    transition: none !important;
+    animation: none !important;
+  }
+}

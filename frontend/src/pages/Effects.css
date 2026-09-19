@@ -1,0 +1,445 @@
+/* Effects.css - Premium Experience Styles */
+
+/* ==================================
+   Post-Signup Welcome Animation
+   ================================== */
+.welcome-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-navy);
+  color: var(--color-white);
+  z-index: 100;
+  overflow: hidden;
+  transition: opacity 0.8s ease-in-out;
+}
+
+.welcome-screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+  opacity: 0;
+  animation: glowPulse 3s ease-in-out forwards;
+}
+
+.welcome-screen.exiting {
+  opacity: 0;
+}
+
+.welcome-content {
+  text-align: center;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.welcome-icon {
+  font-size: 4rem;
+  margin-bottom: 2rem;
+  opacity: 0;
+  transform: scale(0.5);
+  animation: iconPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards;
+}
+
+.welcome-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
+  color: #ffffff;
+}
+
+.welcome-subtitle {
+  font-size: 1.25rem;
+  color: #94a3b8;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+}
+
+.welcome-tagline {
+  font-size: 1rem;
+  color: var(--color-primary-light);
+  margin-top: 1.5rem;
+  opacity: 0;
+  animation: fadeIn 1s ease-in-out 1.5s forwards;
+}
+
+.welcome-progress {
+  width: 200px;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  margin-top: 3rem;
+  overflow: hidden;
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in-out 1.2s forwards;
+}
+
+.welcome-progress-bar {
+  height: 100%;
+  background-color: var(--color-primary);
+  width: 0%;
+  animation: loadProgress 2.5s ease-in-out forwards;
+}
+
+@keyframes iconPop {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes glowPulse {
+  0% { opacity: 0; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0; transform: scale(1); }
+}
+
+@keyframes loadProgress {
+  0% { width: 0%; }
+  10% { width: 5%; }
+  30% { width: 40%; }
+  80% { width: 80%; }
+  100% { width: 100%; }
+}
+
+/* ==================================
+   Effects Gallery Container
+   ================================== */
+.effects-page {
+  min-height: calc(100vh - var(--header-height, 70px));
+  background-color: #0f172a; /* Deep navy/slate */
+  color: #f8fafc;
+  padding: 3rem 1.5rem;
+}
+
+.effects-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.effects-header h1 {
+  font-size: 2.5rem;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.effects-header p {
+  color: #94a3b8;
+  font-size: 1.125rem;
+}
+
+.effects-category-filter {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+}
+
+.category-btn {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  padding: 0.5rem 1.25rem;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.category-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.category-btn.active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.effects-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.effect-card {
+  background-color: #1e293b;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  position: relative;
+  aspect-ratio: 4/3;
+  display: flex;
+  flex-direction: column;
+}
+
+.effect-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.effect-preview-container {
+  flex: 1;
+  background-color: #000;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Optimize canvas inside cards */
+.effect-preview-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none; /* Let the card handle clicks */
+}
+
+.effect-card-info {
+  padding: 1.25rem;
+  background: linear-gradient(to top, #1e293b, rgba(30, 41, 59, 0.95));
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
+
+.effect-card-title {
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 1.125rem;
+  margin-bottom: 0.25rem;
+}
+
+.effect-card-category {
+  font-size: 0.75rem;
+  color: var(--color-primary-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+/* ==================================
+   Effect Detail View (Fullscreen Modal)
+   ================================== */
+.effect-detail-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  opacity: 0;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.effect-detail-content {
+  width: 100%;
+  max-width: 1200px;
+  height: 85vh;
+  background-color: #000000;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transform: scale(0.95);
+  animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.effect-detail-live-area {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.effect-detail-live-area canvas,
+.effect-detail-live-area .css-effect-container {
+  width: 100%;
+  height: 100%;
+}
+
+.effect-detail-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+  z-index: 10;
+  pointer-events: none; /* Let interactions pass through to canvas unless on button */
+}
+
+.effect-detail-info {
+  pointer-events: auto;
+}
+
+.effect-detail-info h2 {
+  color: #fff;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.effect-detail-desc {
+  color: #cbd5e1;
+  font-size: 1rem;
+  max-width: 500px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.btn-close {
+  pointer-events: auto;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-close:hover {
+  background: rgba(255,255,255,0.2);
+  transform: scale(1.05);
+}
+
+@keyframes modalPop {
+  to {
+    transform: scale(1);
+  }
+}
+
+/* ==================================
+   Laboratory Detail View
+   ================================== */
+.effect-detail-content.lab-view {
+  background-color: #0f172a;
+}
+
+.lab-workspace {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  padding-top: 80px; /* Space for header */
+}
+
+.lab-simulation-area {
+  flex: 1;
+  position: relative;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lab-controls-panel {
+  width: 320px;
+  background-color: #1e293b;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.controls-title {
+  color: #fff;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.controls-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+.control-group label {
+  display: block;
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.control-group input[type="range"] {
+  width: 100%;
+  accent-color: var(--color-primary);
+}
+
+.no-controls {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.lab-actions {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.effect-card-desc-small {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-top: 0.25rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.effect-card-footer {
+  padding: 0.75rem 1.25rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.75rem;
+  color: var(--color-primary);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .welcome-screen,
+  .welcome-icon,
+  .welcome-title,
+  .welcome-subtitle,
+  .welcome-tagline,
+  .effect-card,
+  .effect-detail-content {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
