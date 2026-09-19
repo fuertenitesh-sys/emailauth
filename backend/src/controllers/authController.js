@@ -28,74 +28,34 @@ export const signup = async (req, res) => {
 
   try { 
     // Check if user already exists
-    let user = await User.findOne({ email });
+    const userExists = await User.findOne({ email });
     
-    if (user) {
-      if (user.isVerified) {
-        return res.status(400).json({ message: 'User already exists and is verified' });
-      }
-      // If user exists but NOT verified, we will overwrite their OTP and resend it rather than blocking them.
+    if (userExists) {
+      return res.status(400).json({ message: 'User already exists' });
     }
 
     const salt = await bcrypt.genSalt(10); 
     const passwordHash = await bcrypt.hash(password, salt);
 
-    // Generate a 6 digit random OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    // Set expiry for 10 minutes from now
-    const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
-
-    if (user) {
-      // Update unverified user
-      user.name = name;
-      user.passwordHash = passwordHash;
-      user.verificationOTP = otp;
-      user.otpExpiresAt = otpExpiresAt;
-      await user.save();
-    } else {
-      // Create new user
-      user = await User.create({ 
-        name, 
-        email, 
-        passwordHash,
-        isVerified: false,
-        verificationOTP: otp,
-        otpExpiresAt
-      });
-    }
-
-    // Email content
-    const emailSubject = "EmailAuth - Verify Your Account";
-    const emailMessage = `Hello ${name},\n\nYour OTP for account verification is: ${otp}\n\nThis OTP will expire in 10 minutes.\n\nIf you did not request this, please ignore this email.`;
-    const emailHtml = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 10px;">
-        <h2 style="color: #2563eb;">Welcome to EmailAuth!</h2>
-        <p>Hello <strong>${name}</strong>,</p>
-        <p>Thank you for signing up. To complete your registration, please use the following One-Time Password (OTP):</p>
-        <div style="background-color: #f1f5f9; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 5px; color: #0f172a; border-radius: 8px; margin: 20px 0;">
-          ${otp}
-        </div>
-        <p style="color: #64748b; font-size: 14px;">This OTP is valid for 10 minutes.</p>
-        <p>If you did not create an account, you can safely ignore this email.</p>
-      </div>
-    `;
-
-    // Send the email
-    const emailSent = await sendEmail({
-      email: user.email,
-      subject: emailSubject,
-      message: emailMessage,
-      html: emailHtml
+    // Create new user
+    const user = await User.create({ 
+      name, 
+      email, 
+      passwordHash,
+      isVerified: true
     });
 
-    if (emailSent) {
+    if (user) {
+      generateToken(res, user._id);
       res.status(201).json({
-        message: 'Registration successful! Please check your email for the OTP to verify your account.',
-        requiresOTP: true,
-        email: user.email
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        message: 'Registration successful!',
+        requiresOTP: false
       });
     } else {
-      res.status(500).json({ message: 'Error sending verification email. Please try again.' });
+      res.status(400).json({ message: 'Invalid user data' });
     }
 
   } catch (error) {
@@ -167,15 +127,6 @@ export const login = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user && (await user.matchPassword(password))) {
-      // Naya OTP feature: Agar user verified nahi hai, toh use login mat karne do.
-      if (!user.isVerified) {
-        return res.status(403).json({ 
-          message: 'Please verify your email before logging in.',
-          requiresOTP: true,
-          email: user.email
-        });
-      }
-
       generateToken(res, user._id);
       
       res.json({

@@ -51,10 +51,10 @@ export const AuthProvider = ({ children }) => {
   const signup = async (name, email, password) => {
     try {
       const res = await axios.post('/api/auth/signup', { name, email, password });
-      // Hum yahan setUser() nahi karenge kyunki abhi verify hona baaki hai
+      setUser(res.data);
       return { 
         success: true, 
-        requiresOTP: res.data.requiresOTP,
+        requiresOTP: false,
         email: res.data.email,
         message: res.data.message 
       };
