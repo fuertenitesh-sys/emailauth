@@ -146,8 +146,14 @@ const Signup = () => {
                   placeholder="Jane Doe" 
                   value={name}
                   onChange={(e) => {
-                    setName(e.target.value);
-                    if (nameError) setNameError(''); // Clear error when typing
+                    const val = e.target.value;
+                    setName(val);
+                    const nameRegex = /^[a-zA-Z\s]+$/;
+                    if (val && !nameRegex.test(val)) {
+                      setNameError('Name can only contain letters and spaces');
+                    } else {
+                      setNameError('');
+                    }
                   }}
                   onBlur={(e) => {
                     // Real-time feedback on blur
