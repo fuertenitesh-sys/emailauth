@@ -7,9 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Setup axios defaults for cookies
   axios.defaults.withCredentials = true;
-  // Use the live backend URL
   axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'https://emailauth-dhfg.onrender.com';
 
   useEffect(() => {
@@ -33,14 +31,6 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data);
       return { success: true };
     } catch (error) {
-      if (error.response?.status === 403 && error.response?.data?.requiresOTP) {
-        return {
-          success: false,
-          requiresOTP: true,
-          email: error.response.data.email,
-          message: error.response.data.message
-        };
-      }
       return { 
         success: false, 
         message: error.response?.data?.message || 'Login failed' 
@@ -54,7 +44,6 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data);
       return { 
         success: true, 
-        requiresOTP: false,
         email: res.data.email,
         message: res.data.message 
       };
@@ -62,19 +51,6 @@ export const AuthProvider = ({ children }) => {
       return { 
         success: false, 
         message: error.response?.data?.message || 'Signup failed' 
-      };
-    }
-  };
-
-  const verifyEmail = async (email, otp) => {
-    try {
-      const res = await axios.post('/api/auth/verify-email', { email, otp });
-      setUser(res.data); // OTP sahi hone ke baad user login ho jayega
-      return { success: true };
-    } catch (error) {
-      return { 
-        success: false, 
-        message: error.response?.data?.message || 'Verification failed' 
       };
     }
   };
@@ -89,7 +65,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, logout, verifyEmail }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, logout }}>
       {children}
     </AuthContext.Provider>
   );

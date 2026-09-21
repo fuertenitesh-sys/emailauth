@@ -1,8 +1,8 @@
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import sendEmail from '../utils/sendEmail.js';
 
+// Generate JWT token for authentication
 const generateToken = (res, userId) => {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: '30d',
@@ -16,6 +16,7 @@ const generateToken = (res, userId) => {
   });
 };
 
+// Signup code here
 export const signup = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -41,8 +42,7 @@ export const signup = async (req, res) => {
     const user = await User.create({ 
       name, 
       email, 
-      passwordHash,
-      isVerified: true
+      passwordHash
     });
 
     if (user) {
@@ -51,8 +51,7 @@ export const signup = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
-        message: 'Registration successful!',
-        requiresOTP: false
+        message: 'Registration successful!'
       });
     } else {
       res.status(400).json({ message: 'Invalid user data' });
@@ -67,51 +66,7 @@ export const signup = async (req, res) => {
   }
 };
 
-export const verifyEmail = async (req, res) => {
-  const { email, otp } = req.body;
-
-  if (!email || !otp) {
-    return res.status(400).json({ message: 'Email and OTP are required' });
-  }
-
-  try {
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    if (user.isVerified) {
-      return res.status(400).json({ message: 'User is already verified' });
-    }
-
-    if (user.verificationOTP !== otp) {
-      return res.status(400).json({ message: 'Invalid OTP' });
-    }
-
-    if (user.otpExpiresAt < new Date()) {
-      return res.status(400).json({ message: 'OTP has expired. Please request a new one.' });
-    }
-
-    user.isVerified = true;
-    user.verificationOTP = undefined;
-    user.otpExpiresAt = undefined;
-    await user.save();
-
-    generateToken(res, user._id);
-    
-    res.status(200).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      message: 'Email verified successfully! You are now logged in.',
-    });
-
-  } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
-  }
-};
-
+// Login code here
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -139,6 +94,7 @@ export const login = async (req, res) => {
   }
 };
 
+// Logout code here
 export const logout = (req, res) => {
   res.cookie('jwt', '', { 
     httpOnly: true, 
@@ -149,6 +105,7 @@ export const logout = (req, res) => {
   res.json({ message: 'Logged out successfully' });
 };
 
+// Get current user profile code here
 export const getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select('-passwordHash');

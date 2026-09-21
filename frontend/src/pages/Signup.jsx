@@ -9,7 +9,7 @@ import AuthIntro from '../components/ui/AuthIntro';
 import './Auth.css';
 
 const Signup = () => {
-  const { signup, verifyEmail, user } = useContext(AuthContext);
+  const { signup, user } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -17,10 +17,7 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  
-  const [showOTP, setShowOTP] = useState(false);
-  const [otp, setOtp] = useState('');
-  
+
   const [error, setError] = useState('');
   const [nameError, setNameError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
@@ -61,11 +58,7 @@ const Signup = () => {
 
     setLoading(true);
     const result = await signup(name, email, password);
-    
-    if (result.success && result.requiresOTP) {
-      setSuccessMsg(result.message);
-      setShowOTP(true);
-    } else if (result.success) {
+    if (result.success) {
       isSigningUpRef.current = true;
       navigate('/welcome', { replace: true });
     } else {
@@ -75,30 +68,6 @@ const Signup = () => {
     setLoading(false);
   };
 
-  const handleOTPSubmit = async (e) => {
-    e.preventDefault();
-    if (loading) return;
-    setError('');
-    setSuccessMsg('');
-
-    if (otp.length < 6) {
-      return setError('Please enter a valid 6-digit OTP');
-    }
-
-    setLoading(true);
-    isSigningUpRef.current = true;
-    
-    const result = await verifyEmail(email, otp);
-    
-    if (result.success) {
-      navigate('/welcome', { replace: true });
-    } else {
-      isSigningUpRef.current = false;
-      setError(result.message);
-    }
-    
-    setLoading(false);
-  };
 
   const passwordsMatch = confirmPassword.length > 0 && password === confirmPassword;
   const passwordsMismatch = confirmPassword.length > 0 && password !== confirmPassword;
@@ -111,9 +80,7 @@ const Signup = () => {
     <div className="auth-page animate-fade-in">
       <div className="auth-container">
         
-        {!showOTP ? (
-          <>
-            <div className="auth-header">
+        <div className="auth-header">
               <div className="auth-logo">
                 <Mail size={32} className="logo-icon-auth" />
               </div>
@@ -214,78 +181,12 @@ const Signup = () => {
                 Get Started
               </LoadingButton>
             </form>
-            
             <div className="auth-footer">
               <p>
                 Already have an account? <Link to="/login" className="auth-link font-semibold">Log in</Link>
               </p>
             </div>
-          </>
-        ) : (
-          <div className="otp-screen animate-fade-in">
-            <div className="auth-header">
-              <div className="auth-logo">
-                <CheckCircle size={32} className="logo-icon-auth text-green-500" />
-              </div>
-              <h2>Verify your email</h2>
-              <p>We sent a 6-digit code to <strong>{email}</strong></p>
-            </div>
-
-            {successMsg && (
-              <div className="auth-alert success" role="alert">
-                {successMsg}
-              </div>
-            )}
-
-            {error && (
-              <div className="auth-alert error" role="alert">
-                {error}
-              </div>
-            )}
-
-            <form className="auth-form" onSubmit={handleOTPSubmit}>
-              <div className="input-group text-center">
-                <label className="input-label text-center" htmlFor="otp">Enter Verification Code</label>
-                <input 
-                  type="text" 
-                  id="otp" 
-                  name="otp"
-                  className="input-field text-center text-2xl tracking-widest font-mono font-bold" 
-                  placeholder="------" 
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))}
-                  required
-                  autoComplete="one-time-code"
-                />
-              </div>
-
-              <LoadingButton 
-                type="submit" 
-                className="btn-full btn-lg mt-4" 
-                loading={loading}
-                loadingText="Verifying..."
-                disabled={otp.length !== 6}
-              >
-                Verify & Continue
-              </LoadingButton>
-            </form>
-
-            <div className="auth-footer mt-6">
-              <button 
-                type="button"
-                className="text-slate-400 hover:text-white transition-colors text-sm flex items-center justify-center w-full gap-2"
-                onClick={() => {
-                  setShowOTP(false);
-                  setError('');
-                  setSuccessMsg('');
-                }}
-              >
-                <ArrowLeft size={16} /> Back to Sign up
-              </button>
-            </div>
-          </div>
-        )}
-        
+            
       </div>
     </div>
   );

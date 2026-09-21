@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
+// Define the User schema structure
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -21,16 +22,6 @@ const userSchema = new mongoose.Schema(
     passwordHash: {
       type: String,
       required: [true, 'Password is required'],
-    },
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
-    verificationOTP: {
-      type: String,
-    },
-    otpExpiresAt: {
-      type: Date,
     }
   },
   {
@@ -38,6 +29,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+// Method to verify if entered password matches the hashed password
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.passwordHash);
 };
