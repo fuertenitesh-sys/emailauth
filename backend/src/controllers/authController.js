@@ -10,15 +10,12 @@ const generateToken = (res, userId) => {
 
   res.cookie('jwt', token, {
     httpOnly: true,
-    secure: true, // Render par hamesha https hota hai, isliye true rakhein
-    sameSite: 'none', // CROSS-DOMAIN support ke liye ye zaroori hai (frontend alag link par hai, backend alag par)
+    secure: true,
+    sameSite: 'none',
     maxAge: 30 * 24 * 60 * 60 * 1000,
   });
 };
 
-// ==========================================
-// 1. SIGNUP API (Naya Account Banana - with OTP)
-// ==========================================
 export const signup = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -26,14 +23,12 @@ export const signup = async (req, res) => {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
-  // REAL COMPANY SECURITY: Name validation (Must contain at least one letter)
   const nameRegex = /^[a-zA-Z\s]*[a-zA-Z][a-zA-Z\s]*$/;
   if (!nameRegex.test(name)) {
     return res.status(400).json({ message: 'Name must contain letters' });
   }
 
   try { 
-    // Check if user already exists
     const userExists = await User.findOne({ email });
     
     if (userExists) {
@@ -43,7 +38,6 @@ export const signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10); 
     const passwordHash = await bcrypt.hash(password, salt);
 
-    // Create new user
     const user = await User.create({ 
       name, 
       email, 
@@ -65,7 +59,6 @@ export const signup = async (req, res) => {
     }
 
   } catch (error) {
-    // Agar MongoDB ka apna validation error aaye, toh 400 bhejein
     if (error.name === 'ValidationError') {
       const messages = Object.values(error.errors).map(val => val.message);
       return res.status(400).json({ message: messages.join(', ') });
@@ -74,9 +67,6 @@ export const signup = async (req, res) => {
   }
 };
 
-// ==========================================
-// 1.5 VERIFY EMAIL API (OTP Check karna)
-// ==========================================
 export const verifyEmail = async (req, res) => {
   const { email, otp } = req.body;
 
@@ -103,13 +93,11 @@ export const verifyEmail = async (req, res) => {
       return res.status(400).json({ message: 'OTP has expired. Please request a new one.' });
     }
 
-    // OTP is correct and not expired. Verify the user!
     user.isVerified = true;
     user.verificationOTP = undefined;
     user.otpExpiresAt = undefined;
     await user.save();
 
-    // Now log them in securely by issuing the token
     generateToken(res, user._id);
     
     res.status(200).json({
@@ -124,9 +112,6 @@ export const verifyEmail = async (req, res) => {
   }
 };
 
-// ==========================================
-// 2. LOGIN API (Purane Account mein aana)
-// ==========================================
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -154,9 +139,6 @@ export const login = async (req, res) => {
   }
 };
 
-// ==========================================
-// 3. LOGOUT API
-// ==========================================
 export const logout = (req, res) => {
   res.cookie('jwt', '', { 
     httpOnly: true, 
@@ -167,9 +149,6 @@ export const logout = (req, res) => {
   res.json({ message: 'Logged out successfully' });
 };
 
-// ==========================================
-// 4. GET ME API
-// ==========================================
 export const getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select('-passwordHash');

@@ -18,16 +18,14 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   
-  // OTP States
   const [showOTP, setShowOTP] = useState(false);
   const [otp, setOtp] = useState('');
   
   const [error, setError] = useState('');
-  const [nameError, setNameError] = useState(''); // State for name validation error
+  const [nameError, setNameError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [loading, setLoading] = useState(false);
   
-  // Check if we should show intro (only if coming from Navbar)
   const [showIntro, setShowIntro] = useState(
     location.state && location.state.fromNavbar === true
   );
@@ -35,14 +33,11 @@ const Signup = () => {
   const isSigningUpRef = useRef(false);
 
   useEffect(() => {
-    // If intro was triggered, clear the location state immediately
-    // so refreshing the page won't replay the animation
     if (showIntro && location.state?.fromNavbar) {
       window.history.replaceState({}, document.title);
     }
   }, [showIntro, location.state]);
 
-  // Redirect if already logged in (but NOT if we are currently signing up)
   if (user && !isSigningUpRef.current) {
     return <Navigate to="/dashboard" />;
   }
@@ -54,7 +49,6 @@ const Signup = () => {
     setNameError('');
     setSuccessMsg('');
 
-    // Frontend strict validation (must contain at least one letter)
     const nameRegex = /^[a-zA-Z\s]*[a-zA-Z][a-zA-Z\s]*$/;
     if (!nameRegex.test(name)) {
       setNameError('Name must contain letters');
@@ -69,11 +63,9 @@ const Signup = () => {
     const result = await signup(name, email, password);
     
     if (result.success && result.requiresOTP) {
-      // Show the OTP screen
       setSuccessMsg(result.message);
       setShowOTP(true);
     } else if (result.success) {
-      // Fallback if backend doesn't use OTP
       isSigningUpRef.current = true;
       navigate('/welcome', { replace: true });
     } else {
@@ -156,7 +148,6 @@ const Signup = () => {
                     }
                   }}
                   onBlur={(e) => {
-                    // Real-time feedback on blur
                     const nameRegex = /^[a-zA-Z\s]*[a-zA-Z][a-zA-Z\s]*$/;
                     if (e.target.value && !nameRegex.test(e.target.value)) {
                       setNameError('Name must contain letters');
@@ -231,9 +222,6 @@ const Signup = () => {
             </div>
           </>
         ) : (
-          /* ==================================
-             OTP VERIFICATION SCREEN 
-             ================================== */
           <div className="otp-screen animate-fade-in">
             <div className="auth-header">
               <div className="auth-logo">
