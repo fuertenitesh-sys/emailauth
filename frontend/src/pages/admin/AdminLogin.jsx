@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ShieldCheck, Lock, User } from 'lucide-react';
 import axios from 'axios';
 import '../Auth.css'; // Reuse base auth styles
+import './Admin.css'; // Premium custom styling
 
 const AdminLogin = () => {
   const [username, setUsername] = useState('');
@@ -51,13 +52,12 @@ const AdminLogin = () => {
         <form className="auth-form" onSubmit={handleLogin}>
           <div className="input-group">
             <label className="input-label" htmlFor="username">Admin ID</label>
-            <div className="relative">
-              <User size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+            <div className="admin-input-icon-wrapper">
+              <User size={18} className="admin-input-icon" />
               <input 
                 type="text" 
                 id="username" 
-                className="input-field" 
-                style={{ paddingLeft: '2.5rem', borderColor: 'rgba(139, 92, 246, 0.3)' }}
+                className="input-field admin-input-field" 
                 placeholder="Enter admin ID" 
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -68,13 +68,12 @@ const AdminLogin = () => {
           
           <div className="input-group">
             <label className="input-label" htmlFor="password">Passcode</label>
-            <div className="relative">
-              <Lock size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
+            <div className="admin-input-icon-wrapper">
+              <Lock size={18} className="admin-input-icon" />
               <input 
                 type="password" 
                 id="password" 
-                className="input-field" 
-                style={{ paddingLeft: '2.5rem', borderColor: 'rgba(139, 92, 246, 0.3)' }}
+                className="input-field admin-input-field" 
                 placeholder="Enter passcode" 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -85,9 +84,8 @@ const AdminLogin = () => {
           
           <button 
             type="submit" 
-            className="btn-full btn-lg mt-4 flex justify-center items-center gap-2"
+            className="btn-full btn-lg mt-4 admin-login-btn"
             disabled={loading}
-            style={{ background: 'linear-gradient(to right, #7c3aed, #6d28d9)' }}
           >
             {loading ? 'Authenticating...' : 'Secure Login'}
           </button>

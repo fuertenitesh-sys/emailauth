@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Shield, LogOut, Users, Clock, Mail } from 'lucide-react';
 import '../Auth.css'; // Reuse some base styles if needed
+import './Admin.css'; // Premium custom styling
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
@@ -44,85 +45,77 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: 'radial-gradient(circle at top, #1a0b2e 0%, #000000 100%)', color: 'white', padding: '2rem' }}>
-      <div className="max-w-6xl mx-auto">
+    <div className="admin-page-bg">
+      <div className="admin-container">
         
         {/* Header */}
-        <header className="flex justify-between items-center mb-10 pb-6" style={{ borderBottom: '1px solid rgba(139, 92, 246, 0.2)' }}>
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg" style={{ background: 'rgba(139, 92, 246, 0.2)' }}>
-              <Shield size={24} style={{ color: '#8b5cf6' }} />
+        <header className="admin-header">
+          <div className="admin-header-title-container">
+            <div className="admin-header-icon">
+              <Shield size={24} />
             </div>
-            <h1 className="text-2xl font-bold" style={{ background: 'linear-gradient(to right, #c4b5fd, #8b5cf6)', WebkitBackgroundClip: 'text', color: 'transparent' }}>
+            <h1 className="admin-title">
               Command Center
             </h1>
           </div>
-          <button 
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-all hover:bg-white/5"
-            style={{ border: '1px solid rgba(255, 255, 255, 0.1)' }}
-          >
+          <button onClick={handleLogout} className="admin-logout-btn">
             <LogOut size={16} /> Logout
           </button>
         </header>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <div className="p-6 rounded-2xl" style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-purple-500/20">
-                <Users size={24} className="text-purple-400" />
-              </div>
-              <div>
-                <p className="text-sm text-slate-400">Total Users</p>
-                <h3 className="text-3xl font-bold">{users.length}</h3>
-              </div>
+        <div className="admin-stats-row">
+          <div className="admin-stat-card">
+            <div className="admin-stat-icon-wrapper">
+              <Users size={24} />
+            </div>
+            <div className="admin-stat-info">
+              <p>Total Users</p>
+              <h3>{users.length}</h3>
             </div>
           </div>
         </div>
 
         {/* Users Table */}
-        <div className="rounded-2xl overflow-hidden shadow-2xl" style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255,255,255,0.05)', backdropFilter: 'blur(10px)' }}>
-          <div className="p-6 border-b" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
-            <h2 className="text-xl font-semibold">Registered Users</h2>
+        <div className="admin-table-container">
+          <div className="admin-table-header-title">
+            <h2>Registered Users</h2>
           </div>
           
           {loading ? (
-            <div className="p-12 text-center text-slate-400">Loading intelligence data...</div>
+            <div style={{ padding: '3rem', textAlign: 'center', color: '#94a3b8' }}>Loading intelligence data...</div>
           ) : error ? (
-            <div className="p-12 text-center text-red-400">{error}</div>
+            <div style={{ padding: '3rem', textAlign: 'center', color: '#f87171' }}>{error}</div>
           ) : users.length === 0 ? (
-            <div className="p-12 text-center text-slate-400">No users found.</div>
+            <div style={{ padding: '3rem', textAlign: 'center', color: '#94a3b8' }}>No users found.</div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+            <div className="admin-table-wrapper">
+              <table className="admin-table">
                 <thead>
-                  <tr style={{ background: 'rgba(0,0,0,0.2)' }}>
-                    <th className="px-6 py-4 text-sm font-medium text-slate-300">User</th>
-                    <th className="px-6 py-4 text-sm font-medium text-slate-300">Contact</th>
-                    <th className="px-6 py-4 text-sm font-medium text-slate-300">Joined</th>
+                  <tr>
+                    <th>User</th>
+                    <th>Contact</th>
+                    <th>Joined</th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.map((user, idx) => (
-                    <tr 
-                      key={user._id} 
-                      className="transition-colors hover:bg-white/5"
-                      style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}
-                    >
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm" style={{ background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)' }}>
+                    <tr key={user._id}>
+                      <td>
+                        <div className="admin-user-cell">
+                          <div className="admin-avatar">
                             {user.name.charAt(0).toUpperCase()}
                           </div>
-                          <span className="font-medium">{user.name}</span>
+                          <span className="admin-user-name">{user.name}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-slate-300 flex items-center gap-2">
-                        <Mail size={14} className="text-slate-500" /> {user.email}
+                      <td>
+                        <div className="admin-contact-cell">
+                          <Mail size={14} /> {user.email}
+                        </div>
                       </td>
-                      <td className="px-6 py-4 text-slate-400 text-sm">
-                        <div className="flex items-center gap-2">
+                      <td>
+                        <div className="admin-date-cell">
                           <Clock size={14} /> {formatDate(user.createdAt)}
                         </div>
                       </td>
