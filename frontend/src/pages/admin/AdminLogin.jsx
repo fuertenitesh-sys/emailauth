@@ -30,17 +30,17 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="auth-page animate-fade-in" style={{ background: 'radial-gradient(circle at top right, #1a0b2e 0%, #000000 100%)' }}>
-      <div className="auth-container" style={{ borderColor: 'rgba(139, 92, 246, 0.3)', boxShadow: '0 0 40px rgba(139, 92, 246, 0.1)' }}>
+    <div className="admin-page-bg animate-fade-in">
+      <div className="auth-container admin-login-container">
         
         <div className="auth-header">
-          <div className="auth-logo" style={{ background: 'rgba(139, 92, 246, 0.2)' }}>
-            <ShieldCheck size={32} className="logo-icon-auth" style={{ color: '#8b5cf6' }} />
+          <div className="admin-header-icon" style={{ margin: '0 auto 1.5rem', width: '3rem', height: '3rem' }}>
+            <ShieldCheck size={32} />
           </div>
-          <h2 style={{ background: 'linear-gradient(to right, #c4b5fd, #8b5cf6)', WebkitBackgroundClip: 'text', color: 'transparent' }}>
+          <h2 className="admin-title" style={{ marginBottom: '0.5rem', textAlign: 'center' }}>
             Admin Portal
           </h2>
-          <p>Secure access for authorized personnel only.</p>
+          <p style={{ textAlign: 'center', color: '#64748b' }}>Secure access for authorized personnel only.</p>
         </div>
         
         {error && (
