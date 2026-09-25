@@ -30,7 +30,7 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="admin-page-bg animate-fade-in">
+    <div className="admin-page-bg admin-login-page-bg animate-fade-in">
       <div className="auth-container admin-login-container">
         
         <div className="auth-header">

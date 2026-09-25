@@ -9,6 +9,12 @@
   font-family: 'Inter', sans-serif;
 }
 
+.admin-login-page-bg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .admin-container {
   max-width: 1200px;
   margin: 0 auto;
