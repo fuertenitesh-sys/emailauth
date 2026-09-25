@@ -4,7 +4,8 @@ import cors from 'cors'; // CORS (Cross-Origin Resource Sharing) ko import kar r
 import helmet from 'helmet'; // Helmet ek security package hai, jo humari APIs ko basic hack attacks se bachane ke liye headers set karta hai.
 import cookieParser from 'cookie-parser'; // Cookie-parser import kar rahe hain, isse server frontend ke bheje gaye cookies (jisme JWT token hota hai) ko easily read kar pata hai.
 import connectDB from './config/db.js'; // Humari khud ki banayi file jisme MongoDB (database) se connect karne ka code hai, usko import kar rahe hain.
-import authRoutes from './routes/authRoutes.js'; // Authentication (Login/Signup) se related saare URL routes ko import kar rahe hain.
+import authRoutes from './routes/authRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 
 dotenv.config(); // Ye command chalte hi .env file ke saare variables (jaise PORT, MONGODB_URI) system mein load ho jate hain aur process.env mein milte hain.
 
@@ -25,7 +26,8 @@ app.use(express.urlencoded({ extended: true })); // Agar data form (URL-encoded)
 app.use(cookieParser()); // Har request ke sath aane wali cookies ko asani se req.cookies mein read karne ke liye.
 
 // Routes (Kaunse URL par kaunsa code chalega)
-app.use('/api/auth', authRoutes); // Agar koi user '/api/auth' se shuru hone wale kisi bhi URL par request bhejta hai, toh use authRoutes file handle karegi.
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Error Handling Middleware (Agar server mein koi issue aaye toh kya hoga)
 app.use((err, req, res, next) => {

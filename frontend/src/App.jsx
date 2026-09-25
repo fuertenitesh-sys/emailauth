@@ -6,8 +6,9 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import PostSignupWelcome from './pages/PostSignupWelcome';
-import EffectsExperience from './pages/EffectsExperience';
 import ProtectedRoute from './components/layout/ProtectedRoute';
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminDashboard from './pages/admin/AdminDashboard';
 import './App.css';
 
 function App() {
@@ -35,14 +36,9 @@ function App() {
               </ProtectedRoute>
             } 
           />
-          <Route 
-            path="/effects" 
-            element={
-              <ProtectedRoute>
-                <EffectsExperience />
-              </ProtectedRoute>
-            } 
-          />
+
+          <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
         </Routes>
       </main>
       <Footer />
