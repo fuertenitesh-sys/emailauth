@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Shield, LogOut, Users, Clock, Mail } from 'lucide-react';
+import { Shield, LogOut, Users, Clock, Mail, ChevronLeft, ChevronRight } from 'lucide-react';
 import '../Auth.css'; // Reuse some base styles if needed
 import './Admin.css'; // Premium custom styling
 
@@ -9,6 +9,10 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 10;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,6 +46,20 @@ const AdminDashboard = () => {
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
     return new Date(dateString).toLocaleDateString('en-US', options);
+  };
+
+  // Pagination logic
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(users.length / usersPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
   return (
@@ -99,13 +117,10 @@ const AdminDashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map((user, idx) => (
+                  {currentUsers.map((user, idx) => (
                     <tr key={user._id}>
                       <td>
                         <div className="admin-user-cell">
-                          <div className="admin-avatar">
-                            {user.name.charAt(0).toUpperCase()}
-                          </div>
                           <span className="admin-user-name">{user.name}</span>
                         </div>
                       </td>
@@ -123,6 +138,42 @@ const AdminDashboard = () => {
                   ))}
                 </tbody>
               </table>
+            </div>
+          )}
+          
+          {/* Pagination Controls */}
+          {!loading && !error && users.length > 0 && (
+            <div className="admin-pagination">
+              <span className="admin-page-info">
+                Showing {indexOfFirstUser + 1} to {Math.min(indexOfLastUser, users.length)} of {users.length} users
+              </span>
+              <div className="admin-page-controls">
+                <button 
+                  onClick={handlePrevPage} 
+                  disabled={currentPage === 1}
+                  className="admin-page-btn"
+                >
+                  <ChevronLeft size={16} /> Prev
+                </button>
+                <div className="admin-page-numbers">
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <button
+                      key={i + 1}
+                      onClick={() => setCurrentPage(i + 1)}
+                      className={`admin-page-num ${currentPage === i + 1 ? 'active' : ''}`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+                <button 
+                  onClick={handleNextPage} 
+                  disabled={currentPage === totalPages}
+                  className="admin-page-btn"
+                >
+                  Next <ChevronRight size={16} />
+                </button>
+              </div>
             </div>
           )}
         </div>
