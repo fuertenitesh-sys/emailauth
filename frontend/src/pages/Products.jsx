@@ -17,11 +17,7 @@ const Products = () => {
   const urlCategory = searchParams.get('category') || '';
 
   useEffect(() => {
-    if (urlCategory) {
-      // Find category ID by name for the URL query param if needed, or assume it's an ID.
-      // For this simplified version, we just use it as string if backend supports it.
-      setSelectedCategory(urlCategory);
-    }
+    setSelectedCategory(urlCategory);
   }, [urlCategory]);
 
   useEffect(() => {

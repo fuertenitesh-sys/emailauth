@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingBag, Menu, X, Search, User } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
@@ -13,10 +13,12 @@ const Navbar = () => {
   const { cartItemCount } = useCart();
 
   const [user, setUser] = useState(null);
+  const [categories, setCategories] = useState([]);
   
-  useState(() => {
+  useEffect(() => {
     axios.get('/api/auth/me').then(res => setUser(res.data)).catch(() => setUser(null));
-  });
+    axios.get('/api/categories').then(res => setCategories(res.data)).catch(() => setCategories([]));
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -48,9 +50,9 @@ const Navbar = () => {
 
           {/* Left Navigation */}
           <div className="navbar-links-left">
-            <Link to="/products?category=mens" className="navbar-link">Mens</Link>
-            <Link to="/products?category=womens" className="navbar-link">Womens</Link>
-            <Link to="/products?category=accessories" className="navbar-link">Accessories</Link>
+            {categories.slice(0, 3).map(cat => (
+              <Link key={cat._id} to={`/products?category=${cat._id}`} className="navbar-link">{cat.name}</Link>
+            ))}
             <Link to="/products" className="navbar-link">Shop All</Link>
           </div>
 
@@ -119,9 +121,9 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className="mobile-menu-overlay">
           <div className="mobile-menu-content">
-            <Link to="/products?category=mens" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Mens</Link>
-            <Link to="/products?category=womens" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Womens</Link>
-            <Link to="/products?category=accessories" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Accessories</Link>
+            {categories.map(cat => (
+              <Link key={cat._id} to={`/products?category=${cat._id}`} className="mobile-link" onClick={() => setIsMenuOpen(false)}>{cat.name}</Link>
+            ))}
             <Link to="/products" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Shop All</Link>
             <hr className="mobile-divider" />
             <Link to="/orders" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Account</Link>
