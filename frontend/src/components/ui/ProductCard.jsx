@@ -1,76 +1,73 @@
-import { Link } from 'react-router-dom';
-import { ShoppingCart, Eye, Star } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useToast } from '../../context/ToastContext';
-import { useState } from 'react';
 import './ProductCard.css';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
-  const { addToast } = useToast();
-  const [adding, setAdding] = useState(false);
+  const showToast = useToast();
+  const navigate = useNavigate();
 
-  const discountedPrice = product.price - (product.price * (product.discount || 0)) / 100;
-  const isOutOfStock = product.stock === 0;
-
-  const handleAddToCart = async (e) => {
+  const handleAddToCart = (e) => {
     e.preventDefault();
-    if (isOutOfStock) return;
-    setAdding(true);
-    try {
-      await addToCart(product._id, 1);
-      addToast(`${product.name} added to cart!`, 'success');
-    } catch (err) {
-      if (err.response?.status === 401) {
-        addToast('Please login to add items to cart', 'warning');
-      } else {
-        addToast(err.response?.data?.message || 'Failed to add to cart', 'error');
-      }
-    } finally {
-      setAdding(false);
+    e.stopPropagation();
+    
+    if (product.stock > 0) {
+      addToCart(product);
+      showToast('Added to cart');
     }
   };
 
+  const handleCardClick = () => {
+    navigate(`/product/${product._id}`);
+  };
+
+  const hasDiscount = product.discount > 0;
+  const originalPrice = product.price;
+  const finalPrice = hasDiscount ? originalPrice - (originalPrice * (product.discount / 100)) : originalPrice;
+
   return (
-    <div className="product-card card card-hover">
-      <Link to={`/products/${product._id}`} className="product-card-image-wrapper">
-        {product.images?.[0] ? (
-          <img src={product.images[0]} alt={product.name} className="product-card-image" loading="lazy" />
+    <div className="product-card" onClick={handleCardClick}>
+      <div className="product-card-image-wrapper">
+        {product.images && product.images.length > 0 ? (
+          <img src={product.images[0]} alt={product.name} className="product-card-image" />
         ) : (
           <div className="product-card-placeholder">
-            <ShoppingCart size={40} style={{ color: 'var(--color-border)' }} />
+            <span>LUMEN</span>
           </div>
         )}
-        {product.discount > 0 && (
-          <span className="product-card-discount-badge">{product.discount}% OFF</span>
+        
+        {hasDiscount && (
+          <div className="product-card-badge">-{product.discount}%</div>
         )}
-        {isOutOfStock && <span className="product-card-out-of-stock">Out of Stock</span>}
-      </Link>
-      <div className="product-card-body">
-        {product.category?.name && (
-          <span className="product-card-category">{product.category.name}</span>
+        
+        {product.stock <= 0 && (
+          <div className="product-card-overlay">SOLD OUT</div>
         )}
-        <Link to={`/products/${product._id}`}>
-          <h3 className="product-card-name">{product.name}</h3>
-        </Link>
-        <div className="product-card-price">
-          <span className="price price-discounted">₹{discountedPrice.toFixed(2)}</span>
-          {product.discount > 0 && (
-            <span className="price-original">₹{product.price.toFixed(2)}</span>
-          )}
-        </div>
-        <div className="product-card-actions">
-          <button
-            className="btn btn-primary btn-sm product-card-btn"
+
+        <div className="product-card-quick-add">
+          <button 
+            className="btn btn-primary btn-full btn-sm"
             onClick={handleAddToCart}
-            disabled={adding || isOutOfStock}
+            disabled={product.stock <= 0}
           >
-            <ShoppingCart size={14} />
-            {adding ? 'Adding...' : isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+            {product.stock > 0 ? 'QUICK ADD' : 'SOLD OUT'}
           </button>
-          <Link to={`/products/${product._id}`} className="btn btn-ghost btn-sm product-card-view-btn">
-            <Eye size={14} /> View
-          </Link>
+        </div>
+      </div>
+      
+      <div className="product-card-body">
+        <div className="product-card-brand">LUMEN</div>
+        <h3 className="product-card-name">{product.name}</h3>
+        <div className="product-card-price">
+          {hasDiscount ? (
+            <>
+              <span className="price-final">₹{finalPrice.toFixed(0)}</span>
+              <span className="price-original">₹{originalPrice.toFixed(0)}</span>
+            </>
+          ) : (
+            <span className="price-final">₹{finalPrice.toFixed(0)}</span>
+          )}
         </div>
       </div>
     </div>

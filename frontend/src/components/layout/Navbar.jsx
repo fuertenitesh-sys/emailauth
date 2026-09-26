@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Menu, X, Search, User, Package, LogOut } from 'lucide-react';
+import { ShoppingBag, Menu, X, Search, User } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import axios from 'axios';
 import './Navbar.css';
@@ -8,10 +8,10 @@ import './Navbar.css';
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const navigate = useNavigate();
   const { cartItemCount } = useCart();
 
-  // Check auth from cookie via simple fetch
   const [user, setUser] = useState(null);
   
   useState(() => {
@@ -23,6 +23,7 @@ const Navbar = () => {
     if (searchQuery.trim()) {
       navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery('');
+      setIsSearchOpen(false);
       setIsMenuOpen(false);
     }
   };
@@ -36,78 +37,99 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar">
-      <div className="container navbar-inner">
-        <Link to="/" className="navbar-brand">
-          <Package size={22} />
-          <span>ShopEase</span>
-        </Link>
+    <>
+      <nav className="navbar">
+        <div className="container navbar-inner">
+          
+          {/* Mobile Menu Toggle */}
+          <button className="navbar-mobile-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X size={24} strokeWidth={1.5} /> : <Menu size={24} strokeWidth={1.5} />}
+          </button>
 
-        <form className="navbar-search" onSubmit={handleSearch}>
-          <Search size={16} className="navbar-search-icon" />
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="navbar-search-input"
-          />
-        </form>
+          {/* Left Navigation */}
+          <div className="navbar-links-left">
+            <Link to="/products?category=mens" className="navbar-link">Mens</Link>
+            <Link to="/products?category=womens" className="navbar-link">Womens</Link>
+            <Link to="/products?category=accessories" className="navbar-link">Accessories</Link>
+            <Link to="/products" className="navbar-link">Shop All</Link>
+          </div>
 
-        <div className="navbar-links">
-          <Link to="/products" className="navbar-link">Products</Link>
-          <Link to="/cart" className="navbar-cart-btn">
-            <ShoppingCart size={20} />
-            {cartItemCount > 0 && (
-              <span className="navbar-cart-badge">{cartItemCount}</span>
-            )}
+          {/* Center Brand */}
+          <Link to="/" className="navbar-brand">
+            LUMEN
           </Link>
-          {user ? (
+
+          {/* Right Icons */}
+          <div className="navbar-actions-right">
+            <button className="navbar-icon-btn" onClick={() => setIsSearchOpen(!isSearchOpen)}>
+              <Search size={20} strokeWidth={1.5} />
+            </button>
+            
             <div className="navbar-user-menu">
-              <button className="navbar-user-btn">
-                <User size={18} /> {user.name?.split(' ')[0]}
+              <button className="navbar-icon-btn">
+                <User size={20} strokeWidth={1.5} />
               </button>
               <div className="navbar-dropdown">
-                <Link to="/orders" className="navbar-dropdown-item"><Package size={14} /> My Orders</Link>
-                <Link to="/dashboard" className="navbar-dropdown-item"><User size={14} /> Profile</Link>
-                <button className="navbar-dropdown-item" onClick={handleLogout}><LogOut size={14} /> Logout</button>
+                {user ? (
+                  <>
+                    <div className="navbar-dropdown-header">Hi, {user.name?.split(' ')[0]}</div>
+                    <Link to="/orders" className="navbar-dropdown-item">My Orders</Link>
+                    <Link to="/dashboard" className="navbar-dropdown-item">Profile</Link>
+                    {user.role === 'admin' && <Link to="/admin" className="navbar-dropdown-item">Admin Panel</Link>}
+                    <button className="navbar-dropdown-item text-danger" onClick={handleLogout}>Logout</button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/login" className="navbar-dropdown-item">Log In</Link>
+                    <Link to="/signup" className="navbar-dropdown-item">Create Account</Link>
+                  </>
+                )}
               </div>
             </div>
-          ) : (
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <Link to="/login" className="btn btn-outline btn-sm">Login</Link>
-              <Link to="/signup" className="btn btn-primary btn-sm">Sign Up</Link>
-            </div>
-          )}
+
+            <Link to="/cart" className="navbar-icon-btn navbar-cart">
+              <ShoppingBag size={20} strokeWidth={1.5} />
+              {cartItemCount > 0 && <span className="navbar-cart-badge">{cartItemCount}</span>}
+            </Link>
+          </div>
+
         </div>
 
-        <button className="navbar-mobile-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-          {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
-      </div>
-
-      {isMenuOpen && (
-        <div className="navbar-mobile-menu">
-          <form onSubmit={handleSearch} style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--color-border)' }}>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <input type="text" placeholder="Search..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="input-field" style={{ flex: 1 }} />
-              <button type="submit" className="btn btn-primary btn-sm"><Search size={14} /></button>
+        {/* Search Overlay */}
+        {isSearchOpen && (
+          <div className="navbar-search-overlay">
+            <div className="container">
+              <form onSubmit={handleSearch} className="navbar-search-form">
+                <Search size={20} strokeWidth={1.5} color="#71717a" />
+                <input
+                  type="text"
+                  placeholder="SEARCH LUMEN..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  autoFocus
+                />
+                <button type="button" onClick={() => setIsSearchOpen(false)}><X size={20} strokeWidth={1.5} /></button>
+              </form>
             </div>
-          </form>
-          <Link to="/products" className="navbar-mobile-link" onClick={() => setIsMenuOpen(false)}>Products</Link>
-          <Link to="/cart" className="navbar-mobile-link" onClick={() => setIsMenuOpen(false)}>Cart {cartItemCount > 0 && `(${cartItemCount})`}</Link>
-          <Link to="/orders" className="navbar-mobile-link" onClick={() => setIsMenuOpen(false)}>My Orders</Link>
-          {user ? (
-            <button className="navbar-mobile-link" onClick={handleLogout}>Logout</button>
-          ) : (
-            <>
-              <Link to="/login" className="navbar-mobile-link" onClick={() => setIsMenuOpen(false)}>Login</Link>
-              <Link to="/signup" className="navbar-mobile-link" onClick={() => setIsMenuOpen(false)}>Sign Up</Link>
-            </>
-          )}
+          </div>
+        )}
+      </nav>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="mobile-menu-overlay">
+          <div className="mobile-menu-content">
+            <Link to="/products?category=mens" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Mens</Link>
+            <Link to="/products?category=womens" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Womens</Link>
+            <Link to="/products?category=accessories" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Accessories</Link>
+            <Link to="/products" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Shop All</Link>
+            <hr className="mobile-divider" />
+            <Link to="/orders" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Account</Link>
+            <Link to="/cart" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Cart ({cartItemCount})</Link>
+          </div>
         </div>
       )}
-    </nav>
+    </>
   );
 };
 

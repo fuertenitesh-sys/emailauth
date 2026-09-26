@@ -1,39 +1,50 @@
+import { Link } from 'react-router-dom';
 import './Footer.css';
-import { Mail } from 'lucide-react';
 
 const Footer = () => {
   return (
     <footer className="footer">
-      <div className="container footer-container">
-        <div className="footer-brand">
-          <div className="footer-logo">
-            <Mail size={20} className="footer-icon" />
-            <span>EmailAuth</span>
-          </div>
-          <p className="footer-tagline">Secure, seamless authentication for modern applications.</p>
-        </div>
-        <div className="footer-links">
-          <div className="footer-group">
-            <h4>Product</h4>
-            <a href="#">Features</a>
-            <a href="#">Security</a>
-            <a href="#">Pricing</a>
-          </div>
-          <div className="footer-group">
-            <h4>Company</h4>
-            <a href="#">About</a>
-            <a href="#">Blog</a>
-            <a href="#">Contact</a>
-          </div>
-          <div className="footer-group">
-            <h4>Legal</h4>
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
-          </div>
+      <div className="container footer-top">
+        <div className="footer-newsletter">
+          <h3>Sign up for LUMEN updates</h3>
+          <p>Receive exclusive access to new arrivals, limited releases, and special events.</p>
+          <form className="footer-form">
+            <input type="email" placeholder="EMAIL ADDRESS" required />
+            <button type="submit">SUBSCRIBE</button>
+          </form>
         </div>
       </div>
+
+      <div className="container footer-links-section">
+        <div className="footer-col">
+          <h4>ABOUT</h4>
+          <Link to="#">Our Story</Link>
+          <Link to="#">Locations</Link>
+          <Link to="#">Careers</Link>
+        </div>
+        <div className="footer-col">
+          <h4>SUPPORT</h4>
+          <Link to="#">FAQ</Link>
+          <Link to="#">Shipping & Returns</Link>
+          <Link to="#">Contact Us</Link>
+        </div>
+        <div className="footer-col">
+          <h4>LEGAL</h4>
+          <Link to="#">Privacy Policy</Link>
+          <Link to="#">Terms of Service</Link>
+          <Link to="#">Accessibility</Link>
+        </div>
+        <div className="footer-col footer-social">
+          <h4>SOCIAL</h4>
+          <Link to="#">Instagram</Link>
+          <Link to="#">Twitter</Link>
+          <Link to="#">YouTube</Link>
+        </div>
+      </div>
+
       <div className="container footer-bottom">
-        <p>&copy; {new Date().getFullYear()} EmailAuth Inc. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} LUMEN. All rights reserved.</p>
+        <div className="footer-brand-large">LUMEN</div>
       </div>
     </footer>
   );
