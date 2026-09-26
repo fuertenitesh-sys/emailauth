@@ -1,79 +1,142 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, Zap, Lock } from 'lucide-react';
+import axios from 'axios';
+import { ShoppingBag, ArrowRight, Truck, Shield, RefreshCw, Headphones } from 'lucide-react';
+import ProductCard from '../components/ui/ProductCard';
+import { ProductCardSkeleton } from '../components/ui/Skeleton';
 import './Home.css';
 
 const Home = () => {
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [catRes, prodRes] = await Promise.all([
+          axios.get('/api/categories'),
+          axios.get('/api/products?limit=8')
+        ]);
+        setCategories(catRes.data);
+        setProducts(prodRes.data.products || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
-    <div className="home animate-fade-in">
+    <div className="home-page">
       {/* Hero Section */}
-      <section className="hero">
-        <div className="container hero-container">
-          <div className="hero-content">
-            <div className="hero-badge">New: Passkey Support Available Now</div>
-            <h1 className="hero-title">
-              Authentication made <span className="text-gradient">simple</span> and secure.
-            </h1>
-            <p className="hero-subtitle">
-              Integrate powerful, passwordless, and multi-factor authentication into your application in minutes. Built for modern teams.
-            </p>
+      <section className="hero-section">
+        <div className="container hero-content">
+          <div className="hero-text">
+            <span className="hero-eyebrow">New Arrivals 2026</span>
+            <h1 className="hero-title">Discover Premium<br />Products for Every<br />Lifestyle</h1>
+            <p className="hero-subtitle">Shop the latest trends across Electronics, Fashion, Home & more. Quality guaranteed.</p>
             <div className="hero-actions">
-              <Link to="/signup" className="btn btn-primary btn-lg">Get Started Free</Link>
-              <Link to="/login" className="btn btn-outline btn-lg">View Documentation</Link>
+              <Link to="/products" className="btn btn-primary btn-lg">
+                <ShoppingBag size={18} /> Shop Now
+              </Link>
+              <Link to="/products" className="btn btn-outline btn-lg">Browse Categories</Link>
             </div>
           </div>
-          
-          <div className="hero-visual">
-            <div className="mockup-card">
-              <div className="mockup-header">
-                <div className="mockup-dots">
-                  <span></span><span></span><span></span>
-                </div>
-              </div>
-              <div className="mockup-body">
-                <div className="mockup-icon"><Shield size={32} /></div>
-                <h3>Secure Login</h3>
-                <div className="mockup-input"></div>
-                <div className="mockup-input"></div>
-                <div className="mockup-btn"></div>
-              </div>
+          <div className="hero-image-area">
+            <div className="hero-image-placeholder">
+              <ShoppingBag size={80} style={{ color: 'var(--color-primary-light)' }} />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="features">
+      {/* Trust Badges */}
+      <section className="trust-section">
+        <div className="container trust-grid">
+          <div className="trust-item">
+            <Truck size={24} style={{ color: 'var(--color-primary)' }} />
+            <div>
+              <h4>Free Delivery</h4>
+              <p>On orders above ₹500</p>
+            </div>
+          </div>
+          <div className="trust-item">
+            <Shield size={24} style={{ color: 'var(--color-success)' }} />
+            <div>
+              <h4>Secure Payment</h4>
+              <p>100% safe transactions</p>
+            </div>
+          </div>
+          <div className="trust-item">
+            <RefreshCw size={24} style={{ color: 'var(--color-warning)' }} />
+            <div>
+              <h4>Easy Returns</h4>
+              <p>7-day return policy</p>
+            </div>
+          </div>
+          <div className="trust-item">
+            <Headphones size={24} style={{ color: 'var(--color-danger)' }} />
+            <div>
+              <h4>24/7 Support</h4>
+              <p>Always here to help</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Categories Section */}
+      {categories.length > 0 && (
+        <section className="section">
+          <div className="container">
+            <div className="section-header">
+              <h2 className="section-title">Shop by Category</h2>
+              <Link to="/products" className="section-link">View All <ArrowRight size={16} /></Link>
+            </div>
+            <div className="categories-grid">
+              {categories.map(cat => (
+                <Link to={`/category/${cat._id}`} key={cat._id} className="category-card">
+                  {cat.imageUrl ? (
+                    <img src={cat.imageUrl} alt={cat.name} className="category-card-img" />
+                  ) : (
+                    <div className="category-card-placeholder">
+                      <ShoppingBag size={32} style={{ color: 'var(--color-primary)' }} />
+                    </div>
+                  )}
+                  <div className="category-card-overlay">
+                    <span className="category-card-name">{cat.name}</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Featured Products */}
+      <section className="section" style={{ background: 'var(--color-bg)' }}>
         <div className="container">
-          <div className="features-header">
-            <h2>Everything you need for auth</h2>
-            <p>We handle the complexity of authentication so you can focus on building your product.</p>
+          <div className="section-header">
+            <h2 className="section-title">Featured Products</h2>
+            <Link to="/products" className="section-link">See All <ArrowRight size={16} /></Link>
           </div>
-          
-          <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon-wrapper">
-                <Zap className="feature-icon" size={24} />
-              </div>
-              <h3>Lightning Fast</h3>
-              <p>Optimized delivery ensures your users never wait on the authentication step. Global edge network included.</p>
+          {loading ? (
+            <div className="grid-cols-4">
+              {Array(8).fill(0).map((_, i) => <ProductCardSkeleton key={i} />)}
             </div>
-            
-            <div className="feature-card">
-              <div className="feature-icon-wrapper">
-                <Lock className="feature-icon" size={24} />
-              </div>
-              <h3>Bank-grade Security</h3>
-              <p>State of the art encryption, regular audits, and compliance with SOC2, GDPR, and HIPAA standards.</p>
+          ) : products.length > 0 ? (
+            <div className="grid-cols-4">
+              {products.map(product => <ProductCard key={product._id} product={product} />)}
             </div>
-            
-            <div className="feature-card">
-              <div className="feature-icon-wrapper">
-                <Shield className="feature-icon" size={24} />
-              </div>
-              <h3>Fraud Protection</h3>
-              <p>Automatic detection and blocking of suspicious IPs, credential stuffing, and bot attacks.</p>
+          ) : (
+            <div className="empty-state">
+              <div className="empty-state-icon">🛍️</div>
+              <h3>No products yet</h3>
+              <p>Products will appear here once added by admin.</p>
             </div>
-          </div>
+          )}
         </div>
       </section>
     </div>

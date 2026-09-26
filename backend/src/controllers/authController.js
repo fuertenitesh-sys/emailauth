@@ -51,6 +51,7 @@ export const signup = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role,
         message: 'Registration successful!'
       });
     } else {
@@ -84,6 +85,7 @@ export const login = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role,
         message: 'Login successful'
       });
     } else {

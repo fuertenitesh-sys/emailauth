@@ -6,6 +6,10 @@ import cookieParser from 'cookie-parser'; // Cookie-parser import kar rahe hain,
 import connectDB from './config/db.js'; // Humari khud ki banayi file jisme MongoDB (database) se connect karne ka code hai, usko import kar rahe hain.
 import authRoutes from './routes/authRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
+import productRoutes from './routes/productRoutes.js';
+import cartRoutes from './routes/cartRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
 
 dotenv.config(); // Ye command chalte hi .env file ke saare variables (jaise PORT, MONGODB_URI) system mein load ho jate hain aur process.env mein milte hain.
 
@@ -28,6 +32,10 @@ app.use(cookieParser()); // Har request ke sath aane wali cookies ko asani se re
 // Routes (Kaunse URL par kaunsa code chalega)
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Error Handling Middleware (Agar server mein koi issue aaye toh kya hoga)
 app.use((err, req, res, next) => {

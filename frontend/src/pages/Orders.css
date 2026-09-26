@@ -1,0 +1,9 @@
+.orders-page { padding: 2rem 0 4rem; }
+.orders-title { font-size: 1.75rem; font-weight: 800; margin-bottom: 2rem; }
+.orders-list { display: flex; flex-direction: column; gap: 1rem; }
+.order-card { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 1.5rem; text-decoration: none; color: inherit; }
+.order-card-left { display: flex; align-items: center; gap: 1rem; }
+.order-card-right { display: flex; align-items: center; gap: 1rem; }
+.order-id { font-weight: 700; font-size: 0.9rem; color: var(--color-navy); }
+.order-date { font-size: 0.8rem; color: var(--color-text-muted); margin-top: 0.125rem; }
+.order-total { font-size: 1rem; font-weight: 700; color: var(--color-navy); }
