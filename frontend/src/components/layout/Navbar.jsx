@@ -51,7 +51,7 @@ const Navbar = () => {
           {/* Left Navigation */}
           <div className="navbar-links-left">
             {categories.slice(0, 3).map(cat => (
-              <Link key={cat._id} to={`/products?category=${cat._id}`} className="navbar-link">{cat.name}</Link>
+              <Link key={cat._id} to={`/products?category=${cat.name.toLowerCase()}`} className="navbar-link">{cat.name}</Link>
             ))}
             <Link to="/products" className="navbar-link">Shop All</Link>
           </div>
@@ -122,7 +122,7 @@ const Navbar = () => {
         <div className="mobile-menu-overlay">
           <div className="mobile-menu-content">
             {categories.map(cat => (
-              <Link key={cat._id} to={`/products?category=${cat._id}`} className="mobile-link" onClick={() => setIsMenuOpen(false)}>{cat.name}</Link>
+              <Link key={cat._id} to={`/products?category=${cat.name.toLowerCase()}`} className="mobile-link" onClick={() => setIsMenuOpen(false)}>{cat.name}</Link>
             ))}
             <Link to="/products" className="mobile-link" onClick={() => setIsMenuOpen(false)}>Shop All</Link>
             <hr className="mobile-divider" />

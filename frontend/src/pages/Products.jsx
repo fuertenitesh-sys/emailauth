@@ -66,7 +66,7 @@ const Products = () => {
           {searchQuery 
             ? `SEARCH: ${searchQuery.toUpperCase()}` 
             : (selectedCategory && categories.length > 0 
-                ? (categories.find(c => c._id === selectedCategory)?.name?.toUpperCase() || 'ALL PRODUCTS')
+                ? (categories.find(c => c.name.toLowerCase() === selectedCategory.toLowerCase())?.name?.toUpperCase() || selectedCategory.toUpperCase())
                 : 'ALL PRODUCTS')}
         </h1>
         <p className="collection-count">{products.length} ITEMS</p>
@@ -90,10 +90,10 @@ const Products = () => {
               {categories.map(cat => (
                 <button 
                   key={cat._id}
-                  className={`filter-btn ${selectedCategory === cat._id ? 'active' : ''}`}
+                  className={`filter-btn ${selectedCategory.toLowerCase() === cat.name.toLowerCase() ? 'active' : ''}`}
                   onClick={() => {
-                    setSelectedCategory(cat._id);
-                    navigate(`/products?category=${cat._id}`, { replace: true });
+                    setSelectedCategory(cat.name.toLowerCase());
+                    navigate(`/products?category=${cat.name.toLowerCase()}`, { replace: true });
                   }}
                 >
                   {cat.name}

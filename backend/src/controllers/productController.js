@@ -1,10 +1,20 @@
 import Product from '../models/Product.js';
+import Category from '../models/Category.js';
+import mongoose from 'mongoose';
 
 export const getProducts = async (req, res) => {
   try {
     const { category, search, sort, page = 1, limit = 12 } = req.query;
     const query = { status: 'active' };
-    if (category) query.category = category;
+    if (category) {
+      if (mongoose.Types.ObjectId.isValid(category)) {
+        query.category = category;
+      } else {
+        const cat = await Category.findOne({ name: { $regex: new RegExp(`^${category}$`, 'i') } });
+        if (cat) query.category = cat._id;
+        else query.category = new mongoose.Types.ObjectId(); // Ensure it matches nothing if category name is invalid
+      }
+    }
     if (search) query.name = { $regex: search, $options: 'i' };
     let sortOption = { createdAt: -1 };
     if (sort === 'price_asc') sortOption = { price: 1 };
