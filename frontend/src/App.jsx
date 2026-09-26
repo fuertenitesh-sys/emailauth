@@ -41,7 +41,7 @@ function App() {
       <main className={isAdminPath ? '' : 'main-content'}>
         <Routes>
           {/* Public routes */}
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Navigate to="/products" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/products" element={<Products />} />
