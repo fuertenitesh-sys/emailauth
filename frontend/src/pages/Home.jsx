@@ -33,9 +33,8 @@ const Home = () => {
       {/* ===== EDITORIAL HERO ===== */}
       <section className="hero-section">
         <div className="hero-background">
-          {/* Placeholder for a high-fashion editorial image */}
-          <div className="hero-image-placeholder">
-            <span className="hero-placeholder-text">LUMEN FALL 2026</span>
+          {/* A clean solid background to replace the messy placeholder */}
+          <div className="hero-image-placeholder" style={{ backgroundColor: '#f4f4f5' }}>
           </div>
         </div>
         <div className="hero-content">
