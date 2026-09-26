@@ -32,25 +32,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div style={{ 
-          background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(147, 197, 253, 0.2))', 
-          padding: '1.5rem', 
-          borderRadius: '8px', 
-          marginBottom: '2rem',
-          border: '1px solid rgba(37, 99, 235, 0.2)',
-          textAlign: 'center'
-        }}>
-          <h3 style={{ marginBottom: '0.5rem', color: 'var(--color-primary)', fontSize: '1.125rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-            <Sparkles size={20} /> Premium Experience
-          </h3>
-          <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.25rem', fontSize: '0.9rem' }}>
-            Explore our curated gallery of interactive visual effects.
-          </p>
-          <Link to="/effects" className="btn btn-primary btn-full" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-            ✨ Explore Effects
-          </Link>
-        </div>
-
         <button onClick={logout} className="btn btn-outline btn-full btn-lg">
           Log Out
         </button>
