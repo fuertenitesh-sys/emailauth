@@ -8,18 +8,29 @@ const ProductCard = ({ product }) => {
   const showToast = useToast();
   const navigate = useNavigate();
 
-  const handleAddToCart = (e) => {
+  const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     
     if (product.stock > 0) {
-      addToCart(product);
-      showToast('Added to cart');
+      try {
+        await addToCart(product._id, 1);
+        if (typeof showToast === 'function') {
+          showToast('Added to cart');
+        } else if (showToast && typeof showToast.addToast === 'function') {
+          showToast.addToast('Added to cart', 'success');
+        }
+      } catch (error) {
+        if (error.response?.status === 401) {
+          if (showToast && typeof showToast.addToast === 'function') showToast.addToast('Please login to add to cart', 'warning');
+          navigate('/login');
+        }
+      }
     }
   };
 
   const handleCardClick = () => {
-    navigate(`/product/${product._id}`);
+    navigate(`/products/${product._id}`);
   };
 
   const hasDiscount = product.discount > 0;
