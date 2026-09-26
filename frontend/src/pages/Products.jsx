@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ProductCard from '../components/ui/ProductCard';
 import { ProductCardSkeleton } from '../components/ui/Skeleton';
@@ -11,6 +11,7 @@ const Products = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   
+  const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const searchQuery = searchParams.get('search') || '';
@@ -62,7 +63,11 @@ const Products = () => {
     <div className="collections-page">
       <div className="collection-header">
         <h1 className="collection-title">
-          {searchQuery ? `SEARCH: ${searchQuery.toUpperCase()}` : 'ALL PRODUCTS'}
+          {searchQuery 
+            ? `SEARCH: ${searchQuery.toUpperCase()}` 
+            : (selectedCategory && categories.length > 0 
+                ? (categories.find(c => c._id === selectedCategory)?.name?.toUpperCase() || 'ALL PRODUCTS')
+                : 'ALL PRODUCTS')}
         </h1>
         <p className="collection-count">{products.length} ITEMS</p>
       </div>
@@ -75,7 +80,10 @@ const Products = () => {
             <div className="filter-options">
               <button 
                 className={`filter-btn ${selectedCategory === '' ? 'active' : ''}`}
-                onClick={() => setSelectedCategory('')}
+                onClick={() => {
+                  setSelectedCategory('');
+                  navigate('/products', { replace: true });
+                }}
               >
                 All
               </button>
@@ -83,7 +91,10 @@ const Products = () => {
                 <button 
                   key={cat._id}
                   className={`filter-btn ${selectedCategory === cat._id ? 'active' : ''}`}
-                  onClick={() => setSelectedCategory(cat._id)}
+                  onClick={() => {
+                    setSelectedCategory(cat._id);
+                    navigate(`/products?category=${cat._id}`, { replace: true });
+                  }}
                 >
                   {cat.name}
                 </button>
