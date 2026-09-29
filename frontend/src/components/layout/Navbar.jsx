@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingBag, Menu, X, Search, User } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
+import { AuthContext } from '../../context/AuthContext';
+import { useContext } from 'react';
 import axios from 'axios';
 import './Navbar.css';
 
@@ -11,12 +13,10 @@ const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const navigate = useNavigate();
   const { cartItemCount } = useCart();
-
-  const [user, setUser] = useState(null);
+  const { user, logout } = useContext(AuthContext);
   const [categories, setCategories] = useState([]);
   
   useEffect(() => {
-    axios.get('/api/auth/me').then(res => setUser(res.data)).catch(() => setUser(null));
     axios.get('/api/categories').then(res => setCategories(res.data)).catch(() => setCategories([]));
   }, []);
 
@@ -31,11 +31,8 @@ const Navbar = () => {
   };
 
   const handleLogout = async () => {
-    try {
-      await axios.post('/api/auth/logout');
-      setUser(null);
-      navigate('/');
-    } catch {}
+    await logout();
+    navigate('/');
   };
 
   return (
