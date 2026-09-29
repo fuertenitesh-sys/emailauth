@@ -121,7 +121,7 @@ const AdminDashboard = () => {
                   </tbody>
                 </table>
               </div>
-              {totalPages > 1 && (
+              {totalPages > 0 && (
                 <div className="admin-pagination">
                   <span className="admin-page-info">Showing {indexOfFirst + 1}–{Math.min(indexOfLast, users.length)} of {users.length}</span>
                   <div className="admin-page-controls">
