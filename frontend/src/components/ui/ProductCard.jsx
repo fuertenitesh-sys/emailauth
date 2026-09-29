@@ -5,7 +5,7 @@ import './ProductCard.css';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
-  const showToast = useToast();
+  const { addToast } = useToast();
   const navigate = useNavigate();
 
   const handleAddToCart = async (e) => {
@@ -15,15 +15,13 @@ const ProductCard = ({ product }) => {
     if (product.stock > 0) {
       try {
         await addToCart(product._id, 1);
-        if (typeof showToast === 'function') {
-          showToast('Added to cart');
-        } else if (showToast && typeof showToast.addToast === 'function') {
-          showToast.addToast('Added to cart', 'success');
-        }
+        addToast('Added to cart', 'success');
       } catch (error) {
         if (error.response?.status === 401) {
-          if (showToast && typeof showToast.addToast === 'function') showToast.addToast('Please login to add to cart', 'warning');
+          addToast('Please login to add to cart', 'warning');
           navigate('/login');
+        } else {
+          addToast(error.response?.data?.message || 'Failed to add to cart', 'error');
         }
       }
     }
