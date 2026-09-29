@@ -13,6 +13,7 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
+  const [buying, setBuying] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
   const { addToCart } = useCart();
   const { addToast } = useToast();
@@ -32,7 +33,9 @@ const ProductDetail = () => {
   const isOutOfStock = product.stock === 0;
 
   const handleAddToCart = async (buyNow = false) => {
-    setAdding(true);
+    if (buyNow) setBuying(true);
+    else setAdding(true);
+    
     try {
       await addToCart(product._id, quantity);
       addToast(`${product.name} added to cart!`, 'success');
@@ -46,6 +49,7 @@ const ProductDetail = () => {
       }
     } finally {
       setAdding(false);
+      setBuying(false);
     }
   };
 
@@ -124,7 +128,7 @@ const ProductDetail = () => {
               <button
                 className="btn btn-outline btn-lg"
                 onClick={() => handleAddToCart(false)}
-                disabled={adding || isOutOfStock}
+                disabled={adding || buying || isOutOfStock}
                 style={{ flex: 1 }}
               >
                 <ShoppingCart size={18} /> {adding ? 'Adding...' : 'Add to Cart'}
@@ -132,10 +136,10 @@ const ProductDetail = () => {
               <button
                 className="btn btn-primary btn-lg"
                 onClick={() => handleAddToCart(true)}
-                disabled={adding || isOutOfStock}
+                disabled={adding || buying || isOutOfStock}
                 style={{ flex: 1 }}
               >
-                Buy Now
+                {buying ? 'Processing...' : 'Buy Now'}
               </button>
             </div>
           </div>
