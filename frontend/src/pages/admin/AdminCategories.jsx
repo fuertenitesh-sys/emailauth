@@ -32,6 +32,17 @@ const AdminCategories = () => {
   const openAdd = () => { setForm({ name: '', description: '', imageUrl: '', status: 'active' }); setEditing(null); setError(''); setShowForm(true); };
   const openEdit = (cat) => { setForm({ name: cat.name, description: cat.description, imageUrl: cat.imageUrl, status: cat.status }); setEditing(cat); setError(''); setShowForm(true); };
 
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setForm(p => ({...p, imageUrl: reader.result}));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true); setError('');
@@ -87,8 +98,9 @@ const AdminCategories = () => {
                   </select>
                 </div>
                 <div className="input-group admin-form-full">
-                  <label className="input-label">Image URL</label>
-                  <input className="input-field" value={form.imageUrl} onChange={e => setForm(p => ({...p, imageUrl: e.target.value}))} placeholder="https://..." />
+                  <label className="input-label">Image Upload</label>
+                  <input type="file" accept="image/*" className="input-field" onChange={handleImageUpload} />
+                  {form.imageUrl && <img src={form.imageUrl} alt="Preview" style={{ marginTop: '1rem', maxHeight: '150px', borderRadius: '4px', objectFit: 'contain' }} />}
                 </div>
                 <div className="input-group admin-form-full">
                   <label className="input-label">Description</label>

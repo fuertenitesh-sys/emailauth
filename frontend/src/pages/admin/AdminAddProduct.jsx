@@ -12,7 +12,6 @@ const AdminAddProduct = () => {
   const [categories, setCategories] = useState([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-  const [imageInput, setImageInput] = useState('');
   const [form, setForm] = useState({
     name: '', description: '', price: '', discount: 0,
     category: '', images: [], stock: '', status: 'active'
@@ -30,8 +29,17 @@ const AdminAddProduct = () => {
 
   const handleLogout = async () => { try { await axios.post('/api/admin/logout'); } catch {} navigate('/admin'); };
 
-  const addImage = () => {
-    if (imageInput.trim()) { setForm(p => ({ ...p, images: [...p.images, imageInput.trim()] })); setImageInput(''); }
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setForm(p => ({ ...p, images: [...p.images, reader.result] }));
+      };
+      reader.readAsDataURL(file);
+    });
+    // Clear the input so same files can be selected again if needed
+    e.target.value = null;
   };
 
   const removeImage = (idx) => setForm(p => ({ ...p, images: p.images.filter((_, i) => i !== idx) }));
@@ -107,17 +115,16 @@ const AdminAddProduct = () => {
                 <textarea className="input-field" value={form.description} onChange={e => setForm(p => ({...p, description: e.target.value}))} required rows={4} style={{ resize: 'vertical' }} placeholder="Describe the product..." />
               </div>
               <div className="input-group admin-form-full">
-                <label className="input-label">Product Images (URLs)</label>
+                <label className="input-label">Product Images (Upload)</label>
                 <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                  <input className="input-field" value={imageInput} onChange={e => setImageInput(e.target.value)} placeholder="https://..." onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addImage())} style={{ flex: 1 }} />
-                  <button type="button" className="btn btn-outline" onClick={addImage}><Plus size={16} /> Add</button>
+                  <input type="file" accept="image/*" multiple className="input-field" onChange={handleImageUpload} style={{ flex: 1 }} />
                 </div>
                 {form.images.length > 0 && (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                     {form.images.map((img, i) => (
                       <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '0.375rem 0.625rem', fontSize: '0.8rem' }}>
                         <img src={img} alt="" style={{ width: '32px', height: '32px', objectFit: 'cover', borderRadius: '4px' }} onError={e => e.target.style.display='none'} />
-                        <span style={{ maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-text-muted)' }}>{img}</span>
+                        <span style={{ maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--color-text-muted)' }}>Image {i+1}</span>
                         <button type="button" onClick={() => removeImage(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-danger)', display: 'flex', padding: 0 }}><X size={14} /></button>
                       </div>
                     ))}
