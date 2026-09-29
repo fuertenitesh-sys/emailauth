@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { LogOut, Bell, User, ShoppingBag, X } from 'lucide-react';
+import { LogOut, Bell, User, ShoppingBag, X, Sun, Moon } from 'lucide-react';
 import '../../pages/admin/Admin.css';
 
 const AdminHeader = ({ title }) => {
@@ -9,7 +9,18 @@ const AdminHeader = ({ title }) => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem('adminDarkMode') === 'true');
   const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.classList.add('admin-dark');
+      localStorage.setItem('adminDarkMode', 'true');
+    } else {
+      document.body.classList.remove('admin-dark');
+      localStorage.setItem('adminDarkMode', 'false');
+    }
+  }, [isDarkMode]);
 
   useEffect(() => {
     fetchNotifications();
@@ -118,6 +129,10 @@ const AdminHeader = ({ title }) => {
       <h1 className="admin-title">{title}</h1>
       
       <div className="admin-header-actions">
+        <button className="admin-icon-btn" onClick={() => setIsDarkMode(!isDarkMode)} title="Toggle Theme">
+          {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
+        
         <div className="admin-notification-wrapper" ref={dropdownRef}>
           <button className="admin-icon-btn" onClick={handleBellClick}>
             <Bell size={20} />
