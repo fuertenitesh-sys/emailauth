@@ -145,7 +145,7 @@ const AdminAddProduct = () => {
               name: form.name || 'Product Name',
               price: Number(form.price) || 0,
               discount: Number(form.discount) || 0,
-              stock: Number(form.stock) || 0,
+              stock: form.stock === '' ? null : Number(form.stock),
               images: form.images.length > 0 ? form.images : []
             }} />
           </div>

@@ -36,6 +36,7 @@ const ProductCard = ({ product }) => {
   const hasDiscount = product.discount > 0;
   const originalPrice = product.price;
   const finalPrice = hasDiscount ? originalPrice - (originalPrice * (product.discount / 100)) : originalPrice;
+  const isSoldOut = product.stock === 0;
 
   return (
     <div className="product-card" onClick={handleCardClick}>
@@ -48,11 +49,11 @@ const ProductCard = ({ product }) => {
           </div>
         )}
         
-        {hasDiscount && (
+        {hasDiscount && !isSoldOut && (
           <div className="product-card-badge">-{product.discount}%</div>
         )}
         
-        {product.stock <= 0 && (
+        {isSoldOut && (
           <div className="product-card-overlay">SOLD OUT</div>
         )}
 
@@ -60,9 +61,9 @@ const ProductCard = ({ product }) => {
           <button 
             className="btn btn-primary btn-full btn-sm"
             onClick={handleAddToCart}
-            disabled={product.stock <= 0}
+            disabled={isSoldOut}
           >
-            {product.stock > 0 ? 'QUICK ADD' : 'SOLD OUT'}
+            {isSoldOut ? 'SOLD OUT' : 'QUICK ADD'}
           </button>
         </div>
       </div>
