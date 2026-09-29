@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Shield, LogOut, Users, ShoppingBag, Package, Tag, TrendingUp, Clock, ChevronRight, LogIn } from 'lucide-react';
 import './Admin.css';
@@ -13,19 +13,26 @@ const AdminDashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 10;
   const navigate = useNavigate();
+  const location = useLocation();
+  const isDashboard = location.pathname === '/admin/dashboard';
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => { fetchData(); }, [location.pathname]);
 
   const fetchData = async () => {
     try {
-      const [usersRes, statsRes, ordersRes] = await Promise.all([
-        axios.get('/api/admin/users'),
-        axios.get('/api/admin/stats'),
-        axios.get('/api/admin/orders')
-      ]);
-      setUsers(usersRes.data);
-      setStats(statsRes.data);
-      setRecentOrders(ordersRes.data.slice(0, 5));
+      if (isDashboard) {
+        const [usersRes, statsRes, ordersRes] = await Promise.all([
+          axios.get('/api/admin/users'),
+          axios.get('/api/admin/stats'),
+          axios.get('/api/admin/orders')
+        ]);
+        setUsers(usersRes.data);
+        setStats(statsRes.data);
+        setRecentOrders(ordersRes.data.slice(0, 5));
+      } else {
+        const res = await axios.get('/api/admin/users');
+        setUsers(res.data);
+      }
     } catch (err) {
       if (err.response?.status === 401) navigate('/admin');
     } finally {
@@ -52,12 +59,13 @@ const AdminDashboard = () => {
       <AdminNav />
       <div className="admin-main-wrapper">
         <header className="admin-header" style={{ marginBottom: '2rem' }}>
-          <h1 className="admin-title">Command Center</h1>
+          <h1 className="admin-title">{isDashboard ? 'Command Center' : 'Users Management'}</h1>
           <button onClick={handleLogout} className="admin-logout-btn"><LogOut size={16} /> Logout</button>
         </header>
 
         {/* Stats */}
-        <div className="admin-stats-row">
+        {isDashboard && (
+          <div className="admin-stats-row">
           {[
             { label: 'Total Users', value: stats?.totalUsers ?? users.length, icon: Users },
             { label: 'Total Products', value: stats?.totalProducts ?? '-', icon: Package },
@@ -72,9 +80,10 @@ const AdminDashboard = () => {
             </div>
           ))}
         </div>
+        )}
 
         {/* Recent Orders */}
-        {recentOrders.length > 0 && (
+        {isDashboard && recentOrders.length > 0 && (
           <div className="admin-table-container" style={{ marginBottom: '2rem' }}>
             <div className="admin-table-header-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <h2>Recent Orders</h2>
