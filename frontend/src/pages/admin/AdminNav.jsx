@@ -28,13 +28,12 @@ const AdminNav = () => {
       </div>
       <nav className="admin-nav">
         {navItems.map(({ path, label, icon: Icon, subItems }) => {
-          const isActive = location.pathname === path || (location.pathname.startsWith(path) && !subItems);
-          const isExpanded = location.pathname.startsWith(path);
+          const isCurrentPath = location.pathname === path || location.pathname.startsWith(`${path}/`);
           return (
             <div key={path}>
               <Link
                 to={path}
-                className={`admin-nav-link ${isActive && (!subItems || !location.search) ? 'active' : ''}`}
+                className={`admin-nav-link ${isCurrentPath && (!subItems || !location.search) ? 'active' : ''}`}
               >
                 <Icon size={18} /> {label}
               </Link>
