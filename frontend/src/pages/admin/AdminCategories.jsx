@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Plus, Pencil, Trash2, Shield, LogOut } from 'lucide-react';
+import { Plus, Pencil, Trash2, Shield, LogOut, ArrowLeft } from 'lucide-react';
 import './Admin.css';
 import AdminNav from './AdminNav';
 import AdminHeader from '../../components/admin/AdminHeader';
@@ -67,14 +67,56 @@ const AdminCategories = () => {
       <div className="admin-main-wrapper">
         <AdminHeader title="Categories Management" />
 
-        <div className="admin-action-bar">
-          <h2>Categories ({categories.length})</h2>
-          <button className="btn btn-primary btn-sm" onClick={openAdd}><Plus size={16} /> Add Category</button>
-        </div>
+        {!showForm ? (
+          <>
+            <div className="admin-action-bar">
+              <h2>Categories ({categories.length})</h2>
+              <button className="btn btn-primary btn-sm" onClick={openAdd}><Plus size={16} /> Add Category</button>
+            </div>
 
-        {/* Add/Edit Form */}
-        {showForm && (
-          <div className="admin-split-layout" style={{ marginBottom: '2rem' }}>
+            {/* Table */}
+            <div className="admin-table-container">
+              {loading ? (
+                <div style={{ padding: '3rem', textAlign: 'center' }}><div className="loading-spinner" style={{ margin: '0 auto' }} /></div>
+              ) : categories.length === 0 ? (
+                <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>No categories yet. Create one above.</div>
+              ) : (
+                <div className="admin-table-wrapper">
+                  <table className="admin-table">
+                    <thead><tr><th>Image</th><th>Name</th><th>Description</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody>
+                      {categories.map(cat => (
+                        <tr key={cat._id}>
+                          <td>{cat.imageUrl ? <img src={cat.imageUrl} alt={cat.name} className="admin-product-img" /> : <div className="admin-product-img-placeholder" />}</td>
+                          <td style={{ fontWeight: 600 }}>{cat.name}</td>
+                          <td style={{ color: 'var(--color-text-muted)', maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{cat.description || '-'}</td>
+                          <td><span className={`admin-status-badge ${cat.status === 'active' ? 'admin-status-active' : 'admin-status-inactive'}`}>{cat.status}</span></td>
+                          <td>
+                            <div className="admin-table-actions">
+                              <button className="admin-table-action-btn edit" onClick={() => openEdit(cat)}><Pencil size={15} /></button>
+                              <button className="admin-table-action-btn delete" onClick={() => setDeleting(cat)}><Trash2 size={15} /></button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+              <button onClick={() => setShowForm(false)} style={{ background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--color-text-muted)', textDecoration: 'none', fontSize: '0.875rem', cursor: 'pointer', padding: 0 }}>
+                <ArrowLeft size={16} /> Categories
+              </button>
+              <span style={{ color: 'var(--color-border)' }}>/</span>
+              <span style={{ fontSize: '0.875rem', fontWeight: 600 }}>{editing ? 'Edit Category' : 'Add Category'}</span>
+            </div>
+
+            <div className="admin-split-layout" style={{ marginBottom: '2rem' }}>
+
             <div className="admin-form-card" style={{ maxWidth: '100%', marginBottom: 0 }}>
             <h3 style={{ fontWeight: 700, marginBottom: '1.25rem' }}>{editing ? 'Edit Category' : 'Add New Category'}</h3>
             {error && <div className="auth-alert error" style={{ marginBottom: '1rem' }}>{error}</div>}
@@ -138,39 +180,8 @@ const AdminCategories = () => {
               </div>
             </div>
           </div>
-        </div>
+          </>
         )}
-
-        {/* Table */}
-        <div className="admin-table-container">
-          {loading ? (
-            <div style={{ padding: '3rem', textAlign: 'center' }}><div className="loading-spinner" style={{ margin: '0 auto' }} /></div>
-          ) : categories.length === 0 ? (
-            <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>No categories yet. Create one above.</div>
-          ) : (
-            <div className="admin-table-wrapper">
-              <table className="admin-table">
-                <thead><tr><th>Image</th><th>Name</th><th>Description</th><th>Status</th><th>Actions</th></tr></thead>
-                <tbody>
-                  {categories.map(cat => (
-                    <tr key={cat._id}>
-                      <td>{cat.imageUrl ? <img src={cat.imageUrl} alt={cat.name} className="admin-product-img" /> : <div className="admin-product-img-placeholder" />}</td>
-                      <td style={{ fontWeight: 600 }}>{cat.name}</td>
-                      <td style={{ color: 'var(--color-text-muted)', maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{cat.description || '-'}</td>
-                      <td><span className={`admin-status-badge ${cat.status === 'active' ? 'admin-status-active' : 'admin-status-inactive'}`}>{cat.status}</span></td>
-                      <td>
-                        <div className="admin-table-actions">
-                          <button className="admin-table-action-btn edit" onClick={() => openEdit(cat)}><Pencil size={15} /></button>
-                          <button className="admin-table-action-btn delete" onClick={() => setDeleting(cat)}><Trash2 size={15} /></button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
 
         {/* Delete confirm */}
         {deleting && (
