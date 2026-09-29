@@ -47,7 +47,7 @@ const Navbar = () => {
 
           {/* Left Navigation */}
           <div className="navbar-links-left">
-            {categories.slice(0, 3).map(cat => (
+            {categories.slice(0, 5).map(cat => (
               <Link key={cat._id} to={`/products?category=${cat.name.toLowerCase()}`} className="navbar-link">{cat.name}</Link>
             ))}
             <Link to="/products" className="navbar-link">Shop All</Link>

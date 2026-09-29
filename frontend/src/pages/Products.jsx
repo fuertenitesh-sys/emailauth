@@ -29,7 +29,7 @@ const Products = () => {
       try {
         const [catsRes, prodsRes] = await Promise.all([
           axios.get('/api/categories'),
-          axios.get('/api/products')
+          axios.get('/api/products?limit=1000')
         ]);
         setCategories(catsRes.data);
         const fetchedProducts = prodsRes.data.products || prodsRes.data || [];
@@ -47,11 +47,11 @@ const Products = () => {
     let filtered = [...allProducts];
     
     if (selectedCategory) {
-      filtered = filtered.filter(p => p.category?.name?.toLowerCase() === selectedCategory.toLowerCase());
+      filtered = filtered.filter(p => p.category?.name?.toLowerCase().trim() === selectedCategory.toLowerCase().trim());
     }
     
     if (searchQuery) {
-      const q = searchQuery.toLowerCase();
+      const q = searchQuery.toLowerCase().trim();
       filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q));
     }
     
