@@ -17,47 +17,46 @@ const Products = () => {
   const searchQuery = searchParams.get('search') || '';
   const urlCategory = searchParams.get('category') || '';
 
+  const [allProducts, setAllProducts] = useState([]);
+
   useEffect(() => {
     setSelectedCategory(urlCategory);
   }, [urlCategory]);
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await axios.get('/api/categories');
-        setCategories(res.data);
-      } catch (error) {
-        console.error('Failed to fetch categories', error);
-      }
-    };
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchInitialData = async () => {
       setLoading(true);
       try {
-        let url = '/api/products';
-        const params = [];
-        if (searchQuery) params.push(`search=${searchQuery}`);
-        if (selectedCategory) params.push(`category=${selectedCategory}`);
-        
-        if (params.length > 0) {
-          url += `?${params.join('&')}`;
-        }
-        
-        const res = await axios.get(url);
-        // Assuming backend returns { products: [...] } for pagination or just array
-        setProducts(res.data.products || res.data || []);
+        const [catsRes, prodsRes] = await Promise.all([
+          axios.get('/api/categories'),
+          axios.get('/api/products')
+        ]);
+        setCategories(catsRes.data);
+        const fetchedProducts = prodsRes.data.products || prodsRes.data || [];
+        setAllProducts(fetchedProducts);
       } catch (error) {
-        console.error('Failed to fetch products', error);
+        console.error('Failed to fetch data', error);
       } finally {
         setLoading(false);
       }
     };
+    fetchInitialData();
+  }, []);
+
+  useEffect(() => {
+    let filtered = [...allProducts];
     
-    fetchProducts();
-  }, [searchQuery, selectedCategory]);
+    if (selectedCategory) {
+      filtered = filtered.filter(p => p.category?.name?.toLowerCase() === selectedCategory.toLowerCase());
+    }
+    
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q));
+    }
+    
+    setProducts(filtered);
+  }, [allProducts, selectedCategory, searchQuery]);
 
   return (
     <div className="collections-page">
