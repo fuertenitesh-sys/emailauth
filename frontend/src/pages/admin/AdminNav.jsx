@@ -38,7 +38,7 @@ const AdminNav = () => {
               >
                 <Icon size={18} /> {label}
               </Link>
-              {subItems && isExpanded && (
+              {subItems && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', marginTop: '0.25rem', paddingLeft: '2.25rem' }}>
                   {subItems.map(sub => (
                     <Link 
