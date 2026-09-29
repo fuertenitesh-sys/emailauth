@@ -117,15 +117,32 @@ const AdminCategories = () => {
           
           <div className="admin-preview-panel">
             <h3>Live Preview</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', background: '#fafafa', padding: '2rem 1rem', borderRadius: '12px', border: '1px solid var(--color-border)', textAlign: 'center', alignItems: 'center' }}>
-              <div style={{ width: '120px', height: '120px', borderRadius: '50%', background: 'white', border: '1px solid var(--color-border)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {form.imageUrl ? <img src={form.imageUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ color: '#ccc', fontSize: '2rem', fontFamily: 'var(--font-serif)' }}>LUMEN</span>}
+            <div style={{ 
+              position: 'relative', width: '100%', height: '240px', borderRadius: '16px', overflow: 'hidden', 
+              boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)',
+              backgroundColor: '#f1f5f9'
+            }}>
+              {form.imageUrl ? (
+                <img src={form.imageUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '1.5rem', fontWeight: 600, letterSpacing: '0.1em' }}>NO IMAGE</div>
+              )}
+              
+              <div style={{ 
+                position: 'absolute', inset: 0, 
+                background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 50%, transparent 100%)', 
+                display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.5rem', textAlign: 'left' 
+              }}>
+                <span className={`admin-status-badge ${form.status === 'active' ? 'admin-status-active' : 'admin-status-inactive'}`} style={{ alignSelf: 'flex-start', marginBottom: 'auto', background: form.status === 'active' ? 'rgba(22, 163, 74, 0.9)' : 'rgba(220, 38, 38, 0.9)', color: 'white', border: 'none' }}>
+                  {form.status}
+                </span>
+                <h4 style={{ color: 'white', fontSize: '1.75rem', fontWeight: 800, margin: '0 0 0.5rem 0', letterSpacing: '-0.02em', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+                  {form.name || 'Category Name'}
+                </h4>
+                <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '0.9rem', margin: 0, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
+                  {form.description || 'Premium category description will appear here. Add details to see it.'}
+                </p>
               </div>
-              <div>
-                <h4 style={{ fontWeight: 600, fontSize: '1.1rem', marginBottom: '0.25rem', color: 'var(--color-navy)' }}>{form.name || 'Category Name'}</h4>
-                <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>{form.description || 'Category description will appear here.'}</p>
-              </div>
-              <span className={`admin-status-badge ${form.status === 'active' ? 'admin-status-active' : 'admin-status-inactive'}`} style={{ marginTop: '0.5rem' }}>{form.status}</span>
             </div>
           </div>
         </div>
