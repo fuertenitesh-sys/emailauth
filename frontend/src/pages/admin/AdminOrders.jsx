@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Shield, LogOut, ChevronDown } from 'lucide-react';
 import './Admin.css';
 import AdminNav from './AdminNav';
+import AdminHeader from '../../components/admin/AdminHeader';
 
 const statusOptions = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
 const statusColors = { pending: 'badge-warning', processing: 'badge-primary', shipped: 'badge-primary', delivered: 'badge-success', cancelled: 'badge-danger' };
@@ -26,7 +27,6 @@ const AdminOrders = () => {
     } finally { setLoading(false); }
   };
 
-  const handleLogout = async () => { try { await axios.post('/api/admin/logout'); } catch {} navigate('/admin'); };
 
   const handleStatusChange = async (orderId, status) => {
     setUpdatingId(orderId);
@@ -43,10 +43,7 @@ const AdminOrders = () => {
     <div className="admin-page-bg">
       <AdminNav />
       <div className="admin-main-wrapper">
-        <header className="admin-header" style={{ marginBottom: '2rem' }}>
-          <h1 className="admin-title">Orders Management</h1>
-          <button onClick={handleLogout} className="admin-logout-btn"><LogOut size={16} /> Logout</button>
-        </header>
+        <AdminHeader title="Orders Management" />
 
         <div className="admin-action-bar">
           <h2>Orders ({orders.length})</h2>

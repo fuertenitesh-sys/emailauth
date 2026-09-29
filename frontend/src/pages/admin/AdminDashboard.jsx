@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Shield, LogOut, Users, ShoppingBag, Package, Tag, TrendingUp, Clock, ChevronRight, LogIn } from 'lucide-react';
 import './Admin.css';
 import AdminNav from './AdminNav';
+import AdminHeader from '../../components/admin/AdminHeader';
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
@@ -40,11 +41,6 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleLogout = async () => {
-    try { await axios.post('/api/admin/logout'); } catch {}
-    navigate('/admin');
-  };
-
   const formatDate = (d) => new Date(d).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
   const indexOfLast = currentPage * usersPerPage;
@@ -58,10 +54,7 @@ const AdminDashboard = () => {
     <div className="admin-page-bg">
       <AdminNav />
       <div className="admin-main-wrapper">
-        <header className="admin-header" style={{ marginBottom: '2rem' }}>
-          <h1 className="admin-title">{isDashboard ? 'Command Center' : 'Users Management'}</h1>
-          <button onClick={handleLogout} className="admin-logout-btn"><LogOut size={16} /> Logout</button>
-        </header>
+        <AdminHeader title={isDashboard ? 'Command Center' : 'Users Management'} />
 
         {/* Stats */}
         {isDashboard && (

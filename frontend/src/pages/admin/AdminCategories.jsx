@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Plus, Pencil, Trash2, Shield, LogOut } from 'lucide-react';
 import './Admin.css';
 import AdminNav from './AdminNav';
+import AdminHeader from '../../components/admin/AdminHeader';
 
 const AdminCategories = () => {
   const [categories, setCategories] = useState([]);
@@ -27,7 +28,6 @@ const AdminCategories = () => {
     } finally { setLoading(false); }
   };
 
-  const handleLogout = async () => { try { await axios.post('/api/admin/logout'); } catch {} navigate('/admin'); };
 
   const openAdd = () => { setForm({ name: '', description: '', imageUrl: '', status: 'active' }); setEditing(null); setError(''); setShowForm(true); };
   const openEdit = (cat) => { setForm({ name: cat.name, description: cat.description, imageUrl: cat.imageUrl, status: cat.status }); setEditing(cat); setError(''); setShowForm(true); };
@@ -65,10 +65,7 @@ const AdminCategories = () => {
     <div className="admin-page-bg">
       <AdminNav />
       <div className="admin-main-wrapper">
-        <header className="admin-header" style={{ marginBottom: '2rem' }}>
-          <h1 className="admin-title">Categories Management</h1>
-          <button onClick={handleLogout} className="admin-logout-btn"><LogOut size={16} /> Logout</button>
-        </header>
+        <AdminHeader title="Categories Management" />
 
         <div className="admin-action-bar">
           <h2>Categories ({categories.length})</h2>

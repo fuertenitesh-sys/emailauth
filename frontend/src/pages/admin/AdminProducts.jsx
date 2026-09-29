@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Plus, Pencil, Trash2, Shield, LogOut, Package } from 'lucide-react';
 import './Admin.css';
 import AdminNav from './AdminNav';
+import AdminHeader from '../../components/admin/AdminHeader';
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
@@ -30,7 +31,6 @@ const AdminProducts = () => {
     } finally { setLoading(false); }
   };
 
-  const handleLogout = async () => { try { await axios.post('/api/admin/logout'); } catch {} navigate('/admin'); };
 
   const handleDelete = async () => {
     try { await axios.delete(`/api/admin/products/${deleting._id}`); setDeleting(null); fetchProducts(); }
@@ -41,10 +41,7 @@ const AdminProducts = () => {
     <div className="admin-page-bg">
       <AdminNav />
       <div className="admin-main-wrapper">
-        <header className="admin-header" style={{ marginBottom: '2rem' }}>
-          <h1 className="admin-title">Products Management</h1>
-          <button onClick={handleLogout} className="admin-logout-btn"><LogOut size={16} /> Logout</button>
-        </header>
+        <AdminHeader title="Products Management" />
 
         <div className="admin-action-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>

@@ -5,6 +5,7 @@ import { Shield, LogOut, ArrowLeft, Plus, X } from 'lucide-react';
 import './Admin.css';
 import AdminNav from './AdminNav';
 import ProductCard from '../../components/ui/ProductCard';
+import AdminHeader from '../../components/admin/AdminHeader';
 
 const AdminAddProduct = () => {
   const { id } = useParams();
@@ -38,7 +39,6 @@ const AdminAddProduct = () => {
     }
   }, [id]);
 
-  const handleLogout = async () => { try { await axios.post('/api/admin/logout'); } catch {} navigate('/admin'); };
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
@@ -71,10 +71,7 @@ const AdminAddProduct = () => {
     <div className="admin-page-bg">
       <AdminNav />
       <div className="admin-main-wrapper">
-        <header className="admin-header" style={{ marginBottom: '2rem' }}>
-          <h1 className="admin-title">{isEdit ? 'Edit Product' : 'Add Product'}</h1>
-          <button onClick={handleLogout} className="admin-logout-btn"><LogOut size={16} /> Logout</button>
-        </header>
+        <AdminHeader title={isEdit ? 'Edit Product' : 'Add Product'} />
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
           <Link to="/admin/products" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--color-text-muted)', textDecoration: 'none', fontSize: '0.875rem' }}><ArrowLeft size={16} /> Products</Link>
