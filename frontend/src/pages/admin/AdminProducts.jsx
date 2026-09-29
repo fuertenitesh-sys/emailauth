@@ -9,6 +9,7 @@ const AdminProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(null);
+  const [filter, setFilter] = useState('all'); // 'all', 'in-stock', 'out-of-stock'
   const navigate = useNavigate();
 
   useEffect(() => { fetchProducts(); }, []);
@@ -42,8 +43,20 @@ const AdminProducts = () => {
 
         <AdminNav />
 
-        <div className="admin-action-bar">
-          <h2>Products ({products.length})</h2>
+        <div className="admin-action-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+            <h2>Products</h2>
+            <select 
+              className="input-field" 
+              style={{ padding: '0.4rem 1rem', width: 'auto', minWidth: '150px' }} 
+              value={filter} 
+              onChange={e => setFilter(e.target.value)}
+            >
+              <option value="all">All Products</option>
+              <option value="in-stock">In Stock</option>
+              <option value="out-of-stock">Sold Out</option>
+            </select>
+          </div>
           <Link to="/admin/products/add" className="btn btn-primary btn-sm"><Plus size={16} /> Add Product</Link>
         </div>
 
@@ -61,10 +74,17 @@ const AdminProducts = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {products.map(p => (
-                    <tr key={p._id}>
+                  {products.filter(p => {
+                    if (filter === 'out-of-stock') return p.stock === 0;
+                    if (filter === 'in-stock') return p.stock > 0;
+                    return true;
+                  }).map(p => (
+                    <tr key={p._id} style={{ background: p.stock === 0 ? 'rgba(239, 68, 68, 0.05)' : 'transparent' }}>
                       <td>{p.images?.[0] ? <img src={p.images[0]} alt={p.name} className="admin-product-img" /> : <div className="admin-product-img-placeholder"><Package size={16} style={{ color: 'var(--color-border)' }} /></div>}</td>
-                      <td style={{ fontWeight: 600, maxWidth: '180px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</td>
+                      <td style={{ fontWeight: 600, maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {p.name}
+                        {p.stock === 0 && <span style={{ marginLeft: '8px', fontSize: '0.65rem', background: 'var(--color-danger)', color: 'white', padding: '0.15rem 0.4rem', borderRadius: '4px', verticalAlign: 'middle' }}>SOLD OUT</span>}
+                      </td>
                       <td style={{ color: 'var(--color-text-muted)' }}>{p.category?.name || '-'}</td>
                       <td style={{ fontWeight: 600 }}>₹{p.price.toFixed(2)}</td>
                       <td>{p.discount > 0 ? <span className="discount-badge">{p.discount}%</span> : '-'}</td>
