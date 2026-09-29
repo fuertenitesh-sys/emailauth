@@ -13,6 +13,7 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
+  const [activeImage, setActiveImage] = useState(0);
   const { addToCart } = useCart();
   const { addToast } = useToast();
 
@@ -56,8 +57,8 @@ const ProductDetail = () => {
           {/* Image */}
           <div className="product-detail-images">
             <div className="product-detail-main-image">
-              {product.images?.[0] ? (
-                <img src={product.images[0]} alt={product.name} />
+              {product.images?.[activeImage] ? (
+                <img src={product.images[activeImage]} alt={product.name} />
               ) : (
                 <div className="product-detail-placeholder"><Package size={60} style={{ color: 'var(--color-border)' }} /></div>
               )}
@@ -66,7 +67,13 @@ const ProductDetail = () => {
             {product.images?.length > 1 && (
               <div className="product-detail-thumbnails">
                 {product.images.map((img, i) => (
-                  <img key={i} src={img} alt={`${product.name} ${i + 1}`} className="product-detail-thumb" />
+                  <img 
+                    key={i} 
+                    src={img} 
+                    alt={`${product.name} ${i + 1}`} 
+                    className={`product-detail-thumb ${activeImage === i ? 'active' : ''}`}
+                    onClick={() => setActiveImage(i)}
+                  />
                 ))}
               </div>
             )}
