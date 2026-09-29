@@ -163,6 +163,32 @@
   color: #9333ea;
 }
 
+.clickable-stat-card {
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.clickable-stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.1);
+  border-color: var(--hover-color);
+}
+
+.clickable-stat-card:hover .admin-stat-icon-wrapper {
+  background: var(--hover-color);
+  border-color: var(--hover-color);
+}
+
+.clickable-stat-card:hover .admin-stat-icon-wrapper svg {
+  color: #ffffff;
+}
+
+.clickable-stat-card:hover .admin-stat-info h3 {
+  color: var(--hover-color);
+}
+
 .admin-stat-info p {
   font-size: 0.875rem;
   color: #64748b;

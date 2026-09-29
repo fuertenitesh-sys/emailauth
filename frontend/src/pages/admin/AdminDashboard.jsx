@@ -67,14 +67,19 @@ const AdminDashboard = () => {
         {isDashboard && (
           <div className="admin-stats-row">
           {[
-            { label: 'Total Users', value: stats?.totalUsers ?? users.length, icon: Users },
-            { label: 'Total Products', value: stats?.totalProducts ?? '-', icon: Package },
-            { label: 'Categories', value: stats?.totalCategories ?? '-', icon: Tag },
-            { label: 'Total Orders', value: stats?.totalOrders ?? '-', icon: ShoppingBag },
-            { label: 'Revenue', value: stats ? `₹${stats.revenue.toFixed(0)}` : '-', icon: TrendingUp },
-            { label: 'Pending Orders', value: stats?.pendingOrders ?? '-', icon: Clock },
-          ].map(({ label, value, icon: Icon }) => (
-            <div key={label} className="admin-stat-card">
+            { label: 'Total Users', value: stats?.totalUsers ?? users.length, icon: Users, link: '/admin/users', color: '#3B82F6' },
+            { label: 'Total Products', value: stats?.totalProducts ?? '-', icon: Package, link: '/admin/products', color: '#8B5CF6' },
+            { label: 'Categories', value: stats?.totalCategories ?? '-', icon: Tag, link: '/admin/categories', color: '#06B6D4' },
+            { label: 'Total Orders', value: stats?.totalOrders ?? '-', icon: ShoppingBag, link: '/admin/orders', color: '#10B981' },
+            { label: 'Revenue', value: stats ? `₹${stats.revenue.toFixed(0)}` : '-', icon: TrendingUp, link: '/admin/orders', color: '#F59E0B' },
+            { label: 'Pending Orders', value: stats?.pendingOrders ?? '-', icon: Clock, link: '/admin/orders?filter=pending', color: '#EF4444' },
+          ].map(({ label, value, icon: Icon, link, color }) => (
+            <div 
+              key={label} 
+              className="admin-stat-card clickable-stat-card"
+              onClick={() => navigate(link)}
+              style={{ '--hover-color': color }}
+            >
               <div className="admin-stat-icon-wrapper"><Icon size={24} /></div>
               <div className="admin-stat-info"><p>{label}</p><h3>{value}</h3></div>
             </div>
