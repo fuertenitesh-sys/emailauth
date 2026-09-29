@@ -4,7 +4,15 @@ import './Admin.css';
 
 const navItems = [
   { path: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/admin/products', label: 'Products', icon: Package },
+  { 
+    path: '/admin/products', 
+    label: 'Products', 
+    icon: Package,
+    subItems: [
+      { search: '?filter=in-stock', label: 'In Stock' },
+      { search: '?filter=out-of-stock', label: 'Sold Out' }
+    ]
+  },
   { path: '/admin/categories', label: 'Categories', icon: Tag },
   { path: '/admin/orders', label: 'Orders', icon: ShoppingBag },
   { path: '/admin/users', label: 'Users', icon: Users },
@@ -19,15 +27,34 @@ const AdminNav = () => {
         <h1 className="admin-sidebar-title">Lumen Admin</h1>
       </div>
       <nav className="admin-nav">
-        {navItems.map(({ path, label, icon: Icon }) => (
-          <Link
-            key={path}
-            to={path}
-            className={`admin-nav-link ${location.pathname.startsWith(path) ? 'active' : ''}`}
-          >
-            <Icon size={18} /> {label}
-          </Link>
-        ))}
+        {navItems.map(({ path, label, icon: Icon, subItems }) => {
+          const isActive = location.pathname === path || (location.pathname.startsWith(path) && !subItems);
+          const isExpanded = location.pathname.startsWith(path);
+          return (
+            <div key={path}>
+              <Link
+                to={path}
+                className={`admin-nav-link ${isActive && (!subItems || !location.search) ? 'active' : ''}`}
+              >
+                <Icon size={18} /> {label}
+              </Link>
+              {subItems && isExpanded && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', marginTop: '0.25rem', paddingLeft: '2.25rem' }}>
+                  {subItems.map(sub => (
+                    <Link 
+                      key={sub.search} 
+                      to={`${path}${sub.search}`} 
+                      className={`admin-nav-link ${location.search === sub.search ? 'active' : ''}`} 
+                      style={{ fontSize: '0.85rem', padding: '0.4rem 1rem' }}
+                    >
+                      {sub.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </nav>
     </aside>
   );

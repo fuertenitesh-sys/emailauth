@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Plus, Pencil, Trash2, Shield, LogOut, Package } from 'lucide-react';
 import './Admin.css';
@@ -9,8 +9,15 @@ const AdminProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(null);
-  const [filter, setFilter] = useState('all'); // 'all', 'in-stock', 'out-of-stock'
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const initialFilter = searchParams.get('filter') || 'all';
+  const [filter, setFilter] = useState(initialFilter); // 'all', 'in-stock', 'out-of-stock'
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setFilter(searchParams.get('filter') || 'all');
+  }, [location.search]);
 
   useEffect(() => { fetchProducts(); }, []);
 
@@ -46,7 +53,7 @@ const AdminProducts = () => {
               className="input-field" 
               style={{ padding: '0.4rem 1rem', width: 'auto', minWidth: '150px' }} 
               value={filter} 
-              onChange={e => setFilter(e.target.value)}
+              onChange={e => navigate(e.target.value === 'all' ? '/admin/products' : `/admin/products?filter=${e.target.value}`)}
             >
               <option value="all">All Products</option>
               <option value="in-stock">In Stock</option>
