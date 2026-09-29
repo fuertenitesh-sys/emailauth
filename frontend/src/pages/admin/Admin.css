@@ -446,3 +446,38 @@
 .order-status-select { padding: 0.375rem 0.75rem; border: 1px solid var(--color-border); border-radius: 6px; font-size: 0.875rem; cursor: pointer; background: white; }
 
 .admin-confirm-modal p { color: var(--color-text-muted); font-size: 0.9rem; }
+
+/* Split Layout for Add/Edit Forms */
+.admin-split-layout {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .admin-split-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-preview-panel {
+  position: sticky;
+  top: 2rem;
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.admin-preview-panel h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed var(--color-border);
+}

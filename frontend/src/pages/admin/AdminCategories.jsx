@@ -81,7 +81,8 @@ const AdminCategories = () => {
 
         {/* Add/Edit Form */}
         {showForm && (
-          <div className="admin-form-card" style={{ marginBottom: '2rem' }}>
+          <div className="admin-split-layout" style={{ marginBottom: '2rem' }}>
+            <div className="admin-form-card" style={{ maxWidth: '100%', marginBottom: 0 }}>
             <h3 style={{ fontWeight: 700, marginBottom: '1.25rem' }}>{editing ? 'Edit Category' : 'Add New Category'}</h3>
             {error && <div className="auth-alert error" style={{ marginBottom: '1rem' }}>{error}</div>}
             <form onSubmit={handleSave}>
@@ -113,6 +114,21 @@ const AdminCategories = () => {
               </div>
             </form>
           </div>
+          
+          <div className="admin-preview-panel">
+            <h3>Live Preview</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', background: '#fafafa', padding: '2rem 1rem', borderRadius: '12px', border: '1px solid var(--color-border)', textAlign: 'center', alignItems: 'center' }}>
+              <div style={{ width: '120px', height: '120px', borderRadius: '50%', background: 'white', border: '1px solid var(--color-border)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {form.imageUrl ? <img src={form.imageUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ color: '#ccc', fontSize: '2rem', fontFamily: 'var(--font-serif)' }}>LUMEN</span>}
+              </div>
+              <div>
+                <h4 style={{ fontWeight: 600, fontSize: '1.1rem', marginBottom: '0.25rem', color: 'var(--color-navy)' }}>{form.name || 'Category Name'}</h4>
+                <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>{form.description || 'Category description will appear here.'}</p>
+              </div>
+              <span className={`admin-status-badge ${form.status === 'active' ? 'admin-status-active' : 'admin-status-inactive'}`} style={{ marginTop: '0.5rem' }}>{form.status}</span>
+            </div>
+          </div>
+        </div>
         )}
 
         {/* Table */}

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Shield, LogOut, ArrowLeft, Plus, X } from 'lucide-react';
 import './Admin.css';
 import AdminNav from './AdminNav';
+import ProductCard from '../../components/ui/ProductCard';
 
 const AdminAddProduct = () => {
   const { id } = useParams();
@@ -75,9 +76,10 @@ const AdminAddProduct = () => {
           <span style={{ fontSize: '0.875rem', fontWeight: 600 }}>{isEdit ? 'Edit Product' : 'Add Product'}</span>
         </div>
 
-        <div className="admin-form-card">
-          <h2 style={{ fontWeight: 700, marginBottom: '1.5rem' }}>{isEdit ? 'Edit Product' : 'Add New Product'}</h2>
-          {error && <div className="auth-alert error" style={{ marginBottom: '1rem' }}>{error}</div>}
+        <div className="admin-split-layout">
+          <div className="admin-form-card" style={{ maxWidth: '100%' }}>
+            <h2 style={{ fontWeight: 700, marginBottom: '1.5rem' }}>{isEdit ? 'Edit Product' : 'Add New Product'}</h2>
+            {error && <div className="auth-alert error" style={{ marginBottom: '1rem' }}>{error}</div>}
           <form onSubmit={handleSubmit}>
             <div className="admin-form-grid">
               <div className="input-group admin-form-full">
@@ -138,6 +140,21 @@ const AdminAddProduct = () => {
             </div>
           </form>
         </div>
+        
+        <div className="admin-preview-panel">
+          <h3>Live Preview</h3>
+          <div style={{ pointerEvents: 'none' }}>
+            <ProductCard product={{
+              _id: 'preview',
+              name: form.name || 'Product Name',
+              price: Number(form.price) || 0,
+              discount: Number(form.discount) || 0,
+              stock: Number(form.stock) || 0,
+              images: form.images.length > 0 ? form.images : []
+            }} />
+          </div>
+        </div>
+      </div>
       </div>
     </div>
   );
