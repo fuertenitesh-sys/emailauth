@@ -232,3 +232,16 @@ a {
 }
 .empty-state h3 { font-size: 1.25rem; margin-bottom: 0.5rem; font-weight: 400; }
 .empty-state p { color: var(--color-text-muted); margin-bottom: 1.5rem; }
+
+/* Skeleton Loading */
+.skeleton {
+  background: #e4e4e7;
+  background: linear-gradient(90deg, #e4e4e7 25%, #f4f4f5 50%, #e4e4e7 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+}
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

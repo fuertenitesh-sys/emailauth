@@ -69,7 +69,7 @@ const Products = () => {
                 ? (categories.find(c => c.name.toLowerCase() === selectedCategory.toLowerCase())?.name?.toUpperCase() || selectedCategory.toUpperCase())
                 : 'ALL PRODUCTS')}
         </h1>
-        <p className="collection-count">{products.length} ITEMS</p>
+        <p className="collection-count">{loading ? '-' : products.length} ITEMS</p>
       </div>
 
       <div className="container collections-container">
