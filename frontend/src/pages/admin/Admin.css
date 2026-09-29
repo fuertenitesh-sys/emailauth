@@ -794,11 +794,23 @@
 }
 
 /* =======================================================================
-   DARK MODE OVERRIDES
+   DARK MODE OVERRIDES (PREMIUM)
    ======================================================================= */
-body.admin-dark .admin-page-bg { background: #0f172a; color: #f8fafc; }
-body.admin-dark .admin-sidebar { background: #020617; border-right: 1px solid #1e293b; }
-body.admin-dark .admin-sidebar-header { border-bottom-color: #1e293b; }
+body.admin-dark {
+  --color-primary: #ffffff;
+  --color-primary-hover: #e5e7eb;
+  --color-primary-light: #222222;
+  --color-navy: #f9fafb;
+  --color-navy-light: #f3f4f6;
+  --color-bg: #050505;
+  --color-text-main: #f9fafb;
+  --color-text-muted: #9ca3af;
+  --color-border: #222222;
+}
+
+body.admin-dark .admin-page-bg { background: #050505; color: #f9fafb; }
+body.admin-dark .admin-sidebar { background: #0a0a0a; border-right: 1px solid #1f1f1f; }
+body.admin-dark .admin-sidebar-header { border-bottom-color: #1f1f1f; }
 
 /* Headers & Typography */
 body.admin-dark .admin-title, 
@@ -807,30 +819,42 @@ body.admin-dark .admin-action-bar h2,
 body.admin-dark .modal-title,
 body.admin-dark .admin-notification-header h3,
 body.admin-dark .admin-user-name,
-body.admin-dark .admin-stat-info h3 { color: #f8fafc; }
+body.admin-dark .admin-stat-info h3 { color: #f9fafb; }
 
-body.admin-dark .admin-header-icon { background: #1e293b; border-color: #334155; }
-body.admin-dark .admin-stat-info p { color: #94a3b8; }
-body.admin-dark .admin-preview-panel h3 { color: #cbd5e1; border-bottom-color: #334155; }
+body.admin-dark .admin-header-icon { background: #111111; border-color: #222222; }
+body.admin-dark .admin-stat-info p { color: #9ca3af; }
+body.admin-dark .admin-preview-panel h3 { color: #d1d5db; border-bottom-color: #222222; }
 
 /* Buttons & Inputs */
 body.admin-dark .admin-logout-btn, 
 body.admin-dark .admin-icon-btn,
 body.admin-dark .btn-ghost { 
-  background: #1e293b; color: #cbd5e1; border-color: #334155; 
+  background: #111111; color: #d1d5db; border-color: #2a2a2a; 
 }
 body.admin-dark .admin-logout-btn:hover, 
 body.admin-dark .admin-icon-btn:hover,
 body.admin-dark .btn-ghost:hover { 
-  background: #334155; color: #f8fafc; 
+  background: #222222; color: #ffffff; border-color: #333333;
+}
+
+/* Primary Button Override for Dark Mode */
+body.admin-dark .btn-primary {
+  background: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+}
+body.admin-dark .btn-primary:hover {
+  background: #e5e7eb;
+  color: #000000;
 }
 
 body.admin-dark .input-field, 
 body.admin-dark .order-status-select,
 body.admin-dark .admin-input-field { 
-  background: #0f172a !important; border-color: #334155 !important; color: #f8fafc !important; 
+  background: #0a0a0a !important; border-color: #2a2a2a !important; color: #f9fafb !important; 
 }
-body.admin-dark .input-field::placeholder { color: #64748b; }
+body.admin-dark .input-field::placeholder { color: #6b7280; }
+body.admin-dark .input-field:focus { border-color: #8b5cf6 !important; }
 
 /* Cards & Modals */
 body.admin-dark .admin-stat-card, 
@@ -840,34 +864,55 @@ body.admin-dark .admin-preview-panel,
 body.admin-dark .modal, 
 body.admin-dark .admin-notification-dropdown,
 body.admin-dark .admin-login-container { 
-  background: #1e293b !important; border-color: #334155 !important; 
+  background: #111111 !important; border-color: #1f1f1f !important; 
 }
 
 /* Tables */
-body.admin-dark .admin-table th { background: #0f172a; border-bottom-color: #334155; color: #94a3b8; }
-body.admin-dark .admin-table td { border-bottom-color: #334155; color: #cbd5e1; }
-body.admin-dark .admin-table tr:hover td { background: #334155; }
+body.admin-dark .admin-table th { background: #0a0a0a; border-bottom-color: #1f1f1f; color: #9ca3af; }
+body.admin-dark .admin-table td { border-bottom-color: #1f1f1f; color: #d1d5db; }
+body.admin-dark .admin-table tr:hover td { background: #161616; }
 
 body.admin-dark .admin-product-img, 
 body.admin-dark .admin-product-img-placeholder { 
-  background: #0f172a; border-color: #334155; 
+  background: #050505; border-color: #222222; 
 }
 
+/* Table Actions (Edit / Delete) */
+body.admin-dark .admin-table-action-btn.edit { color: #d1d5db; }
+body.admin-dark .admin-table-action-btn.edit:hover { background: #222222; color: #ffffff; }
+body.admin-dark .admin-table-action-btn.delete { color: #f87171; }
+body.admin-dark .admin-table-action-btn.delete:hover { background: rgba(248, 113, 113, 0.15); }
+
 /* Pagination */
-body.admin-dark .admin-pagination { background: #1e293b; border-top-color: #334155; }
+body.admin-dark .admin-pagination { background: #111111; border-top-color: #1f1f1f; }
 body.admin-dark .admin-page-btn, 
 body.admin-dark .admin-page-num { 
-  background: #0f172a; border-color: #334155; color: #cbd5e1; 
+  background: #0a0a0a; border-color: #2a2a2a; color: #d1d5db; 
 }
 body.admin-dark .admin-page-btn:hover:not(:disabled), 
 body.admin-dark .admin-page-num:hover:not(.active) { 
-  background: #334155; color: #f8fafc; 
+  background: #222222; color: #ffffff; 
+}
+body.admin-dark .admin-page-num.active {
+  background: #8b5cf6; color: #ffffff; border-color: #8b5cf6;
 }
 
 /* Notifications */
-body.admin-dark .admin-notification-header { background: #0f172a; border-bottom-color: #334155; }
-body.admin-dark .admin-notification-item { border-bottom-color: #334155; }
-body.admin-dark .admin-notification-item:hover { background: #334155; }
-body.admin-dark .admin-notification-item.unread { background: #1e293b; border-left: 3px solid #06b6d4; }
-body.admin-dark .admin-notification-item.unread:hover { background: #334155; }
-body.admin-dark .admin-notification-content p { color: #f8fafc; }
+body.admin-dark .admin-notification-header { background: #0a0a0a; border-bottom-color: #1f1f1f; }
+body.admin-dark .admin-notification-item { border-bottom-color: #1f1f1f; }
+body.admin-dark .admin-notification-item:hover { background: #161616; }
+body.admin-dark .admin-notification-item.unread { background: rgba(139, 92, 246, 0.08); border-left: 3px solid #8b5cf6; }
+body.admin-dark .admin-notification-item.unread:hover { background: rgba(139, 92, 246, 0.12); }
+body.admin-dark .admin-notification-content p { color: #f9fafb; }
+
+/* Status Badges */
+body.admin-dark .admin-status-active { background: rgba(22, 163, 74, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.2); }
+body.admin-dark .admin-status-inactive { background: rgba(220, 38, 38, 0.15); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.2); }
+
+/* Sidebar Active State */
+body.admin-dark .admin-nav-link { color: #9ca3af; }
+body.admin-dark .admin-nav-link:hover { background: #161616; color: #ffffff; }
+body.admin-dark .admin-nav-link.active {
+  background: #8b5cf6;
+  color: #ffffff;
+}
