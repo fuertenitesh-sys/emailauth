@@ -23,6 +23,7 @@ import OrderDetail from './pages/OrderDetail';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminCategories from './pages/admin/AdminCategories';
+import AdminAddCategory from './pages/admin/AdminAddCategory';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminAddProduct from './pages/admin/AdminAddProduct';
 import AdminOrders from './pages/admin/AdminOrders';
@@ -60,6 +61,8 @@ function App() {
           <Route path="/admin" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/categories" element={<AdminCategories />} />
+          <Route path="/admin/categories/add" element={<AdminAddCategory />} />
+          <Route path="/admin/categories/edit/:id" element={<AdminAddCategory />} />
           <Route path="/admin/products" element={<AdminProducts />} />
           <Route path="/admin/products/add" element={<AdminAddProduct />} />
           <Route path="/admin/products/edit/:id" element={<AdminAddProduct />} />
