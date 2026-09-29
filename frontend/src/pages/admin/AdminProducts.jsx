@@ -81,9 +81,11 @@ const AdminProducts = () => {
                   }).map(p => (
                     <tr key={p._id} style={{ background: p.stock === 0 ? 'rgba(239, 68, 68, 0.05)' : 'transparent' }}>
                       <td>{p.images?.[0] ? <img src={p.images[0]} alt={p.name} className="admin-product-img" /> : <div className="admin-product-img-placeholder"><Package size={16} style={{ color: 'var(--color-border)' }} /></div>}</td>
-                      <td style={{ fontWeight: 600, maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        {p.name}
-                        {p.stock === 0 && <span style={{ marginLeft: '8px', fontSize: '0.65rem', background: 'var(--color-danger)', color: 'white', padding: '0.15rem 0.4rem', borderRadius: '4px', verticalAlign: 'middle' }}>SOLD OUT</span>}
+                      <td style={{ fontWeight: 600 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <span style={{ maxWidth: '150px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</span>
+                          {p.stock === 0 && <span style={{ fontSize: '0.65rem', background: 'var(--color-danger)', color: 'white', padding: '0.15rem 0.4rem', borderRadius: '4px', flexShrink: 0 }}>SOLD OUT</span>}
+                        </div>
                       </td>
                       <td style={{ color: 'var(--color-text-muted)' }}>{p.category?.name || '-'}</td>
                       <td style={{ fontWeight: 600 }}>₹{p.price.toFixed(2)}</td>
