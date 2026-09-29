@@ -1,6 +1,5 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Package, Tag, ShoppingBag, Users, LogOut, Shield } from 'lucide-react';
-import axios from 'axios';
+import { Link, useLocation } from 'react-router-dom';
+import { LayoutDashboard, Package, Tag, ShoppingBag, Users, Shield } from 'lucide-react';
 import './Admin.css';
 
 const navItems = [
@@ -11,20 +10,26 @@ const navItems = [
   { path: '/admin/users', label: 'Users', icon: Users },
 ];
 
-const AdminNav = ({ onLogout }) => {
+const AdminNav = () => {
   const location = useLocation();
   return (
-    <nav className="admin-nav">
-      {navItems.map(({ path, label, icon: Icon }) => (
-        <Link
-          key={path}
-          to={path}
-          className={`admin-nav-link ${location.pathname.startsWith(path) ? 'active' : ''}`}
-        >
-          <Icon size={15} /> {label}
-        </Link>
-      ))}
-    </nav>
+    <aside className="admin-sidebar">
+      <div className="admin-sidebar-header">
+        <div className="admin-sidebar-icon"><Shield size={24} /></div>
+        <h1 className="admin-sidebar-title">Lumen Admin</h1>
+      </div>
+      <nav className="admin-nav">
+        {navItems.map(({ path, label, icon: Icon }) => (
+          <Link
+            key={path}
+            to={path}
+            className={`admin-nav-link ${location.pathname.startsWith(path) ? 'active' : ''}`}
+          >
+            <Icon size={18} /> {label}
+          </Link>
+        ))}
+      </nav>
+    </aside>
   );
 };
 

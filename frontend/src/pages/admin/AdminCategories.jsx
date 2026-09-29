@@ -63,16 +63,12 @@ const AdminCategories = () => {
 
   return (
     <div className="admin-page-bg">
-      <div className="admin-container">
-        <header className="admin-header">
-          <div className="admin-header-title-container">
-            <div className="admin-header-icon"><Shield size={24} /></div>
-            <h1 className="admin-title">Admin Panel</h1>
-          </div>
+      <AdminNav />
+      <div className="admin-main-wrapper">
+        <header className="admin-header" style={{ marginBottom: '2rem' }}>
+          <h1 className="admin-title">Categories Management</h1>
           <button onClick={handleLogout} className="admin-logout-btn"><LogOut size={16} /> Logout</button>
         </header>
-
-        <AdminNav />
 
         <div className="admin-action-bar">
           <h2>Categories ({categories.length})</h2>
