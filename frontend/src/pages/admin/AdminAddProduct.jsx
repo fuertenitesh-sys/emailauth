@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Shield, LogOut, ArrowLeft, Plus, X } from 'lucide-react';
 import './Admin.css';
@@ -13,14 +13,24 @@ const AdminAddProduct = () => {
   const [categories, setCategories] = useState([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-  const [form, setForm] = useState({
-    name: '', description: '', price: '', discount: 0,
-    category: '', images: [], stock: '', status: 'active'
+  const location = useLocation();
+  const [form, setForm] = useState(() => {
+    if (isEdit && location.state?.product) {
+      const p = location.state.product;
+      return {
+        name: p.name || '', description: p.description || '', price: p.price || '', discount: p.discount || 0,
+        category: p.category?._id || p.category || '', images: p.images || [], stock: p.stock !== undefined ? p.stock : '', status: p.status || 'active'
+      };
+    }
+    return {
+      name: '', description: '', price: '', discount: 0,
+      category: '', images: [], stock: '', status: 'active'
+    };
   });
 
   useEffect(() => {
     axios.get('/api/admin/categories').then(r => setCategories(r.data)).catch(() => {});
-    if (isEdit) {
+    if (isEdit && !location.state?.product) {
       axios.get(`/api/admin/products`).then(r => {
         const p = r.data.find(x => x._id === id);
         if (p) setForm({ name: p.name, description: p.description, price: p.price, discount: p.discount, category: p.category?._id || '', images: p.images || [], stock: p.stock, status: p.status });

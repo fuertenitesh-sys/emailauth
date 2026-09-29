@@ -90,7 +90,7 @@ const AdminProducts = () => {
                       <td><span className={`admin-status-badge ${p.status === 'active' ? 'admin-status-active' : 'admin-status-inactive'}`}>{p.status}</span></td>
                       <td>
                         <div className="admin-table-actions">
-                          <Link to={`/admin/products/edit/${p._id}`} className="admin-table-action-btn edit"><Pencil size={15} /></Link>
+                          <Link to={`/admin/products/edit/${p._id}`} state={{ product: p }} className="admin-table-action-btn edit"><Pencil size={15} /></Link>
                           <button className="admin-table-action-btn delete" onClick={() => setDeleting(p)}><Trash2 size={15} /></button>
                         </div>
                       </td>
