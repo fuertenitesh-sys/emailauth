@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Plus, Pencil, Trash2, Shield, LogOut, Package } from 'lucide-react';
+import { Plus, Pencil, Trash2, Shield, LogOut, Package, Search } from 'lucide-react';
 import './Admin.css';
 import AdminNav from './AdminNav';
 import AdminHeader from '../../components/admin/AdminHeader';
@@ -14,6 +14,7 @@ const AdminProducts = () => {
   const searchParams = new URLSearchParams(location.search);
   const initialFilter = searchParams.get('filter') || 'all';
   const [filter, setFilter] = useState(initialFilter); // 'all', 'in-stock', 'out-of-stock'
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,18 +45,33 @@ const AdminProducts = () => {
         <AdminHeader title="Products Management" />
 
         <div className="admin-action-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
             <h2>Products</h2>
-            <select 
-              className="input-field" 
-              style={{ padding: '0.4rem 1rem', width: 'auto', minWidth: '150px' }} 
-              value={filter} 
-              onChange={e => navigate(e.target.value === 'all' ? '/admin/products' : `/admin/products?filter=${e.target.value}`)}
-            >
-              <option value="all">All Products</option>
-              <option value="in-stock">In Stock</option>
-              <option value="out-of-stock">Sold Out</option>
-            </select>
+            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+              <div style={{ position: 'relative' }}>
+                <div style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)', display: 'flex' }}>
+                  <Search size={15} />
+                </div>
+                <input 
+                  type="text" 
+                  placeholder="Search products..." 
+                  className="input-field" 
+                  style={{ padding: '0.4rem 1rem 0.4rem 2.2rem', width: '250px' }}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <select 
+                className="input-field" 
+                style={{ padding: '0.4rem 1rem', width: 'auto', minWidth: '150px' }} 
+                value={filter} 
+                onChange={e => navigate(e.target.value === 'all' ? '/admin/products' : `/admin/products?filter=${e.target.value}`)}
+              >
+                <option value="all">All Products</option>
+                <option value="in-stock">In Stock</option>
+                <option value="out-of-stock">Sold Out</option>
+              </select>
+            </div>
           </div>
           <Link to="/admin/products/add" className="btn btn-primary btn-sm"><Plus size={16} /> Add Product</Link>
         </div>
@@ -75,8 +91,16 @@ const AdminProducts = () => {
                 </thead>
                 <tbody>
                   {products.filter(p => {
-                    if (filter === 'out-of-stock') return p.stock === 0;
-                    if (filter === 'in-stock') return p.stock > 0;
+                    if (filter === 'out-of-stock' && p.stock > 0) return false;
+                    if (filter === 'in-stock' && p.stock === 0) return false;
+                    
+                    if (searchQuery) {
+                      const query = searchQuery.toLowerCase();
+                      const matchName = p.name.toLowerCase().includes(query);
+                      const matchCat = p.category?.name?.toLowerCase().includes(query);
+                      if (!matchName && !matchCat) return false;
+                    }
+                    
                     return true;
                   }).map(p => (
                     <tr key={p._id} style={{ background: p.stock === 0 ? 'rgba(239, 68, 68, 0.05)' : 'transparent' }}>
