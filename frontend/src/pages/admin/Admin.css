@@ -811,6 +811,7 @@ body.admin-dark {
 body.admin-dark .admin-page-bg { background: #050505; color: #f9fafb; }
 body.admin-dark .admin-sidebar { background: #0a0a0a; border-right: 1px solid #1f1f1f; }
 body.admin-dark .admin-sidebar-header { border-bottom-color: #1f1f1f; }
+body.admin-dark .admin-table-header-title { background: #111111; border-bottom-color: #1f1f1f; }
 
 /* Headers & Typography */
 body.admin-dark .admin-title, 
