@@ -79,7 +79,7 @@ const OrderDetail = () => {
                         </div>
                         <span>{step.label}</span>
                         {i < TRACKING_STEPS.length - 1 && (
-                          <div className={`tracking-line ${done ? 'done' : ''}`} />
+                          <div className={`tracking-line ${i < currentStep ? 'done' : ''}`} />
                         )}
                       </div>
                     );
