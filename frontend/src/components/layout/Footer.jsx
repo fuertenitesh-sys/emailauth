@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Mail, MapPin, Phone } from 'lucide-react';
+import { Instagram, Facebook, Twitter, Youtube, ChevronRight, Apple, Play } from 'lucide-react';
 import axios from 'axios';
 import { useToast } from '../../context/ToastContext';
 import './Footer.css';
@@ -13,7 +13,7 @@ const Footer = () => {
     if (emailInput && emailInput.value) {
       try {
         await axios.post('/api/subscribers', { email: emailInput.value });
-        addToast('Successfully subscribed to LUMEN Club!', 'success');
+        addToast('Successfully subscribed to LUMEN!', 'success');
         emailInput.value = '';
       } catch (err) {
         addToast(err.response?.data?.message || 'Failed to subscribe', 'error');
@@ -22,92 +22,115 @@ const Footer = () => {
   };
 
   return (
-    <footer className="footer">
-      {/* Newsletter Section */}
-      <div className="footer-newsletter-wrapper">
-        <div className="container footer-newsletter">
-          <div className="newsletter-info">
-            <h3>Join the LUMEN Club</h3>
-            <p>Subscribe for exclusive access to new drops, special offers, and events.</p>
-          </div>
-          <form className="newsletter-form-footer" onSubmit={handleSubscribe}>
-            <input type="email" placeholder="Enter your email address" required />
-            <button type="submit">Subscribe</button>
-          </form>
-        </div>
-      </div>
-
-      <div className="container footer-main">
-        {/* Brand Col */}
-        <div className="footer-col brand-col">
-          <Link to="/" className="footer-brand">LUMEN</Link>
-          <p className="footer-desc">
-            Redefining modern essentials with uncompromising quality and timeless design.
-          </p>
-          <div className="footer-social">
-            <a href="#" aria-label="Instagram" onClick={(e) => e.preventDefault()}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+    <footer className="footer-premium">
+      {/* Top App Badges Row */}
+      <div className="footer-apps-row">
+        <div className="footer-app-col">
+          <h3>?app</h3>
+          <div className="app-badges">
+            <a href="#" className="app-badge">
+              <Play size={20} className="app-icon" />
+              <div className="app-badge-text">
+                <span>GET IT ON</span>
+                <strong>Google Play</strong>
+              </div>
             </a>
-            <a href="#" aria-label="Twitter" onClick={(e) => e.preventDefault()}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
-            </a>
-            <a href="#" aria-label="Facebook" onClick={(e) => e.preventDefault()}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-            </a>
-            <a href="#" aria-label="Youtube" onClick={(e) => e.preventDefault()}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg>
+            <a href="#" className="app-badge">
+              <Apple size={20} className="app-icon" />
+              <div className="app-badge-text">
+                <span>Download on the</span>
+                <strong>App Store</strong>
+              </div>
             </a>
           </div>
         </div>
-
-        {/* Links Cols */}
-        <div className="footer-col">
-          <h4>Shop</h4>
-          <Link to="/products">All Products</Link>
-          <Link to="/products?category=men">Men's Collection</Link>
-          <Link to="/products?category=women">Women's Collection</Link>
-          <Link to="/products?category=accessories">Accessories</Link>
-          <Link to="/products?sort=newest">New Arrivals</Link>
-        </div>
-
-        <div className="footer-col">
-          <h4>Support</h4>
-          <Link to="#">Help Center</Link>
-          <Link to="#">Track Order</Link>
-          <Link to="#">Shipping Info</Link>
-          <Link to="#">Returns & Exchanges</Link>
-          <Link to="#">Contact Us</Link>
-        </div>
-
-        {/* Contact Col */}
-        <div className="footer-col contact-col">
-          <h4>Contact</h4>
-          <div className="contact-item">
-            <Mail size={16} />
-            <a href="mailto:hello@lumen.com">hello@lumen.com</a>
-          </div>
-          <div className="contact-item">
-            <Phone size={16} />
-            <a href="tel:+919876543210">+91 98765 43210</a>
-          </div>
-          <div className="contact-item align-start">
-            <MapPin size={16} />
-            <span>123 Fashion Street, Tech Park,<br />Mumbai 400001, India</span>
+        <div className="footer-app-col">
+          <h3>?launches</h3>
+          <div className="app-badges">
+            <a href="#" className="app-badge">
+              <Play size={20} className="app-icon" />
+              <div className="app-badge-text">
+                <span>GET IT ON</span>
+                <strong>Google Play</strong>
+              </div>
+            </a>
+            <a href="#" className="app-badge">
+              <Apple size={20} className="app-icon" />
+              <div className="app-badge-text">
+                <span>Download on the</span>
+                <strong>App Store</strong>
+              </div>
+            </a>
           </div>
         </div>
       </div>
 
-      <div className="container footer-bottom">
-        <div className="footer-bottom-inner">
-          <p className="copyright">&copy; {new Date().getFullYear()} LUMEN. All rights reserved.</p>
-          <div className="legal-links">
-            <Link to="#">Privacy Policy</Link>
-            <Link to="#">Terms of Service</Link>
-            <Link to="#">Cookie Policy</Link>
+      {/* Newsletter & Social */}
+      <div className="footer-center-section">
+        <h2>Sign up to get 10% off*</h2>
+        <form className="newsletter-form-minimal" onSubmit={handleSubscribe}>
+          <input type="email" placeholder="Enter your email here" required />
+          <button type="submit"><ChevronRight size={18} /></button>
+        </form>
+        <p className="newsletter-disclaimer">
+          By entering your email address you will be opted in to receive communications from LUMEN. For full details on how we use your information, view our <Link to="#">privacy policy</Link>.
+        </p>
+
+        <div className="footer-social-center">
+          <a href="#" aria-label="Instagram"><Instagram size={24} /></a>
+          <a href="#" aria-label="Facebook"><Facebook size={24} /></a>
+          <a href="#" aria-label="Twitter"><Twitter size={24} /></a>
+          <a href="#" aria-label="YouTube"><Youtube size={24} /></a>
+        </div>
+
+        <button className="btn-find-store">FIND YOUR NEAREST STORE</button>
+      </div>
+
+      {/* Links Row */}
+      <div className="footer-links-row">
+        <Link to="#">Contact Us</Link>
+        <Link to="#">Track my Order</Link>
+        <Link to="#">Size Guides</Link>
+        <Link to="#">Delivery and Returns Info</Link>
+        <Link to="#">Payment Methods</Link>
+        <Link to="#">Cookie Settings</Link>
+        <Link to="#">Corporate</Link>
+        <Link to="#">Student Discount</Link>
+        <Link to="#">Terms & Conditions</Link>
+        <Link to="#">Gift Cards</Link>
+        <Link to="#">FAQs</Link>
+      </div>
+
+      {/* Deliver To */}
+      <div className="footer-deliver-to">
+        <span className="deliver-label">Deliver To</span>
+        <div className="deliver-select-wrapper">
+          <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" className="deliver-flag" />
+          <select className="deliver-select">
+            <option>UNITED KINGDOM</option>
+            <option>UNITED STATES</option>
+            <option>INDIA</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Bottom Row */}
+      <div className="footer-bottom-row">
+        <div className="footer-bottom-left">
+          <p className="copyright">Copyright &copy; {new Date().getFullYear()} LUMEN Fashion Plc. All rights reserved.</p>
+          <div className="payment-icons">
+            <span className="pay-badge">VISA</span>
+            <span className="pay-badge">MasterCard</span>
+            <span className="pay-badge">PayPal</span>
+            <span className="pay-badge">Klarna</span>
           </div>
-          <div className="payment-methods">
-            <span className="trust-badge-mini">100% SECURE CHECKOUT</span>
-          </div>
+        </div>
+        <div className="footer-bottom-right">
+          <Link to="#">FAQs</Link>
+          <Link to="#">Accessibility</Link>
+          <Link to="#">Terms & Conditions</Link>
+          <Link to="#">Cookies</Link>
+          <Link to="#">Privacy</Link>
         </div>
       </div>
     </footer>
