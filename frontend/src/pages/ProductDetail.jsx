@@ -154,9 +154,17 @@ const ProductDetail = () => {
               <div className="product-detail-qty">
                 <span className="qty-label">Quantity</span>
                 <div className="qty-controls">
-                  <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="qty-btn"><Minus size={16} /></button>
+                  <button 
+                    onClick={() => setQuantity(q => Math.max(1, q - 1))} 
+                    className="qty-btn"
+                    disabled={quantity <= 1}
+                  ><Minus size={16} /></button>
                   <span className="qty-value">{quantity}</span>
-                  <button onClick={() => setQuantity(q => Math.min(product.stock, q + 1))} className="qty-btn"><Plus size={16} /></button>
+                  <button 
+                    onClick={() => setQuantity(q => Math.min(product.stock, q + 1))} 
+                    className="qty-btn"
+                    disabled={quantity >= product.stock}
+                  ><Plus size={16} /></button>
                 </div>
               </div>
             )}
