@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ProductCard from '../components/ui/ProductCard';
 import { ProductCardSkeleton } from '../components/ui/Skeleton';
-import { SlidersHorizontal, ChevronDown } from 'lucide-react';
+import { SlidersHorizontal, ChevronDown, Truck, ShieldCheck, RefreshCw } from 'lucide-react';
 import './Products.css';
 
 const SORT_OPTIONS = [
@@ -108,11 +108,21 @@ const Products = () => {
 
   return (
     <div className="collections-page">
-      <div className="collection-header">
-        <h1 className="collection-title">{pageTitle.toUpperCase()}</h1>
-        <p className="collection-count">
-          {loading ? '–' : products.length} {products.length === 1 ? 'ITEM' : 'ITEMS'}
-        </p>
+      <div className="collection-hero">
+        <div className="collection-hero-content">
+          <h1 className="collection-hero-title">{pageTitle.toUpperCase()}</h1>
+          <p className="collection-hero-subtitle">
+            Explore our premium collection of {pageTitle.toLowerCase()}. Unmatched quality and style for your everyday essentials.
+          </p>
+          <div className="collection-hero-features">
+            <div className="hero-feature"><Truck size={18} /> Free Shipping</div>
+            <div className="hero-feature"><ShieldCheck size={18} /> 100% Authentic</div>
+            <div className="hero-feature"><RefreshCw size={18} /> Easy 30-Day Returns</div>
+          </div>
+          <div className="collection-hero-count">
+            {loading ? '–' : products.length} {products.length === 1 ? 'ITEM' : 'ITEMS'} AVAILABLE
+          </div>
+        </div>
       </div>
 
       <div className="container collections-container">
