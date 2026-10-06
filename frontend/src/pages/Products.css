@@ -4,11 +4,12 @@
 
 /* Premium Hero Section */
 .collection-hero {
-  background: linear-gradient(135deg, var(--color-navy) 0%, #1a365d 100%);
+  background: linear-gradient(rgba(10, 15, 30, 0.7), rgba(5, 10, 20, 0.85)), url('/images/hero-bg.jpg') no-repeat center center / cover;
   color: white;
-  padding: 4rem 1rem 3rem;
+  padding: 5rem 1rem 4rem;
   text-align: center;
   margin-bottom: 2rem;
+  border-radius: 0 0 20px 20px;
 }
 
 .collection-hero-content {
