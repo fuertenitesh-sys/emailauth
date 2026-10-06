@@ -22,6 +22,22 @@ const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [sortKey, setSortKey] = useState('featured');
   const [sortOpen, setSortOpen] = useState(false);
+  const [currentBg, setCurrentBg] = useState(0);
+
+  const bgImages = [
+    '/images/hero-bg.jpg',
+    '/images/hero-books.jpg',
+    '/images/hero-sports.jpg',
+    '/images/hero-electronics.jpg',
+    '/images/hero-shoes.jpg'
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBg(prev => (prev + 1) % bgImages.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -109,6 +125,13 @@ const Products = () => {
   return (
     <div className="collections-page">
       <div className="collection-hero">
+        {bgImages.map((img, idx) => (
+          <div 
+            key={img} 
+            className={`collection-hero-bg ${idx === currentBg ? 'active' : ''}`}
+            style={{ backgroundImage: `url(${img})` }}
+          />
+        ))}
         <div className="collection-hero-content">
           <h1 className="collection-hero-title">{pageTitle.toUpperCase()}</h1>
           <p className="collection-hero-subtitle">
