@@ -765,6 +765,7 @@
 .bg-user { background: #3b82f6; }
 .bg-order { background: #10b981; }
 .bg-cancel { background: #ef4444; }
+.bg-subscriber { background: #8b5cf6; }
 
 .admin-notification-content {
   flex: 1;

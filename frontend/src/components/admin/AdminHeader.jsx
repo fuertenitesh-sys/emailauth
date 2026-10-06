@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { LogOut, Bell, User, ShoppingBag, X, Sun, Moon } from 'lucide-react';
+import { LogOut, Bell, User, ShoppingBag, X, Sun, Moon, Mail } from 'lucide-react';
 import '../../pages/admin/Admin.css';
 
 const AdminHeader = ({ title }) => {
@@ -41,9 +41,10 @@ const AdminHeader = ({ title }) => {
       const lastRead = localStorage.getItem('adminNotificationsLastRead');
       const lastReadTime = lastRead ? parseInt(lastRead, 10) : 0;
       
-      const [usersRes, ordersRes] = await Promise.all([
+      const [usersRes, ordersRes, subsRes] = await Promise.all([
         axios.get('/api/admin/users'),
-        axios.get('/api/admin/orders')
+        axios.get('/api/admin/orders'),
+        axios.get('/api/subscribers')
       ]);
       
       const newNotifications = [];
@@ -89,6 +90,22 @@ const AdminHeader = ({ title }) => {
            }
         }
       });
+      
+      // Parse subscribers
+      if (subsRes && subsRes.data && subsRes.data.data) {
+        subsRes.data.data.forEach(sub => {
+          const subTime = new Date(sub.createdAt || sub.subscribedAt).getTime();
+          if (subTime > lastReadTime) {
+            newNotifications.push({
+              id: `sub-${sub._id}`,
+              type: 'subscriber',
+              message: `New subscriber: ${sub.email}`,
+              time: subTime,
+              isUnread: true
+            });
+          }
+        });
+      }
       
       // Sort newest first
       newNotifications.sort((a, b) => b.time - a.time);
@@ -159,7 +176,8 @@ const AdminHeader = ({ title }) => {
                     <div key={notif.id} className={`admin-notification-item ${notif.isUnread ? 'unread' : ''}`}>
                       <div className={`admin-notification-icon bg-${notif.type}`}>
                         {notif.type === 'user' ? <User size={14} /> : 
-                         notif.type === 'order' ? <ShoppingBag size={14} /> : <X size={14} />}
+                         notif.type === 'order' ? <ShoppingBag size={14} /> : 
+                         notif.type === 'subscriber' ? <Mail size={14} /> : <X size={14} />}
                       </div>
                       <div className="admin-notification-content">
                         <p>{notif.message}</p>
