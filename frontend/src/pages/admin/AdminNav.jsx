@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Package, Tag, ShoppingBag, Users, Shield } from 'lucide-react';
+import { LayoutDashboard, Package, Tag, ShoppingBag, Users, Shield, Mail } from 'lucide-react';
 import './Admin.css';
 
 const navItems = [
@@ -16,6 +16,7 @@ const navItems = [
   { path: '/admin/categories', label: 'Categories', icon: Tag },
   { path: '/admin/orders', label: 'Orders', icon: ShoppingBag },
   { path: '/admin/users', label: 'Users', icon: Users },
+  { path: '/admin/subscribers', label: 'Subscribers', icon: Mail },
 ];
 
 const AdminNav = () => {

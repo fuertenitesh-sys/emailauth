@@ -10,6 +10,7 @@ import categoryRoutes from './routes/categoryRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
+import subscriberRoutes from './routes/subscriberRoutes.js';
 
 dotenv.config(); // Ye command chalte hi .env file ke saare variables (jaise PORT, MONGODB_URI) system mein load ho jate hain aur process.env mein milte hain.
 
@@ -36,6 +37,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/subscribers', subscriberRoutes);
 
 // Error Handling Middleware (Agar server mein koi issue aaye toh kya hoga)
 app.use((err, req, res, next) => {

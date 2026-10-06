@@ -1,17 +1,23 @@
 import { Link } from 'react-router-dom';
 import { Mail, MapPin, Phone } from 'lucide-react';
+import axios from 'axios';
 import { useToast } from '../../context/ToastContext';
 import './Footer.css';
 
 const Footer = () => {
   const { addToast } = useToast();
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
     const emailInput = e.target.querySelector('input[type="email"]');
     if (emailInput && emailInput.value) {
-      addToast('Successfully subscribed to LUMEN Club!', 'success');
-      emailInput.value = '';
+      try {
+        await axios.post('/api/subscribers', { email: emailInput.value });
+        addToast('Successfully subscribed to LUMEN Club!', 'success');
+        emailInput.value = '';
+      } catch (err) {
+        addToast(err.response?.data?.message || 'Failed to subscribe', 'error');
+      }
     }
   };
 
