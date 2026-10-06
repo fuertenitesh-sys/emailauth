@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ProductCard from '../components/ui/ProductCard';
@@ -23,6 +23,7 @@ const Products = () => {
   const [sortKey, setSortKey] = useState('featured');
   const [sortOpen, setSortOpen] = useState(false);
   const [currentBg, setCurrentBg] = useState(0);
+  const productsRef = useRef(null);
 
   const heroSlides = [
     { image: '/images/hero-books.jpg', title: 'BOOKS' },
@@ -45,7 +46,17 @@ const Products = () => {
   const urlCategory = searchParams.get('category') || '';
 
   useEffect(() => {
+    // Only scroll if it's an actual change from user interaction, not on initial load
+    const isCategoryChanging = selectedCategory !== '' && urlCategory !== selectedCategory;
     setSelectedCategory(urlCategory);
+    
+    if (urlCategory) {
+      setTimeout(() => {
+        if (productsRef.current) {
+          productsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
   }, [urlCategory]);
 
   useEffect(() => {
@@ -149,7 +160,7 @@ const Products = () => {
         </div>
       </div>
 
-      <div className="container collections-container">
+      <div className="container collections-container" ref={productsRef}>
         {/* Filters Sidebar */}
         <div className="collections-filters">
           <div className="filter-group">
@@ -160,6 +171,9 @@ const Products = () => {
                 onClick={() => {
                   setSelectedCategory('');
                   navigate('/products', { replace: true });
+                  setTimeout(() => {
+                    if (productsRef.current) productsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }, 50);
                 }}
               >
                 All
@@ -171,6 +185,9 @@ const Products = () => {
                   onClick={() => {
                     setSelectedCategory(cat.name.toLowerCase());
                     navigate(`/products?category=${cat.name.toLowerCase()}`, { replace: true });
+                    setTimeout(() => {
+                      if (productsRef.current) productsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 50);
                   }}
                 >
                   {cat.name}
