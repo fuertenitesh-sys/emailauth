@@ -1,18 +1,24 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { User, Package, LogOut, ChevronRight, Shield, Mail, Edit3 } from 'lucide-react';
+import { ArrowRight, LogOut, Settings, Package, User as UserIcon } from 'lucide-react';
 import './Dashboard.css';
 
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [orderCount, setOrderCount] = useState(null);
+  const [recentOrder, setRecentOrder] = useState(null);
 
   useEffect(() => {
     import('axios').then(({ default: axios }) => {
       axios.get('/api/orders/my')
-        .then(res => setOrderCount(res.data.length))
+        .then(res => {
+          setOrderCount(res.data.length);
+          if (res.data.length > 0) {
+            setRecentOrder(res.data[0]);
+          }
+        })
         .catch(() => setOrderCount(0));
     });
   }, []);
@@ -22,91 +28,109 @@ const Dashboard = () => {
     navigate('/');
   };
 
-  const initials = user?.name
-    ? user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
-    : 'U';
-
   return (
-    <div className="profile-page">
-      <div className="container profile-container">
-
-        {/* Header */}
-        <div className="profile-header">
-          <div className="profile-avatar">
-            <span>{initials}</span>
+    <div className="premium-dashboard">
+      <div className="container pd-layout">
+        
+        {/* Sidebar Navigation */}
+        <aside className="pd-sidebar">
+          <div className="pd-user-info">
+            <h2 className="pd-greeting">HELLO, {user?.name?.split(' ')[0] || 'USER'}</h2>
+            <p className="pd-email">{user?.email}</p>
           </div>
-          <div className="profile-header-info">
-            <h1>{user?.name}</h1>
-            <p className="profile-email">
-              <Mail size={14} />
-              {user?.email}
-            </p>
-            {user?.role === 'admin' && (
-              <span className="profile-admin-badge">
-                <Shield size={12} /> Admin
-              </span>
-            )}
-          </div>
-        </div>
-
-        <div className="profile-grid">
-          {/* Info Card */}
-          <div className="profile-card">
-            <div className="profile-card-header">
-              <h3>Account Details</h3>
-            </div>
-            <div className="profile-field">
-              <label>Full Name</label>
-              <p>{user?.name}</p>
-            </div>
-            <div className="profile-field">
-              <label>Email Address</label>
-              <p>{user?.email}</p>
-            </div>
-            <div className="profile-field">
-              <label>Account Type</label>
-              <p style={{ textTransform: 'capitalize' }}>{user?.role || 'Customer'}</p>
-            </div>
-          </div>
-
-          {/* Quick Links */}
-          <div className="profile-links-section">
-            <Link to="/orders" className="profile-quick-link">
-              <div className="profile-quick-link-icon">
-                <Package size={20} />
-              </div>
-              <div className="profile-quick-link-text">
-                <span>My Orders</span>
-                <small>{orderCount === null ? '...' : `${orderCount} order${orderCount !== 1 ? 's' : ''}`}</small>
-              </div>
-              <ChevronRight size={18} className="profile-quick-link-arrow" />
+          
+          <nav className="pd-nav">
+            <Link to="/dashboard" className="pd-nav-item active">
+              <UserIcon size={18} strokeWidth={1.5} />
+              <span>Account Overview</span>
             </Link>
-
+            <Link to="/orders" className="pd-nav-item">
+              <Package size={18} strokeWidth={1.5} />
+              <span>Order History</span>
+            </Link>
             {user?.role === 'admin' && (
-              <Link to="/admin/dashboard" className="profile-quick-link">
-                <div className="profile-quick-link-icon admin">
-                  <Shield size={20} />
-                </div>
-                <div className="profile-quick-link-text">
-                  <span>Admin Panel</span>
-                  <small>Manage store</small>
-                </div>
-                <ChevronRight size={18} className="profile-quick-link-arrow" />
+              <Link to="/admin/dashboard" className="pd-nav-item">
+                <Settings size={18} strokeWidth={1.5} />
+                <span>Admin Dashboard</span>
               </Link>
             )}
-
-            <button className="profile-quick-link logout-link" onClick={handleLogout}>
-              <div className="profile-quick-link-icon danger">
-                <LogOut size={20} />
-              </div>
-              <div className="profile-quick-link-text">
-                <span>Sign Out</span>
-                <small>Log out of your account</small>
-              </div>
-              <ChevronRight size={18} className="profile-quick-link-arrow" />
+            <button onClick={handleLogout} className="pd-nav-item logout">
+              <LogOut size={18} strokeWidth={1.5} />
+              <span>Sign Out</span>
             </button>
+          </nav>
+        </aside>
+
+        {/* Main Content */}
+        <main className="pd-main">
+          <h1 className="pd-page-title">MY ACCOUNT</h1>
+          
+          <div className="pd-stats-row">
+            <div className="pd-stat-box">
+              <span className="pd-stat-label">TOTAL ORDERS</span>
+              <span className="pd-stat-value">{orderCount === null ? '-' : orderCount}</span>
+            </div>
+            <div className="pd-stat-box">
+              <span className="pd-stat-label">MEMBER STATUS</span>
+              <span className="pd-stat-value">VIP</span>
+            </div>
           </div>
-        </div>
+
+          {/* Profile Details */}
+          <section className="pd-section">
+            <div className="pd-section-header">
+              <h3>PROFILE DETAILS</h3>
+              <button className="pd-edit-btn">EDIT</button>
+            </div>
+            <div className="pd-details-grid">
+              <div className="pd-detail-item">
+                <label>FULL NAME</label>
+                <p>{user?.name}</p>
+              </div>
+              <div className="pd-detail-item">
+                <label>EMAIL ADDRESS</label>
+                <p>{user?.email}</p>
+              </div>
+              <div className="pd-detail-item">
+                <label>PASSWORD</label>
+                <p>••••••••</p>
+              </div>
+            </div>
+          </section>
+
+          {/* Recent Activity */}
+          <section className="pd-section">
+            <div className="pd-section-header">
+              <h3>RECENT ACTIVITY</h3>
+              <Link to="/orders" className="pd-edit-btn">VIEW ALL</Link>
+            </div>
+            {recentOrder ? (
+              <div className="pd-recent-order">
+                <div className="pd-ro-header">
+                  <div>
+                    <p className="pd-ro-id">ORDER #{recentOrder._id.slice(-8).toUpperCase()}</p>
+                    <p className="pd-ro-date">{new Date(recentOrder.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                  </div>
+                  <div className="pd-ro-status" data-status={recentOrder.orderStatus}>
+                    {recentOrder.orderStatus.toUpperCase()}
+                  </div>
+                </div>
+                <div className="pd-ro-footer">
+                  <span className="pd-ro-total">${recentOrder.totalAmount.toFixed(2)}</span>
+                  <Link to={`/orders/${recentOrder._id}`} className="pd-ro-link">
+                    TRACK <ArrowRight size={16} />
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="pd-empty-state">
+                <p>You haven't placed any orders yet.</p>
+                <Link to="/products" className="pd-shop-btn">SHOP NOW</Link>
+              </div>
+            )}
+          </section>
+
+        </main>
       </div>
     </div>
   );
