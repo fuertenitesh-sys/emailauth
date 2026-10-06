@@ -23,6 +23,7 @@ const Products = () => {
   const [sortKey, setSortKey] = useState('featured');
   const [sortOpen, setSortOpen] = useState(false);
   const [currentBg, setCurrentBg] = useState(0);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const productsRef = useRef(null);
 
   const heroSlides = [
@@ -46,16 +47,19 @@ const Products = () => {
   const urlCategory = searchParams.get('category') || '';
 
   useEffect(() => {
-    // Only scroll if it's an actual change from user interaction, not on initial load
-    const isCategoryChanging = selectedCategory !== '' && urlCategory !== selectedCategory;
     setSelectedCategory(urlCategory);
     
-    if (urlCategory) {
+    // Only scroll if it's NOT the initial page load (e.g. user clicked a link)
+    if (!isInitialLoad && urlCategory) {
       setTimeout(() => {
         if (productsRef.current) {
           productsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }, 100);
+    }
+    
+    if (isInitialLoad) {
+      setIsInitialLoad(false);
     }
   }, [urlCategory]);
 
