@@ -1,6 +1,7 @@
 import Order from '../models/Order.js';
 import Cart from '../models/Cart.js';
 import Product from '../models/Product.js';
+import User from '../models/User.js';
 
 export const createOrder = async (req, res) => {
   const { shippingAddress } = req.body;
@@ -83,6 +84,39 @@ export const updateOrderStatus = async (req, res) => {
     const order = await Order.findByIdAndUpdate(req.params.id, { orderStatus }, { new: true }).populate('user', 'name email');
     if (!order) return res.status(404).json({ message: 'Order not found' });
     res.json(order);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+export const trackOrder = async (req, res) => {
+  const { orderNumber, email } = req.body;
+  if (!orderNumber || !email) {
+    return res.status(400).json({ message: 'Order number and email are required' });
+  }
+
+  try {
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) return res.status(404).json({ message: 'No orders found for this email' });
+    
+    const cleanOrderNumber = orderNumber.replace('#', '').toUpperCase();
+    
+    // Find all orders for this user
+    const orders = await Order.find({ user: user._id });
+    
+    // Match by the short ID (last 8 chars)
+    const order = orders.find(o => o._id.toString().toUpperCase().endsWith(cleanOrderNumber));
+    
+    if (!order) return res.status(404).json({ message: 'Order not found with that ID' });
+    
+    res.json({
+      _id: order._id,
+      shortId: order._id.toString().slice(-8).toUpperCase(),
+      orderStatus: order.orderStatus,
+      createdAt: order.createdAt,
+      totalAmount: order.totalAmount,
+      itemsCount: order.items.length
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
