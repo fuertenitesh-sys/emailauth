@@ -24,6 +24,7 @@ const Products = () => {
   const [sortOpen, setSortOpen] = useState(false);
   const [currentBg, setCurrentBg] = useState(0);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [pageLoaded, setPageLoaded] = useState(false);
   const productsRef = useRef(null);
 
   const heroSlides = [
@@ -34,6 +35,19 @@ const Products = () => {
   ];
 
   useEffect(() => {
+    // Disable browser automatic scroll restoration
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+    
+    // Force scroll to top on mount
+    window.scrollTo(0, 0);
+    
+    // Trigger fade-in effect
+    setTimeout(() => {
+      setPageLoaded(true);
+    }, 100);
+
     const interval = setInterval(() => {
       setCurrentBg(prev => (prev + 1) % heroSlides.length);
     }, 4000);
@@ -137,7 +151,7 @@ const Products = () => {
     : 'All Products';
 
   return (
-    <div className="collections-page">
+    <div className={`collections-page ${pageLoaded ? 'fade-in-active' : 'fade-in-initial'}`}>
       <div className="collection-hero">
         {heroSlides.map((slide, idx) => (
           <div 

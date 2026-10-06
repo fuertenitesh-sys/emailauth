@@ -2,6 +2,17 @@
   min-height: 80vh;
 }
 
+/* Page Fade-In Effect */
+.fade-in-initial {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.fade-in-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
 /* Premium Hero Section */
 .collection-hero {
   position: relative;
