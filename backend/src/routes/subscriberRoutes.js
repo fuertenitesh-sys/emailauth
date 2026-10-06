@@ -1,11 +1,11 @@
 import express from 'express';
 import { addSubscriber, getSubscribers } from '../controllers/subscriberController.js';
-import { protect, admin } from '../middleware/authMiddleware.js';
+import { protect, adminOnly } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
 router.route('/')
   .post(addSubscriber)
-  .get(protect, admin, getSubscribers);
+  .get(protect, adminOnly, getSubscribers);
 
 export default router;
