@@ -189,11 +189,11 @@ const Products = () => {
           </div>
 
           {loading ? (
-            <div className="grid-cols-3">
+            <div className="collections-grid-inner">
               {Array(6).fill(0).map((_, i) => <ProductCardSkeleton key={i} />)}
             </div>
           ) : products.length > 0 ? (
-            <div className="grid-cols-3">
+            <div className="collections-grid-inner">
               {products.map(product => <ProductCard key={product._id} product={product} />)}
             </div>
           ) : (
