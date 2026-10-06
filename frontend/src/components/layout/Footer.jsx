@@ -1,8 +1,20 @@
 import { Link } from 'react-router-dom';
 import { Mail, MapPin, Phone } from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
 import './Footer.css';
 
 const Footer = () => {
+  const { addToast } = useToast();
+
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    const emailInput = e.target.querySelector('input[type="email"]');
+    if (emailInput && emailInput.value) {
+      addToast('Successfully subscribed to LUMEN Club!', 'success');
+      emailInput.value = '';
+    }
+  };
+
   return (
     <footer className="footer">
       {/* Newsletter Section */}
@@ -12,7 +24,7 @@ const Footer = () => {
             <h3>Join the LUMEN Club</h3>
             <p>Subscribe for exclusive access to new drops, special offers, and events.</p>
           </div>
-          <form className="newsletter-form-footer" onSubmit={e => e.preventDefault()}>
+          <form className="newsletter-form-footer" onSubmit={handleSubscribe}>
             <input type="email" placeholder="Enter your email address" required />
             <button type="submit">Subscribe</button>
           </form>
