@@ -24,17 +24,16 @@ const Products = () => {
   const [sortOpen, setSortOpen] = useState(false);
   const [currentBg, setCurrentBg] = useState(0);
 
-  const bgImages = [
-    '/images/hero-bg.jpg',
-    '/images/hero-books.jpg',
-    '/images/hero-sports.jpg',
-    '/images/hero-electronics.jpg',
-    '/images/hero-shoes.jpg'
+  const heroSlides = [
+    { image: '/images/hero-books.jpg', title: 'BOOKS' },
+    { image: '/images/hero-sports.jpg', title: 'SPORTS' },
+    { image: '/images/hero-electronics.jpg', title: 'ELECTRONICS' },
+    { image: '/images/hero-shoes.jpg', title: 'SHOES' }
   ];
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentBg(prev => (prev + 1) % bgImages.length);
+      setCurrentBg(prev => (prev + 1) % heroSlides.length);
     }, 4000);
     return () => clearInterval(interval);
   }, []);
@@ -125,17 +124,19 @@ const Products = () => {
   return (
     <div className="collections-page">
       <div className="collection-hero">
-        {bgImages.map((img, idx) => (
+        {heroSlides.map((slide, idx) => (
           <div 
-            key={img} 
+            key={slide.image} 
             className={`collection-hero-bg ${idx === currentBg ? 'active' : ''}`}
-            style={{ backgroundImage: `url(${img})` }}
+            style={{ backgroundImage: `url(${slide.image})` }}
           />
         ))}
         <div className="collection-hero-content">
-          <h1 className="collection-hero-title">{pageTitle.toUpperCase()}</h1>
+          <h1 className="collection-hero-title">
+            {heroSlides[currentBg].title}
+          </h1>
           <p className="collection-hero-subtitle">
-            Explore our premium collection of {pageTitle.toLowerCase()}. Unmatched quality and style for your everyday essentials.
+            Explore our premium collection of {heroSlides[currentBg].title.toLowerCase()}. Unmatched quality and style for your everyday essentials.
           </p>
           <div className="collection-hero-features">
             <div className="hero-feature"><Truck size={18} /> Free Shipping</div>
