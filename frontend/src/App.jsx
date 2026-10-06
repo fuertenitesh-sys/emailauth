@@ -20,7 +20,15 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
 import OrderDetail from './pages/OrderDetail';
-import PlaceholderPage from './pages/PlaceholderPage';
+
+// Info pages
+import ContactPage from './pages/info/ContactPage';
+import TrackOrderPage from './pages/info/TrackOrderPage';
+import StoresPage from './pages/info/StoresPage';
+import FaqPage from './pages/info/FaqPage';
+import SizeGuidePage from './pages/info/SizeGuidePage';
+import LegalPages from './pages/info/LegalPages';
+import { GiftCardsPage, StudentDiscountPage, PaymentMethodsPage } from './pages/info/SpecialtyPages';
 
 // Admin pages
 import AdminLogin from './pages/admin/AdminLogin';
@@ -63,22 +71,22 @@ function App() {
           <Route path="/orders" element={<Orders />} />
           <Route path="/orders/:id" element={<OrderDetail />} />
 
-          {/* Footer Placeholder Routes */}
-          <Route path="/stores" element={<PlaceholderPage />} />
-          <Route path="/contact" element={<PlaceholderPage />} />
-          <Route path="/track-order" element={<PlaceholderPage />} />
-          <Route path="/size-guide" element={<PlaceholderPage />} />
-          <Route path="/delivery-returns" element={<PlaceholderPage />} />
-          <Route path="/payment-methods" element={<PlaceholderPage />} />
-          <Route path="/cookie-settings" element={<PlaceholderPage />} />
-          <Route path="/corporate" element={<PlaceholderPage />} />
-          <Route path="/student-discount" element={<PlaceholderPage />} />
-          <Route path="/terms" element={<PlaceholderPage />} />
-          <Route path="/gift-cards" element={<PlaceholderPage />} />
-          <Route path="/faqs" element={<PlaceholderPage />} />
-          <Route path="/accessibility" element={<PlaceholderPage />} />
-          <Route path="/cookie-policy" element={<PlaceholderPage />} />
-          <Route path="/privacy" element={<PlaceholderPage />} />
+          {/* Footer Info Routes */}
+          <Route path="/stores" element={<StoresPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/track-order" element={<TrackOrderPage />} />
+          <Route path="/size-guide" element={<SizeGuidePage />} />
+          <Route path="/delivery-returns" element={<LegalPages />} />
+          <Route path="/payment-methods" element={<PaymentMethodsPage />} />
+          <Route path="/cookie-settings" element={<LegalPages />} />
+          <Route path="/corporate" element={<LegalPages />} />
+          <Route path="/student-discount" element={<StudentDiscountPage />} />
+          <Route path="/terms" element={<LegalPages />} />
+          <Route path="/gift-cards" element={<GiftCardsPage />} />
+          <Route path="/faqs" element={<FaqPage />} />
+          <Route path="/accessibility" element={<LegalPages />} />
+          <Route path="/cookie-policy" element={<LegalPages />} />
+          <Route path="/privacy" element={<LegalPages />} />
 
           {/* Admin routes */}
           <Route path="/admin" element={<AdminLogin />} />
