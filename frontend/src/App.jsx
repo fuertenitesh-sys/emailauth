@@ -20,6 +20,7 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
 import OrderDetail from './pages/OrderDetail';
+import PlaceholderPage from './pages/PlaceholderPage';
 
 // Admin pages
 import AdminLogin from './pages/admin/AdminLogin';
@@ -61,6 +62,23 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/orders/:id" element={<OrderDetail />} />
+
+          {/* Footer Placeholder Routes */}
+          <Route path="/stores" element={<PlaceholderPage />} />
+          <Route path="/contact" element={<PlaceholderPage />} />
+          <Route path="/track-order" element={<PlaceholderPage />} />
+          <Route path="/size-guide" element={<PlaceholderPage />} />
+          <Route path="/delivery-returns" element={<PlaceholderPage />} />
+          <Route path="/payment-methods" element={<PlaceholderPage />} />
+          <Route path="/cookie-settings" element={<PlaceholderPage />} />
+          <Route path="/corporate" element={<PlaceholderPage />} />
+          <Route path="/student-discount" element={<PlaceholderPage />} />
+          <Route path="/terms" element={<PlaceholderPage />} />
+          <Route path="/gift-cards" element={<PlaceholderPage />} />
+          <Route path="/faqs" element={<PlaceholderPage />} />
+          <Route path="/accessibility" element={<PlaceholderPage />} />
+          <Route path="/cookie-policy" element={<PlaceholderPage />} />
+          <Route path="/privacy" element={<PlaceholderPage />} />
 
           {/* Admin routes */}
           <Route path="/admin" element={<AdminLogin />} />
