@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Mail, Calendar, Users } from 'lucide-react';
+import { Mail, Calendar } from 'lucide-react';
+import AdminNav from './AdminNav';
 import AdminHeader from '../../components/admin/AdminHeader';
+import './Admin.css';
 
 const AdminSubscribers = () => {
   const [subscribers, setSubscribers] = useState([]);
@@ -26,46 +28,47 @@ const AdminSubscribers = () => {
   };
 
   return (
-    <div className="admin-page">
-      <AdminHeader />
-      <div className="admin-content">
-        <div className="admin-header-flex">
-          <h2><Users size={24} /> Newsletter Subscribers</h2>
-          <div className="admin-badge">{subscribers.length} Total</div>
+    <div className="admin-page-bg">
+      <AdminNav />
+      <div className="admin-main-wrapper">
+        <AdminHeader title="Subscribers Management" />
+
+        <div className="admin-action-bar">
+          <h2>Newsletter Subscribers ({subscribers.length})</h2>
         </div>
 
-        {error && <div className="error-message">{error}</div>}
+        {error && <div style={{ color: 'red', padding: '1rem' }}>{error}</div>}
 
-        <div className="admin-card">
-          <div className="table-responsive">
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Email Address</th>
-                  <th>Subscribed Date</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
+        <div className="admin-table-container">
+          {loading ? (
+            <div style={{ padding: '3rem', textAlign: 'center' }}>
+              <div className="loading-spinner" style={{ margin: '0 auto' }} />
+            </div>
+          ) : subscribers.length === 0 ? (
+            <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>
+              No subscribers yet.
+            </div>
+          ) : (
+            <div className="admin-table-wrapper">
+              <table className="admin-table">
+                <thead>
                   <tr>
-                    <td colSpan="3" className="text-center py-4">Loading subscribers...</td>
+                    <th>Email Address</th>
+                    <th>Subscribed Date</th>
+                    <th>Status</th>
                   </tr>
-                ) : subscribers.length === 0 ? (
-                  <tr>
-                    <td colSpan="3" className="text-center py-4 text-muted">No subscribers yet</td>
-                  </tr>
-                ) : (
-                  subscribers.map((sub) => (
+                </thead>
+                <tbody>
+                  {subscribers.map((sub) => (
                     <tr key={sub._id}>
                       <td>
-                        <div className="flex items-center gap-2">
-                          <Mail size={16} className="text-muted" />
-                          <span className="fw-500">{sub.email}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: 600 }}>
+                          <Mail size={16} style={{ color: 'var(--color-primary)' }} />
+                          <span>{sub.email}</span>
                         </div>
                       </td>
                       <td>
-                        <div className="flex items-center gap-2 text-sm text-muted">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
                           <Calendar size={14} />
                           {new Date(sub.subscribedAt || sub.createdAt).toLocaleDateString('en-US', {
                             year: 'numeric',
@@ -77,14 +80,14 @@ const AdminSubscribers = () => {
                         </div>
                       </td>
                       <td>
-                        <span className="status-badge success">Active</span>
+                        <span className="badge-success" style={{ padding: '0.25rem 0.75rem', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 700, backgroundColor: '#e6f4ea', color: '#1e8e3e' }}>Active</span>
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
     </div>
