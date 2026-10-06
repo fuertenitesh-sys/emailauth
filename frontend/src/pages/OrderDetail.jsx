@@ -1,10 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import { Package, MapPin, ArrowLeft, CheckCircle } from 'lucide-react';
+import { Package, MapPin, ArrowLeft, CheckCircle, Clock, Truck, Home } from 'lucide-react';
 import './OrderDetail.css';
 
-const statusColors = { pending: 'badge-warning', processing: 'badge-primary', shipped: 'badge-primary', delivered: 'badge-success', cancelled: 'badge-danger' };
+const STATUS_CONFIG = {
+  pending:    { label: 'Pending',    color: '#f59e0b', bg: '#fffbeb', border: '#fde68a', step: 0 },
+  processing: { label: 'Processing', color: '#3b82f6', bg: '#eff6ff', border: '#bfdbfe', step: 1 },
+  shipped:    { label: 'Shipped',    color: '#8b5cf6', bg: '#f5f3ff', border: '#ddd6fe', step: 2 },
+  delivered:  { label: 'Delivered',  color: '#16a34a', bg: '#f0fdf4', border: '#bbf7d0', step: 3 },
+  cancelled:  { label: 'Cancelled',  color: '#ef4444', bg: '#fff1f2', border: '#fecaca', step: -1 },
+};
+
+const TRACKING_STEPS = [
+  { key: 'pending',    label: 'Order Placed',  Icon: CheckCircle },
+  { key: 'processing', label: 'Processing',    Icon: Clock },
+  { key: 'shipped',    label: 'Shipped',       Icon: Truck },
+  { key: 'delivered',  label: 'Delivered',     Icon: Home },
+];
 
 const OrderDetail = () => {
   const { id } = useParams();
@@ -19,77 +32,144 @@ const OrderDetail = () => {
   }, [id]);
 
   if (loading) return <div className="page-loader"><div className="loading-spinner" /></div>;
-  if (!order) return <div className="container" style={{ padding: '4rem' }}><p>Order not found.</p></div>;
+  if (!order) return (
+    <div className="container" style={{ padding: '4rem', textAlign: 'center' }}>
+      <p>Order not found.</p>
+      <Link to="/orders" className="btn btn-outline" style={{ marginTop: '1rem' }}>Back to Orders</Link>
+    </div>
+  );
 
   const addr = order.shippingAddress;
-  const isNew = new Date() - new Date(order.createdAt) < 5000;
+  const status = STATUS_CONFIG[order.orderStatus] || STATUS_CONFIG.pending;
+  const currentStep = status.step;
 
   return (
     <div className="order-detail-page">
       <div className="container">
-        <Link to="/orders" className="back-link" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem', color: 'var(--color-text-muted)', marginBottom: '1.5rem', textDecoration: 'none', fontSize: '0.875rem' }}>
-          <ArrowLeft size={16} /> My Orders
+        <Link to="/orders" className="order-back-link">
+          <ArrowLeft size={15} /> Back to Orders
         </Link>
 
-        {/* Success banner for new orders */}
+        {/* Success Banner */}
         {order.orderStatus === 'pending' && (
           <div className="order-success-banner">
-            <CheckCircle size={24} style={{ color: 'var(--color-success)' }} />
+            <CheckCircle size={22} />
             <div>
-              <h3>Order Placed Successfully!</h3>
-              <p>Order ID: <strong>#{order._id.slice(-8).toUpperCase()}</strong></p>
+              <h3>Order Placed Successfully! 🎉</h3>
+              <p>Order ID: <strong>#{order._id.slice(-8).toUpperCase()}</strong> · We'll start processing it soon.</p>
             </div>
           </div>
         )}
 
         <div className="order-detail-grid">
-          {/* Items */}
-          <div className="order-detail-items card">
-            <div className="order-detail-header">
-              <div>
-                <h2>Order #{order._id.slice(-8).toUpperCase()}</h2>
-                <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>{new Date(order.createdAt).toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
-              </div>
-              <span className={`badge ${statusColors[order.orderStatus] || 'badge-neutral'}`} style={{ fontSize: '0.875rem', padding: '0.375rem 0.875rem' }}>
-                {order.orderStatus.charAt(0).toUpperCase() + order.orderStatus.slice(1)}
-              </span>
-            </div>
-            {order.items.map((item, i) => (
-              <div key={i} className="order-item-row">
-                <div className="order-item-img">
-                  {item.image ? <img src={item.image} alt={item.name} /> : <Package size={24} style={{ color: 'var(--color-border)' }} />}
+          {/* Main Content */}
+          <div>
+            {/* Tracking */}
+            {order.orderStatus !== 'cancelled' && (
+              <div className="order-tracking-card">
+                <h3>Order Tracking</h3>
+                <div className="tracking-steps">
+                  {TRACKING_STEPS.map((step, i) => {
+                    const done = i <= currentStep;
+                    const active = i === currentStep;
+                    return (
+                      <div key={step.key} className={`tracking-step ${done ? 'done' : ''} ${active ? 'active' : ''}`}>
+                        <div className="tracking-step-icon">
+                          <step.Icon size={16} />
+                        </div>
+                        <span>{step.label}</span>
+                        {i < TRACKING_STEPS.length - 1 && (
+                          <div className={`tracking-line ${done ? 'done' : ''}`} />
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
-                <div className="order-item-info">
-                  <p className="order-item-name">{item.name}</p>
-                  <p style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem' }}>Qty: {item.quantity} × ₹{item.price.toFixed(2)}</p>
-                </div>
-                <p className="order-item-total">₹{(item.price * item.quantity).toFixed(2)}</p>
               </div>
-            ))}
-            <div className="order-price-summary">
-              <div className="order-price-row"><span>Subtotal</span><span>₹{order.subtotal.toFixed(2)}</span></div>
-              <div className="order-price-row"><span>Delivery</span><span style={{ color: order.deliveryCharge === 0 ? 'var(--color-success)' : 'inherit' }}>{order.deliveryCharge === 0 ? 'FREE' : `₹${order.deliveryCharge}`}</span></div>
-              <div className="order-price-row total"><span>Total</span><span>₹{order.totalAmount.toFixed(2)}</span></div>
+            )}
+
+            {/* Items */}
+            <div className="order-items-card">
+              <div className="order-items-header">
+                <div>
+                  <h2>Order #{order._id.slice(-8).toUpperCase()}</h2>
+                  <p className="order-date-text">
+                    {new Date(order.createdAt).toLocaleDateString('en-IN', {
+                      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                    })}
+                  </p>
+                </div>
+                <span
+                  className="order-status-tag"
+                  style={{ color: status.color, background: status.bg, border: `1px solid ${status.border}` }}
+                >
+                  {status.label}
+                </span>
+              </div>
+
+              {order.items.map((item, i) => (
+                <div key={i} className="order-item-row">
+                  <div className="order-item-img">
+                    {item.image
+                      ? <img src={item.image} alt={item.name} />
+                      : <Package size={20} style={{ color: '#a1a1aa' }} />
+                    }
+                  </div>
+                  <div className="order-item-info">
+                    <p className="order-item-name">{item.name}</p>
+                    <p className="order-item-meta">Qty: {item.quantity} × ₹{item.price.toFixed(2)}</p>
+                  </div>
+                  <p className="order-item-total">₹{(item.price * item.quantity).toFixed(2)}</p>
+                </div>
+              ))}
+
+              <div className="order-price-summary">
+                <div className="order-price-row"><span>Subtotal</span><span>₹{order.subtotal.toFixed(2)}</span></div>
+                <div className="order-price-row">
+                  <span>Delivery</span>
+                  <span style={{ color: order.deliveryCharge === 0 ? '#16a34a' : 'inherit' }}>
+                    {order.deliveryCharge === 0 ? 'FREE' : `₹${order.deliveryCharge}`}
+                  </span>
+                </div>
+                <div className="order-price-row total"><span>Total Paid</span><span>₹{order.totalAmount.toFixed(2)}</span></div>
+              </div>
             </div>
           </div>
 
-          {/* Shipping */}
+          {/* Sidebar */}
           <div>
-            <div className="order-shipping card">
-              <h3><MapPin size={18} style={{ display: 'inline', marginRight: '0.375rem' }} /> Delivery Address</h3>
+            <div className="order-shipping-card">
+              <h3><MapPin size={16} /> Delivery Address</h3>
               <p className="ship-name">{addr.fullName}</p>
               <p className="ship-text">{addr.address}</p>
-              <p className="ship-text">{addr.city}, {addr.state} - {addr.pincode}</p>
+              <p className="ship-text">{addr.city}, {addr.state} – {addr.pincode}</p>
               <p className="ship-text">{addr.phone}</p>
               <p className="ship-text">{addr.email}</p>
             </div>
-            <div className="order-payment card" style={{ marginTop: '1rem' }}>
+
+            <div className="order-payment-card">
               <h3>Payment</h3>
-              <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem', marginTop: '0.5rem' }}>Cash on Delivery</p>
-              <span className={`badge ${order.paymentStatus === 'paid' ? 'badge-success' : 'badge-warning'}`} style={{ marginTop: '0.5rem' }}>
-                {order.paymentStatus === 'paid' ? 'Paid' : 'Pending'}
-              </span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.75rem' }}>
+                <span style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>Cash on Delivery</span>
+                <span
+                  style={{
+                    fontSize: '0.72rem',
+                    fontWeight: 700,
+                    padding: '0.25rem 0.65rem',
+                    borderRadius: '999px',
+                    background: order.paymentStatus === 'paid' ? '#f0fdf4' : '#fffbeb',
+                    color: order.paymentStatus === 'paid' ? '#16a34a' : '#d97706',
+                    border: `1px solid ${order.paymentStatus === 'paid' ? '#bbf7d0' : '#fde68a'}`
+                  }}
+                >
+                  {order.paymentStatus === 'paid' ? 'Paid' : 'Pending'}
+                </span>
+              </div>
             </div>
+
+            <Link to="/products" className="btn btn-outline btn-full" style={{ marginTop: '1rem', justifyContent: 'center' }}>
+              Continue Shopping
+            </Link>
           </div>
         </div>
       </div>

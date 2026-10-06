@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ScrollToTop from './components/layout/ScrollToTop';
+import AnnouncementBar from './components/layout/AnnouncementBar';
 
 // Auth pages
 import Home from './pages/Home';
@@ -40,6 +41,7 @@ function App() {
   return (
     <div className="app-container">
       <ScrollToTop />
+      {!isAdminPath && <AnnouncementBar />}
       {!isAdminPath && <Navbar />}
       <main className={isAdminPath ? '' : 'main-content'}>
         <Routes>

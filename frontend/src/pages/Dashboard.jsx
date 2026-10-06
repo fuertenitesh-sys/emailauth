@@ -1,40 +1,112 @@
-import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { Shield, Sparkles } from 'lucide-react';
-import './Auth.css'; // Reuse auth styles for consistency
+import { User, Package, LogOut, ChevronRight, Shield, Mail, Edit3 } from 'lucide-react';
+import './Dashboard.css';
 
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [orderCount, setOrderCount] = useState(null);
+
+  useEffect(() => {
+    import('axios').then(({ default: axios }) => {
+      axios.get('/api/orders/my')
+        .then(res => setOrderCount(res.data.length))
+        .catch(() => setOrderCount(0));
+    });
+  }, []);
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+  };
+
+  const initials = user?.name
+    ? user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+    : 'U';
 
   return (
-    <div className="auth-page animate-fade-in">
-      <div className="auth-container" style={{ maxWidth: '600px' }}>
-        <div className="auth-header">
-          <div className="auth-logo">
-            <Shield size={48} className="logo-icon-auth" style={{ color: 'var(--color-primary)' }} />
+    <div className="profile-page">
+      <div className="container profile-container">
+
+        {/* Header */}
+        <div className="profile-header">
+          <div className="profile-avatar">
+            <span>{initials}</span>
           </div>
-          <h2>Welcome, {user?.name}!</h2>
-          <p>You have successfully authenticated into the secure dashboard.</p>
-        </div>
-        
-        <div style={{ backgroundColor: 'var(--color-bg)', padding: '1.5rem', borderRadius: '8px', marginBottom: '1.5rem' }}>
-          <h3 style={{ marginBottom: '1rem', color: 'var(--color-navy)', fontSize: '1.125rem' }}>Your Profile</h3>
-          <div style={{ display: 'grid', gap: '1rem' }}>
-            <div>
-              <p className="input-label" style={{ marginBottom: '0.25rem' }}>Full Name</p>
-              <p style={{ fontWeight: '500' }}>{user?.name}</p>
-            </div>
-            <div>
-              <p className="input-label" style={{ marginBottom: '0.25rem' }}>Email Address</p>
-              <p style={{ fontWeight: '500' }}>{user?.email}</p>
-            </div>
+          <div className="profile-header-info">
+            <h1>{user?.name}</h1>
+            <p className="profile-email">
+              <Mail size={14} />
+              {user?.email}
+            </p>
+            {user?.role === 'admin' && (
+              <span className="profile-admin-badge">
+                <Shield size={12} /> Admin
+              </span>
+            )}
           </div>
         </div>
 
-        <button onClick={logout} className="btn btn-outline btn-full btn-lg">
-          Log Out
-        </button>
+        <div className="profile-grid">
+          {/* Info Card */}
+          <div className="profile-card">
+            <div className="profile-card-header">
+              <h3>Account Details</h3>
+            </div>
+            <div className="profile-field">
+              <label>Full Name</label>
+              <p>{user?.name}</p>
+            </div>
+            <div className="profile-field">
+              <label>Email Address</label>
+              <p>{user?.email}</p>
+            </div>
+            <div className="profile-field">
+              <label>Account Type</label>
+              <p style={{ textTransform: 'capitalize' }}>{user?.role || 'Customer'}</p>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div className="profile-links-section">
+            <Link to="/orders" className="profile-quick-link">
+              <div className="profile-quick-link-icon">
+                <Package size={20} />
+              </div>
+              <div className="profile-quick-link-text">
+                <span>My Orders</span>
+                <small>{orderCount === null ? '...' : `${orderCount} order${orderCount !== 1 ? 's' : ''}`}</small>
+              </div>
+              <ChevronRight size={18} className="profile-quick-link-arrow" />
+            </Link>
+
+            {user?.role === 'admin' && (
+              <Link to="/admin/dashboard" className="profile-quick-link">
+                <div className="profile-quick-link-icon admin">
+                  <Shield size={20} />
+                </div>
+                <div className="profile-quick-link-text">
+                  <span>Admin Panel</span>
+                  <small>Manage store</small>
+                </div>
+                <ChevronRight size={18} className="profile-quick-link-arrow" />
+              </Link>
+            )}
+
+            <button className="profile-quick-link logout-link" onClick={handleLogout}>
+              <div className="profile-quick-link-icon danger">
+                <LogOut size={20} />
+              </div>
+              <div className="profile-quick-link-text">
+                <span>Sign Out</span>
+                <small>Log out of your account</small>
+              </div>
+              <ChevronRight size={18} className="profile-quick-link-arrow" />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

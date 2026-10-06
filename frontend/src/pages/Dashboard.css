@@ -1,0 +1,234 @@
+.profile-page {
+  padding: 3rem 0 6rem;
+  min-height: 70vh;
+  background: #fafafa;
+}
+
+.profile-container {
+  max-width: 900px;
+}
+
+/* Header */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 16px;
+  padding: 2rem 2.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.profile-avatar span {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.profile-header-info h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111111;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+}
+
+.profile-email {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #71717a;
+  font-size: 0.9rem;
+}
+
+.profile-admin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #f3e8ff;
+  color: #7c3aed;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+/* Grid */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+/* Info Card */
+.profile-card {
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.profile-card-header {
+  padding: 1.25rem 1.75rem;
+  border-bottom: 1px solid #f4f4f5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-card-header h3 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #111111;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.profile-field {
+  padding: 1rem 1.75rem;
+  border-bottom: 1px solid #f4f4f5;
+}
+
+.profile-field:last-child {
+  border-bottom: none;
+}
+
+.profile-field label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #a1a1aa;
+  margin-bottom: 0.3rem;
+}
+
+.profile-field p {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #111111;
+}
+
+/* Quick Links */
+.profile-links-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.profile-quick-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  width: 100%;
+  text-align: left;
+}
+
+.profile-quick-link:hover {
+  border-color: #a1a1aa;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.profile-quick-link-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #f4f4f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #111111;
+  transition: background 0.2s;
+}
+
+.profile-quick-link-icon.admin {
+  background: #f3e8ff;
+  color: #7c3aed;
+}
+
+.profile-quick-link-icon.danger {
+  background: #fff1f2;
+  color: #ef4444;
+}
+
+.profile-quick-link-text {
+  flex: 1;
+}
+
+.profile-quick-link-text span {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111111;
+  margin-bottom: 0.15rem;
+}
+
+.profile-quick-link-text small {
+  font-size: 0.8rem;
+  color: #71717a;
+}
+
+.profile-quick-link-arrow {
+  color: #a1a1aa;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.profile-quick-link:hover .profile-quick-link-arrow {
+  transform: translateX(3px);
+  color: #111111;
+}
+
+.logout-link {
+  background: none;
+  font-family: inherit;
+}
+
+.logout-link:hover {
+  border-color: #fecaca;
+  background: #fff1f2;
+}
+
+@media (max-width: 768px) {
+  .profile-page { padding: 2rem 0 4rem; }
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem;
+  }
+  .profile-email { justify-content: center; }
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+}
