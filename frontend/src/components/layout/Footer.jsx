@@ -91,35 +91,28 @@ const Footer = () => {
           </a>
         </div>
 
-        <button className="btn-find-store">FIND YOUR NEAREST STORE</button>
+        <Link to="/stores" className="btn-find-store">FIND YOUR NEAREST STORE</Link>
       </div>
 
       {/* Links Row */}
       <div className="footer-links-row">
-        <Link to="#">Contact Us</Link>
-        <Link to="#">Track my Order</Link>
-        <Link to="#">Size Guides</Link>
-        <Link to="#">Delivery and Returns Info</Link>
-        <Link to="#">Payment Methods</Link>
-        <Link to="#">Cookie Settings</Link>
-        <Link to="#">Corporate</Link>
-        <Link to="#">Student Discount</Link>
-        <Link to="#">Terms & Conditions</Link>
-        <Link to="#">Gift Cards</Link>
-        <Link to="#">FAQs</Link>
+        <Link to="/contact">Contact Us</Link>
+        <Link to="/track-order">Track my Order</Link>
+        <Link to="/size-guide">Size Guides</Link>
+        <Link to="/delivery-returns">Delivery and Returns Info</Link>
+        <Link to="/payment-methods">Payment Methods</Link>
+        <Link to="/cookie-settings">Cookie Settings</Link>
+        <Link to="/corporate">Corporate</Link>
+        <Link to="/student-discount">Student Discount</Link>
+        <Link to="/terms">Terms & Conditions</Link>
+        <Link to="/gift-cards">Gift Cards</Link>
+        <Link to="/faqs">FAQs</Link>
       </div>
 
-      {/* Deliver To */}
-      <div className="footer-deliver-to">
-        <span className="deliver-label">Deliver To</span>
-        <div className="deliver-select-wrapper">
-          <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" className="deliver-flag" />
-          <select className="deliver-select">
-            <option>UNITED KINGDOM</option>
-            <option>UNITED STATES</option>
-            <option>INDIA</option>
-          </select>
-        </div>
+      {/* Guarantee Section (Replacing Deliver To) */}
+      <div className="footer-guarantee">
+        <span className="guarantee-label">Why Choose LUMEN?</span>
+        <p className="guarantee-text">Premium materials. Ethical manufacturing. Free worldwide shipping on all orders over ₹500.</p>
       </div>
 
       {/* Bottom Row */}
@@ -134,11 +127,11 @@ const Footer = () => {
           </div>
         </div>
         <div className="footer-bottom-right">
-          <Link to="#">FAQs</Link>
-          <Link to="#">Accessibility</Link>
-          <Link to="#">Terms & Conditions</Link>
-          <Link to="#">Cookies</Link>
-          <Link to="#">Privacy</Link>
+          <Link to="/faqs">FAQs</Link>
+          <Link to="/accessibility">Accessibility</Link>
+          <Link to="/terms">Terms & Conditions</Link>
+          <Link to="/cookie-policy">Cookies</Link>
+          <Link to="/privacy">Privacy</Link>
         </div>
       </div>
     </footer>
