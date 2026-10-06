@@ -28,7 +28,7 @@ const ProductCard = ({ product }) => {
   };
 
   const handleCardClick = () => {
-    navigate(`/products/${product._id}`);
+    navigate(`/products/${product._id}`, { state: { product } });
   };
 
   const hasDiscount = product.discount > 0;

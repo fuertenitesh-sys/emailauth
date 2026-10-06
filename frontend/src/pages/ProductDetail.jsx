@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { ShoppingCart, ArrowLeft, Minus, Plus, Tag, Package, ChevronRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
@@ -9,10 +9,11 @@ import './ProductDetail.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const [product, setProduct] = useState(null);
+  const location = useLocation();
+  const initialProduct = location.state?.product || null;
+  const [product, setProduct] = useState(initialProduct);
   const [relatedProducts, setRelatedProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialProduct);
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
   const [buying, setBuying] = useState(false);
@@ -21,7 +22,7 @@ const ProductDetail = () => {
   const { addToast } = useToast();
 
   useEffect(() => {
-    setLoading(true);
+    if (!product) setLoading(true);
     setActiveImage(0);
     axios.get(`/api/products/${id}`)
       .then(async res => {
@@ -69,7 +70,7 @@ const ProductDetail = () => {
   };
 
   return (
-    <div className="product-detail-page">
+    <div className={`product-detail-page ${initialProduct ? 'fade-in' : ''}`}>
       <div className="container">
         {/* Breadcrumb */}
         <div className="product-detail-breadcrumb">
