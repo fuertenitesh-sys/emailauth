@@ -23,13 +23,31 @@ const OrderDetail = () => {
   const { id } = useParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [confirming, setConfirming] = useState(false);
 
   useEffect(() => {
+    fetchOrder();
+  }, [id]);
+
+  const fetchOrder = () => {
     axios.get(`/api/orders/${id}`)
       .then(res => setOrder(res.data))
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [id]);
+  };
+
+  const handleConfirmDelivery = async () => {
+    if (!window.confirm('Are you sure you have received this order?')) return;
+    setConfirming(true);
+    try {
+      const res = await axios.put(`/api/orders/${id}/deliver`);
+      setOrder(res.data);
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to confirm delivery');
+    } finally {
+      setConfirming(false);
+    }
+  };
 
   if (loading) return <div className="page-loader"><div className="loading-spinner" /></div>;
   if (!order) return (
@@ -166,6 +184,17 @@ const OrderDetail = () => {
                 </span>
               </div>
             </div>
+
+            {order.orderStatus === 'shipped' && (
+              <button 
+                className="btn btn-primary btn-full" 
+                style={{ marginTop: '1rem', justifyContent: 'center', background: '#16a34a', color: '#fff', borderColor: '#16a34a' }}
+                onClick={handleConfirmDelivery}
+                disabled={confirming}
+              >
+                {confirming ? 'Confirming...' : 'Confirm Delivery'}
+              </button>
+            )}
 
             <Link to="/products" className="btn btn-outline btn-full" style={{ marginTop: '1rem', justifyContent: 'center' }}>
               Continue Shopping

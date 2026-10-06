@@ -101,10 +101,7 @@ export const trackOrder = async (req, res) => {
     
     const cleanOrderNumber = orderNumber.replace('#', '').toUpperCase();
     
-    // Find all orders for this user
     const orders = await Order.find({ user: user._id });
-    
-    // Match by the short ID (last 8 chars)
     const order = orders.find(o => o._id.toString().toUpperCase().endsWith(cleanOrderNumber));
     
     if (!order) return res.status(404).json({ message: 'Order not found with that ID' });
@@ -117,6 +114,29 @@ export const trackOrder = async (req, res) => {
       totalAmount: order.totalAmount,
       itemsCount: order.items.length
     });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+export const confirmDelivery = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+    
+    if (order.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+    
+    if (order.orderStatus !== 'shipped') {
+      return res.status(400).json({ message: 'Order must be shipped before confirming delivery' });
+    }
+    
+    order.orderStatus = 'delivered';
+    order.paymentStatus = 'paid';
+    await order.save();
+    
+    res.json(order);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
