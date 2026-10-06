@@ -11,6 +11,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { cartItemCount } = useCart();
   const { user, logout } = useContext(AuthContext);
@@ -64,23 +65,25 @@ const Navbar = () => {
               <Search size={20} strokeWidth={1.5} />
             </button>
             
-            <div className="navbar-user-menu">
-              <button className="navbar-icon-btn">
+            <div className="navbar-user-menu" 
+                 onMouseEnter={() => setIsUserMenuOpen(true)}
+                 onMouseLeave={() => setIsUserMenuOpen(false)}>
+              <button className="navbar-icon-btn" onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}>
                 <User size={20} strokeWidth={1.5} />
               </button>
-              <div className="navbar-dropdown">
+              <div className={`navbar-dropdown ${isUserMenuOpen ? 'show' : ''}`}>
                 {user ? (
                   <>
                     <div className="navbar-dropdown-header">Hi, {user.name?.split(' ')[0]}</div>
-                    <Link to="/orders" className="navbar-dropdown-item">My Orders</Link>
-                    <Link to="/dashboard" className="navbar-dropdown-item">Profile</Link>
-                    {user.role === 'admin' && <Link to="/admin" className="navbar-dropdown-item">Admin Panel</Link>}
-                    <button className="navbar-dropdown-item text-danger" onClick={handleLogout}>Logout</button>
+                    <Link to="/orders" className="navbar-dropdown-item" onClick={() => setIsUserMenuOpen(false)}>My Orders</Link>
+                    <Link to="/dashboard" className="navbar-dropdown-item" onClick={() => setIsUserMenuOpen(false)}>Profile</Link>
+                    {user.role === 'admin' && <Link to="/admin/dashboard" className="navbar-dropdown-item" onClick={() => setIsUserMenuOpen(false)}>Admin Panel</Link>}
+                    <button className="navbar-dropdown-item text-danger" onClick={() => { setIsUserMenuOpen(false); handleLogout(); }}>Logout</button>
                   </>
                 ) : (
                   <>
-                    <Link to="/login" className="navbar-dropdown-item">Log In</Link>
-                    <Link to="/signup" className="navbar-dropdown-item">Create Account</Link>
+                    <Link to="/login" className="navbar-dropdown-item" onClick={() => setIsUserMenuOpen(false)}>Log In</Link>
+                    <Link to="/signup" className="navbar-dropdown-item" onClick={() => setIsUserMenuOpen(false)}>Create Account</Link>
                   </>
                 )}
               </div>

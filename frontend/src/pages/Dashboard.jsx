@@ -92,8 +92,8 @@ const Dashboard = () => {
                 <p>{user?.email}</p>
               </div>
               <div className="pd-detail-item">
-                <label>PASSWORD</label>
-                <p>••••••••</p>
+                <label>ADDRESS</label>
+                <p>{recentOrder?.shippingAddress?.address ? `${recentOrder.shippingAddress.address}, ${recentOrder.shippingAddress.city}` : 'No address saved.'}</p>
               </div>
             </div>
           </section>

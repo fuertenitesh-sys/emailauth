@@ -118,7 +118,7 @@
   transition: all 0.2s ease;
 }
 
-.navbar-user-menu:hover .navbar-dropdown {
+.navbar-dropdown.show {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
