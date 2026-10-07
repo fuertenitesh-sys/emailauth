@@ -15,6 +15,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { cartItemCount } = useCart();
   const { user, logout } = useContext(AuthContext);
+  const [hoveredCategory, setHoveredCategory] = useState(null);
   const [categories, setCategories] = useState([
     { _id: 'fallback_1', name: 'Books' },
     { _id: 'fallback_2', name: 'Sports' },
@@ -52,11 +53,56 @@ const Navbar = () => {
           </button>
 
           {/* Left Navigation */}
-          <div className="navbar-links-left">
+          <div className="navbar-links-left" onMouseLeave={() => setHoveredCategory(null)}>
             {categories.slice(0, 5).map(cat => (
-              <Link key={cat._id} to={`/products?category=${cat.name.toLowerCase()}`} className="navbar-link">{cat.name}</Link>
+              <div 
+                key={cat._id} 
+                className="navbar-link-wrapper"
+                onMouseEnter={() => setHoveredCategory(cat._id)}
+              >
+                <Link to={`/products?category=${cat.name.toLowerCase()}`} className="navbar-link">{cat.name}</Link>
+                
+                {hoveredCategory === cat._id && (
+                  <div className="mega-menu">
+                    <div className="container mega-menu-container">
+                      <div className="mega-menu-grid">
+                        <div className="mega-column">
+                          <h4>Top Brands</h4>
+                          <Link to={`/products?category=${cat.name.toLowerCase()}&brand=nike`} onClick={() => setHoveredCategory(null)}>Nike</Link>
+                          <Link to={`/products?category=${cat.name.toLowerCase()}&brand=adidas`} onClick={() => setHoveredCategory(null)}>Adidas</Link>
+                          <Link to={`/products?category=${cat.name.toLowerCase()}&brand=puma`} onClick={() => setHoveredCategory(null)}>Puma</Link>
+                          <Link to={`/products?category=${cat.name.toLowerCase()}&brand=newbalance`} onClick={() => setHoveredCategory(null)}>New Balance</Link>
+                        </div>
+                        <div className="mega-column">
+                          <h4>Collections</h4>
+                          <Link to={`/products?category=${cat.name.toLowerCase()}`} onClick={() => setHoveredCategory(null)}>New Arrivals</Link>
+                          <Link to={`/products?category=${cat.name.toLowerCase()}`} onClick={() => setHoveredCategory(null)}>Best Sellers</Link>
+                          <Link to={`/products?category=${cat.name.toLowerCase()}`} onClick={() => setHoveredCategory(null)}>Trending Now</Link>
+                          <Link to={`/products?category=${cat.name.toLowerCase()}`} onClick={() => setHoveredCategory(null)}>Limited Edition</Link>
+                        </div>
+                        <div className="mega-column">
+                          <h4>Categories</h4>
+                          <Link to={`/products?category=${cat.name.toLowerCase()}`} onClick={() => setHoveredCategory(null)}>All {cat.name}</Link>
+                          <Link to={`/products?category=${cat.name.toLowerCase()}`} onClick={() => setHoveredCategory(null)}>Premium {cat.name}</Link>
+                          <Link to={`/products?category=${cat.name.toLowerCase()}`} onClick={() => setHoveredCategory(null)}>Essentials</Link>
+                          <Link to={`/products?category=${cat.name.toLowerCase()}`} onClick={() => setHoveredCategory(null)}>Sale</Link>
+                        </div>
+                        <div className="mega-image-col">
+                           <div className="mega-image-wrapper">
+                             <img src="/images/blog/shoes-minimalist.jpg" alt={cat.name} />
+                             <div className="mega-image-text">
+                               <h3>{cat.name.toUpperCase()}</h3>
+                               <p>PREMIUM SELECTION</p>
+                             </div>
+                           </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             ))}
-            <Link to="/products" className="navbar-link">Shop All</Link>
+            <Link to="/products" className="navbar-link" onMouseEnter={() => setHoveredCategory(null)}>Shop All</Link>
           </div>
 
           {/* Center Brand */}
