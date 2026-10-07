@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Mail, Calendar } from 'lucide-react';
 import AdminNav from './AdminNav';
 import AdminHeader from '../../components/admin/AdminHeader';
-import { adminCache } from '../../utils/adminCache';
+import { adminCache, setAdminCache } from '../../utils/adminCache';
 import './Admin.css';
 
 const AdminSubscribers = () => {
@@ -19,7 +19,7 @@ const AdminSubscribers = () => {
     try {
       if (!adminCache.subscribers) setLoading(true);
       const res = await axios.get('/api/subscribers');
-      adminCache.subscribers = res.data.data;
+      setAdminCache('subscribers', res.data.data);
       setSubscribers(res.data.data);
       setError(null);
     } catch (err) {

@@ -5,7 +5,7 @@ import { Shield, LogOut, ChevronDown } from 'lucide-react';
 import './Admin.css';
 import AdminNav from './AdminNav';
 import AdminHeader from '../../components/admin/AdminHeader';
-import { adminCache } from '../../utils/adminCache';
+import { adminCache, setAdminCache } from '../../utils/adminCache';
 
 const statusOptions = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
 const statusColors = { pending: 'badge-warning', processing: 'badge-primary', shipped: 'badge-primary', delivered: 'badge-success', cancelled: 'badge-danger' };
@@ -22,7 +22,7 @@ const AdminOrders = () => {
   const fetchOrders = async () => {
     try {
       const res = await axios.get('/api/admin/orders');
-      adminCache.orders = res.data;
+      setAdminCache('orders', res.data);
       setOrders(res.data);
     } catch (err) {
       if (err.response?.status === 401) navigate('/admin');

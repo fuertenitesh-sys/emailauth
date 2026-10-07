@@ -5,7 +5,7 @@ import { Plus, Pencil, Trash2, Shield, LogOut } from 'lucide-react';
 import './Admin.css';
 import AdminNav from './AdminNav';
 import AdminHeader from '../../components/admin/AdminHeader';
-import { adminCache } from '../../utils/adminCache';
+import { adminCache, setAdminCache } from '../../utils/adminCache';
 
 const AdminCategories = () => {
   const [categories, setCategories] = useState(adminCache.categories || []);
@@ -18,7 +18,7 @@ const AdminCategories = () => {
   const fetchCategories = async () => {
     try {
       const res = await axios.get('/api/admin/categories');
-      adminCache.categories = res.data;
+      setAdminCache('categories', res.data);
       setCategories(res.data);
     } catch (err) {
       if (err.response?.status === 401) navigate('/admin');

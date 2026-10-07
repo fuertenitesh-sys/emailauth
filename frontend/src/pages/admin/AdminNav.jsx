@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Package, Tag, ShoppingBag, Users, Shield, Mail } from 'lucide-react';
 import axios from 'axios';
-import { adminCache } from '../../utils/adminCache';
+import { adminCache, setAdminCache } from '../../utils/adminCache';
 import './Admin.css';
 
 const navItems = [
@@ -27,12 +27,12 @@ const AdminNav = () => {
   
   useEffect(() => {
     // Prefetch all admin data in background so that clicking a tab is 100% instant
-    if (!adminCache.users) axios.get('/api/admin/users').then(res => adminCache.users = res.data).catch(()=>{});
-    if (!adminCache.orders) axios.get('/api/admin/orders').then(res => adminCache.orders = res.data).catch(()=>{});
-    if (!adminCache.products) axios.get('/api/admin/products').then(res => adminCache.products = res.data).catch(()=>{});
-    if (!adminCache.categories) axios.get('/api/admin/categories').then(res => adminCache.categories = res.data).catch(()=>{});
-    if (!adminCache.subscribers) axios.get('/api/subscribers').then(res => adminCache.subscribers = res.data.data).catch(()=>{});
-    if (!adminCache.stats) axios.get('/api/admin/stats').then(res => adminCache.stats = res.data).catch(()=>{});
+    if (!adminCache.users) axios.get('/api/admin/users').then(res => setAdminCache('users', res.data)).catch(()=>{});
+    if (!adminCache.orders) axios.get('/api/admin/orders').then(res => setAdminCache('orders', res.data)).catch(()=>{});
+    if (!adminCache.products) axios.get('/api/admin/products').then(res => setAdminCache('products', res.data)).catch(()=>{});
+    if (!adminCache.categories) axios.get('/api/admin/categories').then(res => setAdminCache('categories', res.data)).catch(()=>{});
+    if (!adminCache.subscribers) axios.get('/api/subscribers').then(res => setAdminCache('subscribers', res.data.data)).catch(()=>{});
+    if (!adminCache.stats) axios.get('/api/admin/stats').then(res => setAdminCache('stats', res.data)).catch(()=>{});
   }, []);
 
   return (

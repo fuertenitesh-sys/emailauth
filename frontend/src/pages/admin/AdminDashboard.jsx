@@ -5,7 +5,7 @@ import { Shield, LogOut, Users, ShoppingBag, Package, Tag, TrendingUp, Clock, Ch
 import './Admin.css';
 import AdminNav from './AdminNav';
 import AdminHeader from '../../components/admin/AdminHeader';
-import { adminCache } from '../../utils/adminCache';
+import { adminCache, setAdminCache } from '../../utils/adminCache';
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState(adminCache.users || []);
@@ -28,15 +28,15 @@ const AdminDashboard = () => {
           axios.get('/api/admin/stats'),
           axios.get('/api/admin/orders')
         ]);
-        adminCache.users = usersRes.data;
-        adminCache.stats = statsRes.data;
-        adminCache.recentOrders = ordersRes.data.slice(0, 5);
+        setAdminCache('users', usersRes.data);
+        setAdminCache('stats', statsRes.data);
+        setAdminCache('recentOrders', ordersRes.data.slice(0, 5));
         setUsers(adminCache.users);
         setStats(adminCache.stats);
         setRecentOrders(adminCache.recentOrders);
       } else {
         const res = await axios.get('/api/admin/users');
-        adminCache.users = res.data;
+        setAdminCache('users', res.data);
         setUsers(adminCache.users);
       }
     } catch (err) {
