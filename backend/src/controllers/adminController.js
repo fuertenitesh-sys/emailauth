@@ -33,15 +33,18 @@ export const getAdminUsers = async (req, res) => {
 
 export const getDashboardStats = async (req, res) => {
   try {
-    const [totalUsers, totalProducts, totalCategories, totalOrders, orders] = await Promise.all([
+    const [totalUsers, totalProducts, totalCategories, totalOrders, pendingOrders, revenueAgg] = await Promise.all([
       User.countDocuments(),
       Product.countDocuments(),
       Category.countDocuments(),
       Order.countDocuments(),
-      Order.find().select('totalAmount orderStatus')
+      Order.countDocuments({ orderStatus: 'pending' }),
+      Order.aggregate([
+        { $match: { orderStatus: { $ne: 'cancelled' } } },
+        { $group: { _id: null, totalRevenue: { $sum: '$totalAmount' } } }
+      ])
     ]);
-    const revenue = orders.filter(o => o.orderStatus !== 'cancelled').reduce((sum, o) => sum + o.totalAmount, 0);
-    const pendingOrders = orders.filter(o => o.orderStatus === 'pending').length;
+    const revenue = revenueAgg.length > 0 ? revenueAgg[0].totalRevenue : 0;
     res.json({ totalUsers, totalProducts, totalCategories, totalOrders, revenue, pendingOrders });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });

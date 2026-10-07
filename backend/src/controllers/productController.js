@@ -24,7 +24,10 @@ export const getProducts = async (req, res) => {
     }
     
     // Agar koi search text aaya hai, toh naam mein regex (partial match) laga ke dhoondho (case insensitive)
-    if (search) query.name = { $regex: search, $options: 'i' };
+    if (search) {
+      const escapeRegex = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      query.name = { $regex: escapeRegex(search), $options: 'i' };
+    }
     
     // Sorting (Naya pehle, sasta pehle ya mehnga pehle)
     let sortOption = { createdAt: -1 }; // Default: Sabse latest product pehle
