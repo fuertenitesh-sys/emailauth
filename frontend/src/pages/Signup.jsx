@@ -85,7 +85,7 @@ const Signup = () => {
                 <Mail size={32} className="logo-icon-auth" />
               </div>
               <h2>Create an account</h2>
-              <p>Join us today to get started.</p>
+              <p>Create account and get 10% discount.</p>
             </div>
             
             {error && (
