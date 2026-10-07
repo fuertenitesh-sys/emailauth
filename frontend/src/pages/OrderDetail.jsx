@@ -24,6 +24,7 @@ const OrderDetail = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [confirming, setConfirming] = useState(false);
+  const [paying, setPaying] = useState(false);
 
   useEffect(() => {
     fetchOrder();
@@ -34,6 +35,70 @@ const OrderDetail = () => {
       .then(res => setOrder(res.data))
       .catch(() => {})
       .finally(() => setLoading(false));
+  };
+
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handlePaymentRetry = async () => {
+    setPaying(true);
+    try {
+      const resScript = await loadRazorpayScript();
+      if (!resScript) {
+        alert('Razorpay SDK failed to load.');
+        setPaying(false);
+        return;
+      }
+
+      const paymentRes = await axios.post('/api/payment/create-order', { orderId: order._id });
+
+      const options = {
+        key: paymentRes.data.key_id,
+        amount: paymentRes.data.amount,
+        currency: paymentRes.data.currency,
+        name: 'Lumen Admin',
+        description: 'Test Payment Retry',
+        order_id: paymentRes.data.id,
+        handler: async function (response) {
+          try {
+            setPaying(true);
+            await axios.post('/api/payment/verify', {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+            fetchOrder(); // refresh order to show PAID status
+          } catch (err) {
+            alert('Payment Verification Failed.');
+          } finally {
+            setPaying(false);
+          }
+        },
+        prefill: {
+          name: order.shippingAddress.fullName,
+          email: order.shippingAddress.email,
+          contact: order.shippingAddress.phone,
+        },
+        theme: { color: '#8b5cf6' }
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.on('payment.failed', function () {
+        alert('Payment Failed. Please try again.');
+        setPaying(false);
+      });
+      paymentObject.open();
+    } catch (err) {
+      alert('Failed to initiate payment retry.');
+      setPaying(false);
+    }
   };
 
   const handleConfirmDelivery = async () => {
@@ -168,7 +233,7 @@ const OrderDetail = () => {
             <div className="order-payment-card">
               <h3>Payment</h3>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.75rem' }}>
-                <span style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>Cash on Delivery</span>
+                <span style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>Online Payment (Razorpay)</span>
                 <span
                   style={{
                     fontSize: '0.72rem',
@@ -184,6 +249,17 @@ const OrderDetail = () => {
                 </span>
               </div>
             </div>
+
+            {order.paymentStatus === 'pending' && order.orderStatus !== 'cancelled' && (
+              <button 
+                className="btn btn-primary btn-full" 
+                style={{ marginTop: '1rem', justifyContent: 'center' }}
+                onClick={handlePaymentRetry}
+                disabled={paying}
+              >
+                {paying ? 'Processing...' : 'Pay Now (Retry)'}
+              </button>
+            )}
 
             {order.orderStatus === 'shipped' && (
               <button 

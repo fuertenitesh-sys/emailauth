@@ -64,9 +64,14 @@ export const verifyPayment = async (req, res) => {
     const isAuthentic = expectedSignature === razorpay_signature;
 
     if (isAuthentic) {
-      // Find the corresponding payment record
-      const payment = await Payment.findOne({ razorpayOrderId: razorpay_order_id });
-      if (!payment) return res.status(404).json({ message: 'Payment record not found' });
+      // Find the corresponding payment record and ensure it belongs to the authenticated user
+      const payment = await Payment.findOne({ razorpayOrderId: razorpay_order_id, user: req.user._id });
+      if (!payment) return res.status(404).json({ message: 'Payment record not found or unauthorized' });
+
+      // Idempotency check: if already successful, do not duplicate updates
+      if (payment.status === 'successful') {
+        return res.json({ success: true, message: 'Payment already verified successfully' });
+      }
 
       // Update payment record
       payment.razorpayPaymentId = razorpay_payment_id;
