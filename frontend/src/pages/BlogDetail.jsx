@@ -68,8 +68,10 @@ const BlogDetail = () => {
     <article className="blog-detail-page">
       <div className="blog-detail-hero" style={{ backgroundImage: `url(${post.image})` }}>
         <div className="blog-detail-overlay"></div>
-        <div className="container blog-detail-hero-content">
+        <div className="container blog-hero-top-nav">
           <Link to="/" className="blog-back-btn"><ArrowLeft size={16} /> Back</Link>
+        </div>
+        <div className="container blog-detail-hero-content">
           <span className="blog-detail-category">{post.category}</span>
           <h1 className="blog-detail-title">{post.title}</h1>
           <div className="blog-detail-meta">
