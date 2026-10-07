@@ -22,10 +22,24 @@ const Navbar = () => {
     { _id: 'fallback_3', name: 'Electronics' },
     { _id: 'fallback_4', name: 'Shoes' }
   ]);
+  const [categoryProducts, setCategoryProducts] = useState({}); // { catId: [products] }
   
   useEffect(() => {
     axios.get('/api/categories').then(res => setCategories(res.data)).catch(() => setCategories([]));
   }, []);
+
+  const handleCategoryHover = (cat) => {
+    setHoveredCategory(cat._id);
+    // Fetch products for this category only once and cache
+    if (!categoryProducts[cat._id]) {
+      axios.get(`/api/products?limit=8&category=${encodeURIComponent(cat.name)}`)
+        .then(res => {
+          const list = res.data.products || res.data || [];
+          setCategoryProducts(prev => ({ ...prev, [cat._id]: list }));
+        })
+        .catch(() => {});
+    }
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -55,49 +69,49 @@ const Navbar = () => {
           {/* Left Navigation */}
           <div className="navbar-links-left">
             {categories.slice(0, 5).map(cat => (
-              <div 
-                key={cat._id} 
+              <div
+                key={cat._id}
                 className="navbar-link-wrapper"
-                onMouseEnter={() => setHoveredCategory(cat._id)}
+                onMouseEnter={() => handleCategoryHover(cat)}
+                onMouseLeave={() => setHoveredCategory(null)}
               >
-                <Link to={`/products?category=${cat.name.toLowerCase()}`} className="navbar-link">{cat.name}</Link>
-                
+                <Link to={`/products?category=${cat.name.toLowerCase()}`} className="navbar-link">
+                  {cat.name}
+                </Link>
+
                 {hoveredCategory === cat._id && (
-                  <div className="mega-menu" onMouseEnter={() => setHoveredCategory(cat._id)}>
-                    <div className="container mega-menu-container">
-                      <div className="mega-menu-grid">
-                        <div className="mega-column">
-                          <h4>Top Brands</h4>
-                          <Link to={`/products?category=${cat.name.toLowerCase()}&brand=nike`} onClick={() => setHoveredCategory(null)}>Nike</Link>
-                          <Link to={`/products?category=${cat.name.toLowerCase()}&brand=adidas`} onClick={() => setHoveredCategory(null)}>Adidas</Link>
-                          <Link to={`/products?category=${cat.name.toLowerCase()}&brand=puma`} onClick={() => setHoveredCategory(null)}>Puma</Link>
-                          <Link to={`/products?category=${cat.name.toLowerCase()}&brand=newbalance`} onClick={() => setHoveredCategory(null)}>New Balance</Link>
-                        </div>
-                        <div className="mega-column">
-                          <h4>Collections</h4>
-                          <Link to={`/products?category=${cat.name.toLowerCase()}`} onClick={() => setHoveredCategory(null)}>New Arrivals</Link>
-                          <Link to={`/products?category=${cat.name.toLowerCase()}`} onClick={() => setHoveredCategory(null)}>Best Sellers</Link>
-                          <Link to={`/products?category=${cat.name.toLowerCase()}`} onClick={() => setHoveredCategory(null)}>Trending Now</Link>
-                          <Link to={`/products?category=${cat.name.toLowerCase()}`} onClick={() => setHoveredCategory(null)}>Limited Edition</Link>
-                        </div>
-                        <div className="mega-column">
-                          <h4>Categories</h4>
-                          <Link to={`/products?category=${cat.name.toLowerCase()}`} onClick={() => setHoveredCategory(null)}>All {cat.name}</Link>
-                          <Link to={`/products?category=${cat.name.toLowerCase()}`} onClick={() => setHoveredCategory(null)}>Premium {cat.name}</Link>
-                          <Link to={`/products?category=${cat.name.toLowerCase()}`} onClick={() => setHoveredCategory(null)}>Essentials</Link>
-                          <Link to={`/products?category=${cat.name.toLowerCase()}`} onClick={() => setHoveredCategory(null)}>Sale</Link>
-                        </div>
-                        <div className="mega-image-col">
-                           <div className="mega-image-wrapper">
-                             <img src="/images/blog/shoes-minimalist.jpg" alt={cat.name} />
-                             <div className="mega-image-text">
-                               <h3>{cat.name.toUpperCase()}</h3>
-                               <p>PREMIUM SELECTION</p>
-                             </div>
-                           </div>
-                        </div>
-                      </div>
-                    </div>
+                  <div className="cat-dropdown">
+                    {/* Header link — view all */}
+                    <Link
+                      to={`/products?category=${cat.name.toLowerCase()}`}
+                      className="cat-dropdown-header"
+                      onClick={() => setHoveredCategory(null)}
+                    >
+                      All {cat.name}
+                    </Link>
+
+                    <div className="cat-dropdown-divider" />
+
+                    {/* Real products from backend */}
+                    {!categoryProducts[cat._id] ? (
+                      <div className="cat-dropdown-loading">Loading…</div>
+                    ) : categoryProducts[cat._id].length === 0 ? (
+                      <div className="cat-dropdown-loading">No products found</div>
+                    ) : (
+                      categoryProducts[cat._id].map(p => (
+                        <Link
+                          key={p._id}
+                          to={`/products/${p._id}`}
+                          className="cat-dropdown-item"
+                          onClick={() => setHoveredCategory(null)}
+                        >
+                          {p.images?.[0] && (
+                            <img src={p.images[0]} alt={p.name} className="cat-dropdown-img" />
+                          )}
+                          <span className="cat-dropdown-name">{p.name}</span>
+                        </Link>
+                      ))
+                    )}
                   </div>
                 )}
               </div>
