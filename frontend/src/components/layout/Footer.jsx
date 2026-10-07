@@ -16,7 +16,12 @@ const Footer = () => {
         addToast('Successfully subscribed! Use code LUMEN10 for 10% off.', 'success');
         emailInput.value = '';
       } catch (err) {
-        addToast(err.response?.data?.message || 'Failed to subscribe', 'error');
+        const errorMsg = err.response?.data?.message || 'Failed to subscribe';
+        if (errorMsg === 'You are already subscribed!') {
+          addToast('Already subscribed! Your code is LUMEN10', 'success');
+        } else {
+          addToast(errorMsg, 'error');
+        }
       }
     }
   };
