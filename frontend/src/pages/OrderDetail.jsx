@@ -229,7 +229,7 @@ const OrderDetail = () => {
             <div className="order-payment-card">
               <h3>Payment</h3>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.75rem' }}>
-                <span style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>Online Payment (Razorpay)</span>
+                <span style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>Online Payment (Cashfree)</span>
                 <span
                   style={{
                     fontSize: '0.72rem',

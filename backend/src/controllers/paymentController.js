@@ -12,7 +12,7 @@ const getCashfreeHeaders = () => ({
   'Content-Type': 'application/json',
 });
 
-export const createRazorpayOrder = async (req, res) => {
+export const createCashfreeOrder = async (req, res) => {
   try {
     const { orderId } = req.body;
     if (!orderId) return res.status(400).json({ message: 'Order ID is required' });
@@ -94,14 +94,19 @@ export const verifyPayment = async (req, res) => {
     const successfulPayment = payments.find(p => p.payment_status === 'SUCCESS');
 
     if (successfulPayment) {
-      // Update payment record
-      payment.status = 'successful';
-      await payment.save();
+      // Use atomic update to prevent race conditions from concurrent clicks/webhooks
+      const updatedPayment = await Payment.findOneAndUpdate(
+        { _id: payment._id, status: { $ne: 'successful' } },
+        { status: 'successful' },
+        { new: true }
+      );
 
-      // Update Order status
-      await Order.findByIdAndUpdate(payment.orderId, { paymentStatus: 'paid' });
+      if (updatedPayment) {
+        // Update Order status
+        await Order.findByIdAndUpdate(payment.orderId, { paymentStatus: 'paid' });
+      }
 
-      res.json({ success: true, message: 'Payment verified successfully' });
+      return res.json({ success: true, message: 'Payment verified successfully' });
     } else {
       // If no successful payment found
       await Payment.findOneAndUpdate(

@@ -181,7 +181,7 @@ const Checkout = () => {
               <div className="payment-option selected">
                 <div className="payment-option-radio" />
                 <div className="payment-option-info">
-                  <span>Razorpay (Online Payment)</span>
+                  <span>Cashfree (Online Payment)</span>
                   <small>Securely pay via UPI, Cards, or Netbanking</small>
                 </div>
                 <Lock size={20} style={{ color: '#111', marginLeft: 'auto' }} />
