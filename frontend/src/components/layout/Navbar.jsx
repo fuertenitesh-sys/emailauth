@@ -15,7 +15,12 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { cartItemCount } = useCart();
   const { user, logout } = useContext(AuthContext);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([
+    { _id: 'fallback_1', name: 'Books' },
+    { _id: 'fallback_2', name: 'Sports' },
+    { _id: 'fallback_3', name: 'Electronics' },
+    { _id: 'fallback_4', name: 'Shoes' }
+  ]);
   
   useEffect(() => {
     axios.get('/api/categories').then(res => setCategories(res.data)).catch(() => setCategories([]));
