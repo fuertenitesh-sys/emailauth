@@ -5,7 +5,8 @@ export const adminCache = {
   recentOrders: JSON.parse(localStorage.getItem('admin_recentOrders')) || null,
   products: JSON.parse(localStorage.getItem('admin_products')) || null,
   categories: JSON.parse(localStorage.getItem('admin_categories')) || null,
-  subscribers: JSON.parse(localStorage.getItem('admin_subscribers')) || null
+  subscribers: JSON.parse(localStorage.getItem('admin_subscribers')) || null,
+  payments: JSON.parse(localStorage.getItem('admin_payments')) || null
 };
 
 export const setAdminCache = (key, data) => {

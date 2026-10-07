@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Package, Tag, ShoppingBag, Users, Shield, Mail } from 'lucide-react';
+import { LayoutDashboard, Package, Tag, ShoppingBag, Users, Shield, Mail, CreditCard } from 'lucide-react';
 import axios from 'axios';
 import { adminCache, setAdminCache } from '../../utils/adminCache';
 import './Admin.css';
@@ -18,6 +18,7 @@ const navItems = [
   },
   { path: '/admin/categories', label: 'Categories', icon: Tag },
   { path: '/admin/orders', label: 'Orders', icon: ShoppingBag },
+  { path: '/admin/payments', label: 'Payments', icon: CreditCard },
   { path: '/admin/users', label: 'Users', icon: Users },
   { path: '/admin/subscribers', label: 'Subscribers', icon: Mail },
 ];

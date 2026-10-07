@@ -2,6 +2,7 @@ import User from '../models/User.js';
 import Order from '../models/Order.js';
 import Product from '../models/Product.js';
 import Category from '../models/Category.js';
+import Payment from '../models/Payment.js';
 import jwt from 'jsonwebtoken';
 
 export const adminLogin = async (req, res) => {
@@ -55,6 +56,15 @@ export const getAdminAllOrders = async (req, res) => {
   try {
     const orders = await Order.find().populate('user', 'name email').sort({ createdAt: -1 });
     res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+export const getAdminAllPayments = async (req, res) => {
+  try {
+    const payments = await Payment.find().populate('user', 'name email').sort({ createdAt: -1 });
+    res.json(payments);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }

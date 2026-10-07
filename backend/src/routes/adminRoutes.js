@@ -1,5 +1,5 @@
 import express from 'express';
-import { adminLogin, adminLogout, getAdminUsers, getDashboardStats, getAdminAllOrders, updateAdminOrderStatus } from '../controllers/adminController.js';
+import { adminLogin, adminLogout, getAdminUsers, getDashboardStats, getAdminAllOrders, updateAdminOrderStatus, getAdminAllPayments } from '../controllers/adminController.js';
 import { getAllCategories, createCategory, updateCategory, deleteCategory } from '../controllers/categoryController.js';
 import { getAllProducts, createProduct, updateProduct, deleteProduct } from '../controllers/productController.js';
 import { protectAdmin } from '../middleware/adminMiddleware.js';
@@ -24,5 +24,7 @@ router.delete('/products/:id', protectAdmin, deleteProduct);
 
 router.get('/orders', protectAdmin, getAdminAllOrders);
 router.put('/orders/:id/status', protectAdmin, updateAdminOrderStatus);
+
+router.get('/payments', protectAdmin, getAdminAllPayments);
 
 export default router;

@@ -39,6 +39,7 @@ import AdminAddCategory from './pages/admin/AdminAddCategory';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminAddProduct from './pages/admin/AdminAddProduct';
 import AdminOrders from './pages/admin/AdminOrders';
+import AdminPayments from './pages/admin/AdminPayments';
 import AdminSubscribers from './pages/admin/AdminSubscribers';
 
 import './App.css';
@@ -100,6 +101,7 @@ function App() {
           <Route path="/admin/products/add" element={<AdminAddProduct />} />
           <Route path="/admin/products/edit/:id" element={<AdminAddProduct />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
+          <Route path="/admin/payments" element={<AdminPayments />} />
           <Route path="/admin/users" element={<AdminDashboard />} />
           <Route path="/admin/subscribers" element={<AdminSubscribers />} />
 
