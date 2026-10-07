@@ -1,7 +1,16 @@
-import Razorpay from 'razorpay';
-import crypto from 'crypto';
+import axios from 'axios';
 import Order from '../models/Order.js';
 import Payment from '../models/Payment.js';
+
+const CASHFREE_BASE_URL = 'https://sandbox.cashfree.com/pg';
+const API_VERSION = '2023-08-01';
+
+const getCashfreeHeaders = () => ({
+  'x-client-id': process.env.CASHFREE_APP_ID,
+  'x-client-secret': process.env.CASHFREE_SECRET_KEY,
+  'x-api-version': API_VERSION,
+  'Content-Type': 'application/json',
+});
 
 export const createRazorpayOrder = async (req, res) => {
   try {
@@ -9,73 +18,83 @@ export const createRazorpayOrder = async (req, res) => {
     if (!orderId) return res.status(400).json({ message: 'Order ID is required' });
 
     // Ensure the order belongs to the user and is still pending
-    const order = await Order.findOne({ _id: orderId, user: req.user._id });
+    const order = await Order.findOne({ _id: orderId, user: req.user._id }).populate('user');
     if (!order) return res.status(404).json({ message: 'Order not found' });
     if (order.paymentStatus === 'paid') return res.status(400).json({ message: 'Order is already paid' });
 
-    const razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID,
-      key_secret: process.env.RAZORPAY_KEY_SECRET,
-    });
+    const cashfreeOrderId = `order_${order._id}_${Date.now()}`;
 
-    // Razorpay amount is in paise (smallest currency unit), so multiply INR by 100
-    const options = {
-      amount: Math.round(order.totalAmount * 100),
-      currency: 'INR',
-      receipt: `receipt_order_${order._id}`,
+    const payload = {
+      order_id: cashfreeOrderId,
+      order_amount: order.totalAmount,
+      order_currency: 'INR',
+      customer_details: {
+        customer_id: req.user._id.toString(),
+        customer_phone: order.shippingAddress.phone || '9999999999',
+        customer_name: order.shippingAddress.fullName || req.user.name,
+        customer_email: order.shippingAddress.email || req.user.email || 'customer@example.com'
+      },
+      order_meta: {
+        // Safe redirect handling for Sandbox, though mostly frontend SDK is used
+        return_url: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/orders/${order._id}`
+      }
     };
 
-    const razorpayOrder = await razorpay.orders.create(options);
+    // Create Cashfree Order
+    const response = await axios.post(`${CASHFREE_BASE_URL}/orders`, payload, {
+      headers: getCashfreeHeaders()
+    });
+
+    const paymentSessionId = response.data.payment_session_id;
 
     // Create a pending payment record
     await Payment.create({
       user: req.user._id,
       orderId: order._id,
-      razorpayOrderId: razorpayOrder.id,
+      cfOrderId: cashfreeOrderId,
+      cfPaymentSessionId: paymentSessionId,
       amount: order.totalAmount,
     });
 
     res.json({
-      id: razorpayOrder.id,
-      currency: razorpayOrder.currency,
-      amount: razorpayOrder.amount,
-      key_id: process.env.RAZORPAY_KEY_ID // Send only public key to frontend
+      paymentSessionId: paymentSessionId,
+      orderId: cashfreeOrderId
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error creating Razorpay order', error: error.message });
+    console.error('Cashfree Create Order Error:', error.response?.data || error.message);
+    res.status(500).json({ message: 'Error creating Cashfree order', error: error.response?.data?.message || error.message });
   }
 };
 
 export const verifyPayment = async (req, res) => {
   try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    const { order_id } = req.body; // Cashfree Order ID
 
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-      return res.status(400).json({ message: 'Payment details are missing' });
+    if (!order_id) {
+      return res.status(400).json({ message: 'Order ID is missing' });
     }
 
-    const body = razorpay_order_id + "|" + razorpay_payment_id;
+    // Find the corresponding payment record and ensure it belongs to the authenticated user
+    const payment = await Payment.findOne({ cfOrderId: order_id, user: req.user._id });
+    if (!payment) return res.status(404).json({ message: 'Payment record not found or unauthorized' });
 
-    const expectedSignature = crypto
-      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
-      .update(body.toString())
-      .digest('hex');
+    // Idempotency check: if already successful, do not duplicate updates
+    if (payment.status === 'successful') {
+      return res.json({ success: true, message: 'Payment already verified successfully' });
+    }
 
-    const isAuthentic = expectedSignature === razorpay_signature;
+    // Call Cashfree API to verify payment status
+    const response = await axios.get(`${CASHFREE_BASE_URL}/orders/${order_id}/payments`, {
+      headers: getCashfreeHeaders()
+    });
 
-    if (isAuthentic) {
-      // Find the corresponding payment record and ensure it belongs to the authenticated user
-      const payment = await Payment.findOne({ razorpayOrderId: razorpay_order_id, user: req.user._id });
-      if (!payment) return res.status(404).json({ message: 'Payment record not found or unauthorized' });
+    const payments = response.data;
+    
+    // Check if there is any successful payment in the array
+    const successfulPayment = payments.find(p => p.payment_status === 'SUCCESS');
 
-      // Idempotency check: if already successful, do not duplicate updates
-      if (payment.status === 'successful') {
-        return res.json({ success: true, message: 'Payment already verified successfully' });
-      }
-
+    if (successfulPayment) {
       // Update payment record
-      payment.razorpayPaymentId = razorpay_payment_id;
-      payment.razorpaySignature = razorpay_signature;
       payment.status = 'successful';
       await payment.save();
 
@@ -84,14 +103,15 @@ export const verifyPayment = async (req, res) => {
 
       res.json({ success: true, message: 'Payment verified successfully' });
     } else {
-      // Signature mismatch
+      // If no successful payment found
       await Payment.findOneAndUpdate(
-        { razorpayOrderId: razorpay_order_id },
+        { cfOrderId: order_id },
         { status: 'failed' }
       );
-      res.status(400).json({ success: false, message: 'Invalid payment signature' });
+      res.status(400).json({ success: false, message: 'Payment not successful yet' });
     }
   } catch (error) {
-    res.status(500).json({ message: 'Error verifying payment', error: error.message });
+    console.error('Cashfree Verify Error:', error.response?.data || error.message);
+    res.status(500).json({ message: 'Error verifying payment', error: error.response?.data?.message || error.message });
   }
 };

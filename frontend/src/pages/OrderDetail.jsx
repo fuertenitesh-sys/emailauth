@@ -37,10 +37,14 @@ const OrderDetail = () => {
       .finally(() => setLoading(false));
   };
 
-  const loadRazorpayScript = () => {
+  const loadCashfreeScript = () => {
     return new Promise((resolve) => {
+      if (window.Cashfree) {
+        resolve(true);
+        return;
+      }
       const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
       script.onload = () => resolve(true);
       script.onerror = () => resolve(false);
       document.body.appendChild(script);
@@ -50,29 +54,34 @@ const OrderDetail = () => {
   const handlePaymentRetry = async () => {
     setPaying(true);
     try {
-      const resScript = await loadRazorpayScript();
+      const resScript = await loadCashfreeScript();
       if (!resScript) {
-        alert('Razorpay SDK failed to load.');
+        alert('Cashfree SDK failed to load.');
         setPaying(false);
         return;
       }
 
       const paymentRes = await axios.post('/api/payment/create-order', { orderId: order._id });
 
-      const options = {
-        key: paymentRes.data.key_id,
-        amount: paymentRes.data.amount,
-        currency: paymentRes.data.currency,
-        name: 'Lumen Admin',
-        description: 'Test Payment Retry',
-        order_id: paymentRes.data.id,
-        handler: async function (response) {
+      const cashfree = window.Cashfree({
+        mode: "sandbox",
+      });
+
+      let checkoutOptions = {
+        paymentSessionId: paymentRes.data.paymentSessionId,
+        redirectTarget: "_modal",
+      };
+
+      cashfree.checkout(checkoutOptions).then(async (result) => {
+        if(result.error){
+          alert('Payment Failed or Closed. Please try again.');
+          setPaying(false);
+        }
+        if(result.paymentDetails){
           try {
             setPaying(true);
             await axios.post('/api/payment/verify', {
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
+              order_id: paymentRes.data.orderId
             });
             fetchOrder(); // refresh order to show PAID status
           } catch (err) {
@@ -80,21 +89,8 @@ const OrderDetail = () => {
           } finally {
             setPaying(false);
           }
-        },
-        prefill: {
-          name: order.shippingAddress.fullName,
-          email: order.shippingAddress.email,
-          contact: order.shippingAddress.phone,
-        },
-        theme: { color: '#8b5cf6' }
-      };
-
-      const paymentObject = new window.Razorpay(options);
-      paymentObject.on('payment.failed', function () {
-        alert('Payment Failed. Please try again.');
-        setPaying(false);
+        }
       });
-      paymentObject.open();
     } catch (err) {
       alert('Failed to initiate payment retry.');
       setPaying(false);

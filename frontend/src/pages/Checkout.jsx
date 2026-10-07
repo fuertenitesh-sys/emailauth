@@ -29,10 +29,14 @@ const Checkout = () => {
 
   const handleChange = e => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
-  const loadRazorpayScript = () => {
+  const loadCashfreeScript = () => {
     return new Promise((resolve) => {
+      if (window.Cashfree) {
+        resolve(true);
+        return;
+      }
       const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
       script.onload = () => resolve(true);
       script.onerror = () => resolve(false);
       document.body.appendChild(script);
@@ -48,32 +52,40 @@ const Checkout = () => {
       const res = await axios.post('/api/orders', { shippingAddress: form });
       const order = res.data;
 
-      // 2. Load Razorpay script
-      const resScript = await loadRazorpayScript();
+      // 2. Load Cashfree script
+      const resScript = await loadCashfreeScript();
       if (!resScript) {
-        addToast('Razorpay SDK failed to load.', 'error');
+        addToast('Cashfree SDK failed to load.', 'error');
         setPlacing(false);
         return;
       }
 
-      // 3. Create Razorpay order
+      // 3. Create Cashfree order
       const paymentRes = await axios.post('/api/payment/create-order', { orderId: order._id });
 
-      // 4. Open Razorpay Checkout
-      const options = {
-        key: paymentRes.data.key_id,
-        amount: paymentRes.data.amount,
-        currency: paymentRes.data.currency,
-        name: 'Lumen Admin',
-        description: 'Test Payment',
-        order_id: paymentRes.data.id,
-        handler: async function (response) {
+      // 4. Open Cashfree Checkout
+      const cashfree = window.Cashfree({
+        mode: "sandbox", 
+      });
+
+      let checkoutOptions = {
+        paymentSessionId: paymentRes.data.paymentSessionId,
+        redirectTarget: "_modal",
+      };
+
+      cashfree.checkout(checkoutOptions).then(async (result) => {
+        if(result.error){
+          addToast('Payment Failed or Closed. Please try again.', 'error');
+          navigate(`/orders/${order._id}`);
+        }
+        if(result.redirect){
+          addToast('Payment redirecting...', 'info');
+        }
+        if(result.paymentDetails){
           try {
             setPlacing(true);
             await axios.post('/api/payment/verify', {
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
+              order_id: paymentRes.data.orderId
             });
             addToast('Payment Successful! 🎉', 'success');
             navigate(`/orders/${order._id}`);
@@ -81,23 +93,8 @@ const Checkout = () => {
             addToast('Payment Verification Failed.', 'error');
             navigate(`/orders/${order._id}`);
           }
-        },
-        prefill: {
-          name: form.fullName,
-          email: form.email,
-          contact: form.phone,
-        },
-        theme: {
-          color: '#8b5cf6'
         }
-      };
-
-      const paymentObject = new window.Razorpay(options);
-      paymentObject.on('payment.failed', function (response) {
-        addToast('Payment Failed. Please try again.', 'error');
-        navigate(`/orders/${order._id}`);
       });
-      paymentObject.open();
       
       // Keep button in loading state until modal is closed/resolved
       setPlacing(false);
