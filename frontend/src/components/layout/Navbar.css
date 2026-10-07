@@ -290,31 +290,16 @@
 }
 
 .cat-dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
+  display: block;
   padding: 0.55rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #334155;
   text-decoration: none;
-  transition: background 0.15s;
+  transition: background 0.12s, color 0.12s;
+  white-space: nowrap;
 }
 .cat-dropdown-item:hover {
-  background: #f8fafc;
-}
-
-.cat-dropdown-img {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  object-fit: cover;
-  flex-shrink: 0;
-  border: 1px solid #e2e8f0;
-}
-
-.cat-dropdown-name {
-  font-size: 0.83rem;
-  font-weight: 500;
-  color: #1e293b;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  background: #f1f5f9;
+  color: #8b5cf6;
 }

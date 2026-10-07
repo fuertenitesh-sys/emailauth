@@ -22,24 +22,25 @@ const Navbar = () => {
     { _id: 'fallback_3', name: 'Electronics' },
     { _id: 'fallback_4', name: 'Shoes' }
   ]);
-  const [categoryProducts, setCategoryProducts] = useState({}); // { catId: [products] }
-  
-  useEffect(() => {
-    axios.get('/api/categories').then(res => setCategories(res.data)).catch(() => setCategories([]));
-  }, []);
+  const [categoryProducts, setCategoryProducts] = useState({});
 
-  const handleCategoryHover = (cat) => {
-    setHoveredCategory(cat._id);
-    // Fetch products for this category only once and cache
-    if (!categoryProducts[cat._id]) {
-      axios.get(`/api/products?limit=8&category=${encodeURIComponent(cat.name)}`)
-        .then(res => {
-          const list = res.data.products || res.data || [];
-          setCategoryProducts(prev => ({ ...prev, [cat._id]: list }));
-        })
-        .catch(() => {});
-    }
-  };
+  useEffect(() => {
+    axios.get('/api/categories')
+      .then(res => {
+        const cats = res.data;
+        setCategories(cats);
+        // Pre-fetch products for every category in background so hover is instant
+        cats.forEach(cat => {
+          axios.get(`/api/products?limit=10&category=${encodeURIComponent(cat.name)}`)
+            .then(r => {
+              const list = r.data.products || r.data || [];
+              setCategoryProducts(prev => ({ ...prev, [cat._id]: list }));
+            })
+            .catch(() => {});
+        });
+      })
+      .catch(() => setCategories([]));
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -72,16 +73,15 @@ const Navbar = () => {
               <div
                 key={cat._id}
                 className="navbar-link-wrapper"
-                onMouseEnter={() => handleCategoryHover(cat)}
+                onMouseEnter={() => setHoveredCategory(cat._id)}
                 onMouseLeave={() => setHoveredCategory(null)}
               >
                 <Link to={`/products?category=${cat.name.toLowerCase()}`} className="navbar-link">
                   {cat.name}
                 </Link>
 
-                {hoveredCategory === cat._id && (
+                {hoveredCategory === cat._id && categoryProducts[cat._id]?.length > 0 && (
                   <div className="cat-dropdown">
-                    {/* Header link — view all */}
                     <Link
                       to={`/products?category=${cat.name.toLowerCase()}`}
                       className="cat-dropdown-header"
@@ -89,29 +89,17 @@ const Navbar = () => {
                     >
                       All {cat.name}
                     </Link>
-
                     <div className="cat-dropdown-divider" />
-
-                    {/* Real products from backend */}
-                    {!categoryProducts[cat._id] ? (
-                      <div className="cat-dropdown-loading">Loading…</div>
-                    ) : categoryProducts[cat._id].length === 0 ? (
-                      <div className="cat-dropdown-loading">No products found</div>
-                    ) : (
-                      categoryProducts[cat._id].map(p => (
-                        <Link
-                          key={p._id}
-                          to={`/products/${p._id}`}
-                          className="cat-dropdown-item"
-                          onClick={() => setHoveredCategory(null)}
-                        >
-                          {p.images?.[0] && (
-                            <img src={p.images[0]} alt={p.name} className="cat-dropdown-img" />
-                          )}
-                          <span className="cat-dropdown-name">{p.name}</span>
-                        </Link>
-                      ))
-                    )}
+                    {categoryProducts[cat._id].map(p => (
+                      <Link
+                        key={p._id}
+                        to={`/products/${p._id}`}
+                        className="cat-dropdown-item"
+                        onClick={() => setHoveredCategory(null)}
+                      >
+                        {p.name}
+                      </Link>
+                    ))}
                   </div>
                 )}
               </div>
