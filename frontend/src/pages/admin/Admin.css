@@ -918,25 +918,32 @@ body.admin-dark .admin-nav-link.active {
   background: #8b5cf6;
   color: #ffffff;
 }
-/* Skeleton Loading Effect */
-.skeleton-row {
-  animation: pulse 1.5s infinite ease-in-out;
+/* Skeleton Loading Effect - Premium Shimmer */
+.skeleton-row td {
+  padding: 1.25rem 2rem;
 }
 
 .skeleton-cell {
-  height: 20px;
-  background-color: #2a2a35;
-  border-radius: 4px;
-  margin: 0.5rem 0;
+  height: 18px;
+  background: linear-gradient(90deg, #e2e8f0 25%, #c8d4e4 50%, #e2e8f0 75%);
+  background-size: 400% 100%;
+  border-radius: 6px;
+  margin: 0;
   width: 100%;
+  animation: shimmer 1.6s infinite linear;
 }
 
-.skeleton-cell.short { width: 40%; }
-.skeleton-cell.medium { width: 70%; }
-.skeleton-cell.long { width: 90%; }
+body.admin-dark .skeleton-cell {
+  background: linear-gradient(90deg, #1e1e2e 25%, #2e2e3e 50%, #1e1e2e 75%);
+  background-size: 400% 100%;
+  animation: shimmer 1.6s infinite linear;
+}
 
-@keyframes pulse {
-  0% { opacity: 0.6; }
-  50% { opacity: 0.3; }
-  100% { opacity: 0.6; }
+.skeleton-cell.short  { width: 40%; }
+.skeleton-cell.medium { width: 65%; }
+.skeleton-cell.long   { width: 88%; }
+
+@keyframes shimmer {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
 }
