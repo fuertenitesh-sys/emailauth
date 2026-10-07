@@ -4,6 +4,7 @@ import axios from 'axios';
 import ProductCard from '../components/ui/ProductCard';
 import { ProductCardSkeleton } from '../components/ui/Skeleton';
 import { SlidersHorizontal, ChevronDown, Truck, ShieldCheck, RefreshCw } from 'lucide-react';
+import BlogSection from '../components/home/BlogSection';
 import './Products.css';
 
 const SORT_OPTIONS = [
@@ -280,6 +281,9 @@ const Products = () => {
           )}
         </div>
       </div>
+      
+      {/* Blog Section */}
+      <BlogSection />
     </div>
   );
 };

@@ -4,6 +4,7 @@ import axios from 'axios';
 import ProductCard from '../components/ui/ProductCard';
 import { ProductCardSkeleton } from '../components/ui/Skeleton';
 import { ArrowRight, TrendingUp, Star } from 'lucide-react';
+import BlogSection from '../components/home/BlogSection';
 import './Home.css';
 
 const Home = () => {
@@ -202,6 +203,9 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* ===== BLOG ===== */}
+      <BlogSection />
 
       {/* ===== NEWSLETTER ===== */}
       <section className="newsletter-section">

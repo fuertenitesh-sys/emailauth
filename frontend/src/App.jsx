@@ -20,6 +20,7 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
 import OrderDetail from './pages/OrderDetail';
+import BlogDetail from './pages/BlogDetail';
 
 // Info pages
 import ContactPage from './pages/info/ContactPage';
@@ -61,6 +62,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetail />} />
+          <Route path="/blog/:id" element={<BlogDetail />} />
           <Route path="/category/:id" element={<CategoryProducts />} />
 
           {/* Protected user routes */}
