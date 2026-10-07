@@ -13,7 +13,7 @@ const Footer = () => {
     if (emailInput && emailInput.value) {
       try {
         await axios.post('/api/subscribers', { email: emailInput.value });
-        addToast('Successfully subscribed to LUMEN!', 'success');
+        addToast('Successfully subscribed! Use code LUMEN10 for 10% off.', 'success');
         emailInput.value = '';
       } catch (err) {
         addToast(err.response?.data?.message || 'Failed to subscribe', 'error');
