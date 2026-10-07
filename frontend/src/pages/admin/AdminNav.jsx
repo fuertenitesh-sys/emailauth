@@ -34,7 +34,7 @@ const AdminNav = () => {
     <aside className="admin-sidebar">
       <div className="admin-sidebar-header">
         <div className="admin-sidebar-icon"><Shield size={24} /></div>
-        <h1 className="admin-sidebar-title">Lumen Admin <span style={{fontSize: '0.6rem', color: '#8b5cf6', verticalAlign: 'top'}}>v2</span></h1>
+        <h1 className="admin-sidebar-title">Lumen Admin</h1>
       </div>
       <nav className="admin-nav">
         {navItems.map(({ path, label, icon: Icon, subItems }) => {
