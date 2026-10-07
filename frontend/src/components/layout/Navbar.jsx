@@ -45,7 +45,7 @@ const Navbar = () => {
   return (
     <>
       <nav className="navbar">
-        <div className="container navbar-inner">
+        <div className="container navbar-inner" onMouseLeave={() => setHoveredCategory(null)}>
           
           {/* Mobile Menu Toggle */}
           <button className="navbar-mobile-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -53,7 +53,7 @@ const Navbar = () => {
           </button>
 
           {/* Left Navigation */}
-          <div className="navbar-links-left" onMouseLeave={() => setHoveredCategory(null)}>
+          <div className="navbar-links-left">
             {categories.slice(0, 5).map(cat => (
               <div 
                 key={cat._id} 
@@ -63,7 +63,7 @@ const Navbar = () => {
                 <Link to={`/products?category=${cat.name.toLowerCase()}`} className="navbar-link">{cat.name}</Link>
                 
                 {hoveredCategory === cat._id && (
-                  <div className="mega-menu">
+                  <div className="mega-menu" onMouseEnter={() => setHoveredCategory(cat._id)}>
                     <div className="container mega-menu-container">
                       <div className="mega-menu-grid">
                         <div className="mega-column">

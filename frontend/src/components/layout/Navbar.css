@@ -245,16 +245,17 @@
 }
 
 .mega-menu {
-  position: absolute;
-  top: 100%;
+  position: fixed;
+  top: var(--header-height);
   left: 0;
-  width: 100%;
+  width: 100vw;
   background: #111111;
   color: #ffffff;
   padding: 3rem 0;
   border-top: 1px solid #333;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   animation: megaMenuFadeIn 0.2s ease-out forwards;
+  z-index: 9999;
 }
 
 @keyframes megaMenuFadeIn {
