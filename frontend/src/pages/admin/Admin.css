@@ -918,3 +918,25 @@ body.admin-dark .admin-nav-link.active {
   background: #8b5cf6;
   color: #ffffff;
 }
+/* Skeleton Loading Effect */
+.skeleton-row {
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton-cell {
+  height: 20px;
+  background-color: #2a2a35;
+  border-radius: 4px;
+  margin: 0.5rem 0;
+  width: 100%;
+}
+
+.skeleton-cell.short { width: 40%; }
+.skeleton-cell.medium { width: 70%; }
+.skeleton-cell.long { width: 90%; }
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 0.3; }
+  100% { opacity: 0.6; }
+}

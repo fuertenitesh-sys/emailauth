@@ -58,7 +58,19 @@ const AdminOrders = () => {
                 <tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Details</th></tr>
               </thead>
               <tbody>
-                {loading ? null : orders.length === 0 ? (
+                {loading ? (
+                  Array(5).fill(0).map((_, i) => (
+                    <tr key={`skeleton-${i}`} className="skeleton-row">
+                      <td><div className="skeleton-cell medium"></div></td>
+                      <td><div className="skeleton-cell long"></div></td>
+                      <td><div className="skeleton-cell short"></div></td>
+                      <td><div className="skeleton-cell short"></div></td>
+                      <td><div className="skeleton-cell short"></div></td>
+                      <td><div className="skeleton-cell medium"></div></td>
+                      <td><div className="skeleton-cell short"></div></td>
+                    </tr>
+                  ))
+                ) : orders.length === 0 ? (
                   <tr><td colSpan="7" style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>No orders yet.</td></tr>
                 ) : (
                   orders.map(order => (

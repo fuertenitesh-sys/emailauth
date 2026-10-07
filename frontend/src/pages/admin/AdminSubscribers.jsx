@@ -52,7 +52,15 @@ const AdminSubscribers = () => {
                 </tr>
               </thead>
               <tbody>
-                {loading ? null : subscribers.length === 0 ? (
+                {loading ? (
+                  Array(5).fill(0).map((_, i) => (
+                    <tr key={`skeleton-${i}`} className="skeleton-row">
+                      <td><div className="skeleton-cell long"></div></td>
+                      <td><div className="skeleton-cell medium"></div></td>
+                      <td><div className="skeleton-cell short"></div></td>
+                    </tr>
+                  ))
+                ) : subscribers.length === 0 ? (
                   <tr><td colSpan="3" style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>No subscribers yet.</td></tr>
                 ) : (
                   subscribers.map((sub) => (

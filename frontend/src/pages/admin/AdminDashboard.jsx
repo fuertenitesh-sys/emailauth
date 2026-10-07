@@ -118,7 +118,16 @@ const AdminDashboard = () => {
             <table className="admin-table">
               <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Joined</th></tr></thead>
               <tbody>
-                {loading ? null : currentUsers.length > 0 ? (
+                {loading ? (
+                  Array(5).fill(0).map((_, i) => (
+                    <tr key={`skeleton-${i}`} className="skeleton-row">
+                      <td><div className="skeleton-cell short"></div></td>
+                      <td><div className="skeleton-cell medium"></div></td>
+                      <td><div className="skeleton-cell long"></div></td>
+                      <td><div className="skeleton-cell medium"></div></td>
+                    </tr>
+                  ))
+                ) : currentUsers.length > 0 ? (
                   currentUsers.map((user, i) => (
                     <tr key={user._id}>
                       <td style={{ color: 'var(--color-text-muted)', fontFamily: 'monospace' }}>{indexOfFirst + i + 1}</td>

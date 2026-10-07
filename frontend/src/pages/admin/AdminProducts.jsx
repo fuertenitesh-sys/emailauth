@@ -87,7 +87,20 @@ const AdminProducts = () => {
                 </tr>
               </thead>
               <tbody>
-                {loading ? null : products.length === 0 ? (
+                {loading ? (
+                  Array(6).fill(0).map((_, i) => (
+                    <tr key={`skeleton-${i}`} className="skeleton-row">
+                      <td><div className="skeleton-cell" style={{width:'40px', height:'40px', borderRadius:'8px'}}></div></td>
+                      <td><div className="skeleton-cell medium"></div></td>
+                      <td><div className="skeleton-cell short"></div></td>
+                      <td><div className="skeleton-cell short"></div></td>
+                      <td><div className="skeleton-cell short"></div></td>
+                      <td><div className="skeleton-cell short"></div></td>
+                      <td><div className="skeleton-cell short"></div></td>
+                      <td><div className="skeleton-cell short"></div></td>
+                    </tr>
+                  ))
+                ) : products.length === 0 ? (
                   <tr><td colSpan="8" style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>No products yet. <Link to="/admin/products/add" style={{ color: 'var(--color-primary)' }}>Add one now.</Link></td></tr>
                 ) : (
                   products.filter(p => {

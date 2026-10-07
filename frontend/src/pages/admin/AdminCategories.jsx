@@ -48,7 +48,17 @@ const AdminCategories = () => {
                   <table className="admin-table">
                     <thead><tr><th>Image</th><th>Name</th><th>Description</th><th>Status</th><th>Actions</th></tr></thead>
                     <tbody>
-                      {loading ? null : categories.length === 0 ? (
+                      {loading ? (
+                        Array(4).fill(0).map((_, i) => (
+                          <tr key={`skeleton-${i}`} className="skeleton-row">
+                            <td><div className="skeleton-cell" style={{width:'50px', height:'50px', borderRadius:'8px'}}></div></td>
+                            <td><div className="skeleton-cell medium"></div></td>
+                            <td><div className="skeleton-cell long"></div></td>
+                            <td><div className="skeleton-cell short"></div></td>
+                            <td><div className="skeleton-cell short"></div></td>
+                          </tr>
+                        ))
+                      ) : categories.length === 0 ? (
                         <tr><td colSpan="5" style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>No categories yet. Create one above.</td></tr>
                       ) : (
                         categories.map(cat => (
