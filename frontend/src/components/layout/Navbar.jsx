@@ -15,31 +15,15 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { cartItemCount } = useCart();
   const { user, logout } = useContext(AuthContext);
-  const [hoveredCategory, setHoveredCategory] = useState(null);
   const [categories, setCategories] = useState([
     { _id: 'fallback_1', name: 'Books' },
     { _id: 'fallback_2', name: 'Sports' },
     { _id: 'fallback_3', name: 'Electronics' },
     { _id: 'fallback_4', name: 'Shoes' }
   ]);
-  const [categoryProducts, setCategoryProducts] = useState({});
 
   useEffect(() => {
-    axios.get('/api/categories')
-      .then(res => {
-        const cats = res.data;
-        setCategories(cats);
-        // Pre-fetch products for every category in background so hover is instant
-        cats.forEach(cat => {
-          axios.get(`/api/products?limit=10&category=${encodeURIComponent(cat.name)}`)
-            .then(r => {
-              const list = r.data.products || r.data || [];
-              setCategoryProducts(prev => ({ ...prev, [cat._id]: list }));
-            })
-            .catch(() => {});
-        });
-      })
-      .catch(() => setCategories([]));
+    axios.get('/api/categories').then(res => setCategories(res.data)).catch(() => setCategories([]));
   }, []);
 
   const handleSearch = (e) => {
@@ -60,7 +44,7 @@ const Navbar = () => {
   return (
     <>
       <nav className="navbar">
-        <div className="container navbar-inner" onMouseLeave={() => setHoveredCategory(null)}>
+        <div className="container navbar-inner">
           
           {/* Mobile Menu Toggle */}
           <button className="navbar-mobile-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -70,41 +54,15 @@ const Navbar = () => {
           {/* Left Navigation */}
           <div className="navbar-links-left">
             {categories.slice(0, 5).map(cat => (
-              <div
+              <Link
                 key={cat._id}
-                className="navbar-link-wrapper"
-                onMouseEnter={() => setHoveredCategory(cat._id)}
-                onMouseLeave={() => setHoveredCategory(null)}
+                to={`/products?category=${cat.name.toLowerCase()}`}
+                className="navbar-link"
               >
-                <Link to={`/products?category=${cat.name.toLowerCase()}`} className="navbar-link">
-                  {cat.name}
-                </Link>
-
-                {hoveredCategory === cat._id && categoryProducts[cat._id]?.length > 0 && (
-                  <div className="cat-dropdown">
-                    <Link
-                      to={`/products?category=${cat.name.toLowerCase()}`}
-                      className="cat-dropdown-header"
-                      onClick={() => setHoveredCategory(null)}
-                    >
-                      All {cat.name}
-                    </Link>
-                    <div className="cat-dropdown-divider" />
-                    {categoryProducts[cat._id].map(p => (
-                      <Link
-                        key={p._id}
-                        to={`/products/${p._id}`}
-                        className="cat-dropdown-item"
-                        onClick={() => setHoveredCategory(null)}
-                      >
-                        {p.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
+                {cat.name}
+              </Link>
             ))}
-            <Link to="/products" className="navbar-link" onMouseEnter={() => setHoveredCategory(null)}>Shop All</Link>
+            <Link to="/products" className="navbar-link">Shop All</Link>
           </div>
 
           {/* Center Brand */}
