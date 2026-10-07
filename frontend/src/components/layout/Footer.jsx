@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Apple, Play } from 'lucide-react';
 import axios from 'axios';
@@ -6,6 +7,7 @@ import './Footer.css';
 
 const Footer = () => {
   const { addToast } = useToast();
+  const [subscribed, setSubscribed] = useState(false);
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
@@ -15,10 +17,12 @@ const Footer = () => {
         await axios.post('/api/subscribers', { email: emailInput.value });
         addToast('Successfully subscribed! Use code LUMEN10 for 10% off.', 'success');
         emailInput.value = '';
+        setSubscribed(true);
       } catch (err) {
         const errorMsg = err.response?.data?.message || 'Failed to subscribe';
         if (errorMsg === 'You are already subscribed!') {
           addToast('Already subscribed! Your code is LUMEN10', 'success');
+          setSubscribed(true);
         } else {
           addToast(errorMsg, 'error');
         }
@@ -73,13 +77,22 @@ const Footer = () => {
       {/* Newsletter & Social */}
       <div className="footer-center-section">
         <h2>Sign up to get 10% off*</h2>
-        <form className="newsletter-form-minimal" onSubmit={handleSubscribe}>
-          <input type="email" placeholder="Enter your email here" required />
-          <button type="submit"><ChevronRight size={18} /></button>
-        </form>
-        <p className="newsletter-disclaimer">
-          By entering your email address you will be opted in to receive communications from LUMEN. For full details on how we use your information, view our <a href="#" onClick={(e) => e.preventDefault()}>privacy policy</a>.
-        </p>
+        {!subscribed ? (
+          <>
+            <form className="newsletter-form-minimal" onSubmit={handleSubscribe}>
+              <input type="email" placeholder="Enter your email here" required />
+              <button type="submit"><ChevronRight size={18} /></button>
+            </form>
+            <p className="newsletter-disclaimer">
+              By entering your email address you will be opted in to receive communications from LUMEN. For full details on how we use your information, view our <a href="#" onClick={(e) => e.preventDefault()}>privacy policy</a>.
+            </p>
+          </>
+        ) : (
+          <div style={{ margin: '1rem 0', padding: '1rem', background: '#111', color: '#fff', borderRadius: '4px', textAlign: 'center', border: '1px solid #333' }}>
+            <p style={{ margin: '0 0 0.5rem', fontSize: '0.85rem' }}>Successfully subscribed!</p>
+            <p style={{ margin: 0, fontSize: '1.2rem', fontWeight: 'bold', letterSpacing: '0.1em' }}>CODE: LUMEN10</p>
+          </div>
+        )}
 
         <div className="footer-social-center">
           <a href="#" aria-label="Instagram" onClick={(e) => e.preventDefault()}>
