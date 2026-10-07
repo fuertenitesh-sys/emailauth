@@ -3,13 +3,12 @@ import axios from 'axios';
 import { Mail, Calendar } from 'lucide-react';
 import AdminNav from './AdminNav';
 import AdminHeader from '../../components/admin/AdminHeader';
+import { adminCache } from '../../utils/adminCache';
 import './Admin.css';
 
-let cachedSubscribers = null;
-
 const AdminSubscribers = () => {
-  const [subscribers, setSubscribers] = useState(cachedSubscribers || []);
-  const [loading, setLoading] = useState(!cachedSubscribers);
+  const [subscribers, setSubscribers] = useState(adminCache.subscribers || []);
+  const [loading, setLoading] = useState(!adminCache.subscribers);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -18,9 +17,9 @@ const AdminSubscribers = () => {
 
   const fetchSubscribers = async () => {
     try {
-      if (!cachedSubscribers) setLoading(true);
+      if (!adminCache.subscribers) setLoading(true);
       const res = await axios.get('/api/subscribers');
-      cachedSubscribers = res.data.data;
+      adminCache.subscribers = res.data.data;
       setSubscribers(res.data.data);
       setError(null);
     } catch (err) {

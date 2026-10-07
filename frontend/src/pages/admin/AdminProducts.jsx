@@ -5,12 +5,11 @@ import { Plus, Pencil, Trash2, Shield, LogOut, Package, Search } from 'lucide-re
 import './Admin.css';
 import AdminNav from './AdminNav';
 import AdminHeader from '../../components/admin/AdminHeader';
-
-let cachedProducts = null;
+import { adminCache } from '../../utils/adminCache';
 
 const AdminProducts = () => {
-  const [products, setProducts] = useState(cachedProducts || []);
-  const [loading, setLoading] = useState(!cachedProducts);
+  const [products, setProducts] = useState(adminCache.products || []);
+  const [loading, setLoading] = useState(!adminCache.products);
   const [deleting, setDeleting] = useState(null);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -28,7 +27,7 @@ const AdminProducts = () => {
   const fetchProducts = async () => {
     try {
       const res = await axios.get('/api/admin/products');
-      cachedProducts = res.data;
+      adminCache.products = res.data;
       setProducts(res.data);
     } catch (err) {
       if (err.response?.status === 401) navigate('/admin');

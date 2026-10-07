@@ -5,16 +5,13 @@ import { Shield, LogOut, Users, ShoppingBag, Package, Tag, TrendingUp, Clock, Ch
 import './Admin.css';
 import AdminNav from './AdminNav';
 import AdminHeader from '../../components/admin/AdminHeader';
-
-let cachedUsers = null;
-let cachedStats = null;
-let cachedRecentOrders = null;
+import { adminCache } from '../../utils/adminCache';
 
 const AdminDashboard = () => {
-  const [users, setUsers] = useState(cachedUsers || []);
-  const [stats, setStats] = useState(cachedStats);
-  const [recentOrders, setRecentOrders] = useState(cachedRecentOrders || []);
-  const [loading, setLoading] = useState(!cachedUsers);
+  const [users, setUsers] = useState(adminCache.users || []);
+  const [stats, setStats] = useState(adminCache.stats);
+  const [recentOrders, setRecentOrders] = useState(adminCache.recentOrders || []);
+  const [loading, setLoading] = useState(!adminCache.users);
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 10;
   const navigate = useNavigate();
@@ -31,16 +28,16 @@ const AdminDashboard = () => {
           axios.get('/api/admin/stats'),
           axios.get('/api/admin/orders')
         ]);
-        cachedUsers = usersRes.data;
-        cachedStats = statsRes.data;
-        cachedRecentOrders = ordersRes.data.slice(0, 5);
-        setUsers(cachedUsers);
-        setStats(cachedStats);
-        setRecentOrders(cachedRecentOrders);
+        adminCache.users = usersRes.data;
+        adminCache.stats = statsRes.data;
+        adminCache.recentOrders = ordersRes.data.slice(0, 5);
+        setUsers(adminCache.users);
+        setStats(adminCache.stats);
+        setRecentOrders(adminCache.recentOrders);
       } else {
         const res = await axios.get('/api/admin/users');
-        cachedUsers = res.data;
-        setUsers(cachedUsers);
+        adminCache.users = res.data;
+        setUsers(adminCache.users);
       }
     } catch (err) {
       if (err.response?.status === 401) navigate('/admin');
