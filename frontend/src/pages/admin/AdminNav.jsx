@@ -26,20 +26,15 @@ const AdminNav = () => {
   const location = useLocation();
   
   useEffect(() => {
-    // Prefetch all admin data in background so that clicking a tab is 100% instant
-    if (!adminCache.users) axios.get('/api/admin/users').then(res => setAdminCache('users', res.data)).catch(()=>{});
-    if (!adminCache.orders) axios.get('/api/admin/orders').then(res => setAdminCache('orders', res.data)).catch(()=>{});
-    if (!adminCache.products) axios.get('/api/admin/products').then(res => setAdminCache('products', res.data)).catch(()=>{});
-    if (!adminCache.categories) axios.get('/api/admin/categories').then(res => setAdminCache('categories', res.data)).catch(()=>{});
-    if (!adminCache.subscribers) axios.get('/api/subscribers').then(res => setAdminCache('subscribers', res.data.data)).catch(()=>{});
-    if (!adminCache.stats) axios.get('/api/admin/stats').then(res => setAdminCache('stats', res.data)).catch(()=>{});
+    // Removed massive prefetch because it congests the network and blocks the main thread.
+    // LocalStorage caching now handles instant zero-delay loading anyway!
   }, []);
 
   return (
     <aside className="admin-sidebar">
       <div className="admin-sidebar-header">
         <div className="admin-sidebar-icon"><Shield size={24} /></div>
-        <h1 className="admin-sidebar-title">Lumen Admin</h1>
+        <h1 className="admin-sidebar-title">Lumen Admin <span style={{fontSize: '0.6rem', color: '#8b5cf6', verticalAlign: 'top'}}>v2</span></h1>
       </div>
       <nav className="admin-nav">
         {navItems.map(({ path, label, icon: Icon, subItems }) => {
