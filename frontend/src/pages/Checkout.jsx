@@ -29,14 +29,78 @@ const Checkout = () => {
 
   const handleChange = e => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
   const handleSubmit = async e => {
     e.preventDefault();
     if (items.length === 0) { addToast('Your cart is empty!', 'warning'); return; }
     setPlacing(true);
     try {
+      // 1. Create order in MongoDB (status: pending)
       const res = await axios.post('/api/orders', { shippingAddress: form });
-      addToast('Order placed successfully! 🎉', 'success');
-      navigate(`/orders/${res.data._id}`);
+      const order = res.data;
+
+      // 2. Load Razorpay script
+      const resScript = await loadRazorpayScript();
+      if (!resScript) {
+        addToast('Razorpay SDK failed to load.', 'error');
+        setPlacing(false);
+        return;
+      }
+
+      // 3. Create Razorpay order
+      const paymentRes = await axios.post('/api/payment/create-order', { orderId: order._id });
+
+      // 4. Open Razorpay Checkout
+      const options = {
+        key: paymentRes.data.key_id,
+        amount: paymentRes.data.amount,
+        currency: paymentRes.data.currency,
+        name: 'Lumen Admin',
+        description: 'Test Payment',
+        order_id: paymentRes.data.id,
+        handler: async function (response) {
+          try {
+            setPlacing(true);
+            await axios.post('/api/payment/verify', {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+            addToast('Payment Successful! 🎉', 'success');
+            navigate(`/orders/${order._id}`);
+          } catch (verifyError) {
+            addToast('Payment Verification Failed.', 'error');
+            navigate(`/orders/${order._id}`);
+          }
+        },
+        prefill: {
+          name: form.fullName,
+          email: form.email,
+          contact: form.phone,
+        },
+        theme: {
+          color: '#8b5cf6'
+        }
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.on('payment.failed', function (response) {
+        addToast('Payment Failed. Please try again.', 'error');
+        navigate(`/orders/${order._id}`);
+      });
+      paymentObject.open();
+      
+      // Keep button in loading state until modal is closed/resolved
+      setPlacing(false);
     } catch (err) {
       if (err.response?.status === 401) {
         addToast('Please login to place an order', 'warning');
@@ -44,7 +108,6 @@ const Checkout = () => {
       } else {
         addToast(err.response?.data?.message || 'Failed to place order', 'error');
       }
-    } finally {
       setPlacing(false);
     }
   };
@@ -121,12 +184,11 @@ const Checkout = () => {
               <div className="payment-option selected">
                 <div className="payment-option-radio" />
                 <div className="payment-option-info">
-                  <span>Cash on Delivery</span>
-                  <small>Pay when your order arrives</small>
+                  <span>Razorpay (Online Payment)</span>
+                  <small>Securely pay via UPI, Cards, or Netbanking</small>
                 </div>
-                <Truck size={20} style={{ color: '#111', marginLeft: 'auto' }} />
+                <Lock size={20} style={{ color: '#111', marginLeft: 'auto' }} />
               </div>
-              <p className="payment-note">Online payment coming soon. Currently only COD is available.</p>
             </div>
 
             <button
@@ -136,7 +198,7 @@ const Checkout = () => {
               style={{ marginTop: '1.5rem' }}
             >
               <Lock size={16} />
-              {placing ? 'Placing Order...' : `Place Order • ₹${totalAmount.toFixed(2)}`}
+              {placing ? 'Processing...' : `Pay Now • ₹${totalAmount.toFixed(2)}`}
             </button>
           </form>
 
