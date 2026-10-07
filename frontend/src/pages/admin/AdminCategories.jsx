@@ -46,9 +46,7 @@ const AdminCategories = () => {
                   <table className="admin-table">
                     <thead><tr><th>Image</th><th>Name</th><th>Description</th><th>Status</th><th>Actions</th></tr></thead>
                     <tbody>
-                      {loading ? (
-                        <tr><td colSpan="5" style={{ textAlign: 'center', padding: '2rem', color: '#71717a' }}>Loading categories...</td></tr>
-                      ) : categories.length === 0 ? (
+                      {loading ? null : categories.length === 0 ? (
                         <tr><td colSpan="5" style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>No categories yet. Create one above.</td></tr>
                       ) : (
                         categories.map(cat => (

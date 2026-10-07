@@ -113,9 +113,7 @@ const AdminDashboard = () => {
             <table className="admin-table">
               <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Joined</th></tr></thead>
               <tbody>
-                {loading ? (
-                  <tr><td colSpan="4" style={{ textAlign: 'center', padding: '2rem', color: '#71717a' }}>Loading data...</td></tr>
-                ) : currentUsers.length > 0 ? (
+                {loading ? null : currentUsers.length > 0 ? (
                   currentUsers.map((user, i) => (
                     <tr key={user._id}>
                       <td style={{ color: 'var(--color-text-muted)', fontFamily: 'monospace' }}>{indexOfFirst + i + 1}</td>

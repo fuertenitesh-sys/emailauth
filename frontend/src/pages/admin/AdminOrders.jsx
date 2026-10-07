@@ -56,9 +56,7 @@ const AdminOrders = () => {
                 <tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Details</th></tr>
               </thead>
               <tbody>
-                {loading ? (
-                  <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem', color: '#71717a' }}>Loading orders...</td></tr>
-                ) : orders.length === 0 ? (
+                {loading ? null : orders.length === 0 ? (
                   <tr><td colSpan="7" style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>No orders yet.</td></tr>
                 ) : (
                   orders.map(order => (

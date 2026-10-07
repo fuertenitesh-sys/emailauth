@@ -50,9 +50,7 @@ const AdminSubscribers = () => {
                 </tr>
               </thead>
               <tbody>
-                {loading ? (
-                  <tr><td colSpan="3" style={{ textAlign: 'center', padding: '2rem', color: '#71717a' }}>Loading subscribers...</td></tr>
-                ) : subscribers.length === 0 ? (
+                {loading ? null : subscribers.length === 0 ? (
                   <tr><td colSpan="3" style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>No subscribers yet.</td></tr>
                 ) : (
                   subscribers.map((sub) => (

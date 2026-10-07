@@ -85,9 +85,7 @@ const AdminProducts = () => {
                 </tr>
               </thead>
               <tbody>
-                {loading ? (
-                  <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem', color: '#71717a' }}>Loading products...</td></tr>
-                ) : products.length === 0 ? (
+                {loading ? null : products.length === 0 ? (
                   <tr><td colSpan="8" style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>No products yet. <Link to="/admin/products/add" style={{ color: 'var(--color-primary)' }}>Add one now.</Link></td></tr>
                 ) : (
                   products.filter(p => {
