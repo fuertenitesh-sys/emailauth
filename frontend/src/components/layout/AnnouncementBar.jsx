@@ -11,10 +11,13 @@ const AnnouncementBar = () => {
     <div className="announcement-bar">
       <div className="announcement-content">
         <span className="announcement-tag">NEW</span>
-        <p>
-          🚀 <strong>FREE SHIPPING</strong> on all orders above ₹500 &nbsp;|&nbsp;
-          Easy 30-day returns &nbsp;|&nbsp; 100% Secure Payments
-        </p>
+        <div className="marquee-container">
+          <p className="marquee-text">
+            🚀 <strong>FREE SHIPPING</strong> on all orders above ₹500 &nbsp;|&nbsp;
+            Easy 30-day returns &nbsp;|&nbsp; 100% Secure Payments &nbsp;|&nbsp;
+            <strong>10% OFF</strong> on login / create account
+          </p>
+        </div>
       </div>
       <button
         className="announcement-close"

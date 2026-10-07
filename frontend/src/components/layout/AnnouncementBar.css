@@ -14,18 +14,34 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  width: 100%;
+  padding-right: 2rem;
 }
 
-.announcement-content p {
+.marquee-container {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.marquee-text {
+  display: inline-block;
   font-size: 0.78rem;
   font-weight: 400;
   letter-spacing: 0.03em;
   color: #d4d4d8;
   margin: 0;
   line-height: 1.4;
+  padding-left: 100%;
+  animation: marquee 25s linear infinite;
 }
 
-.announcement-content p strong {
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+.marquee-text strong {
   color: #ffffff;
   font-weight: 600;
 }
@@ -61,7 +77,7 @@
 }
 
 @media (max-width: 768px) {
-  .announcement-content p {
+  .marquee-text {
     font-size: 0.7rem;
   }
   .announcement-tag {
