@@ -26,12 +26,12 @@ export const createCashfreeOrder = async (req, res) => {
 
     const payload = {
       order_id: cashfreeOrderId,
-      order_amount: order.totalAmount,
+      order_amount: Number(order.totalAmount.toFixed(2)) || 1.00,
       order_currency: 'INR',
       customer_details: {
         customer_id: req.user._id.toString(),
-        customer_phone: order.shippingAddress.phone || '9999999999',
-        customer_name: order.shippingAddress.fullName || req.user.name,
+        customer_phone: (order.shippingAddress.phone && order.shippingAddress.phone.length >= 10) ? order.shippingAddress.phone.substring(0, 14) : '9999999999',
+        customer_name: order.shippingAddress.fullName || req.user.name || 'User',
         customer_email: order.shippingAddress.email || req.user.email || 'customer@example.com'
       },
       order_meta: {
