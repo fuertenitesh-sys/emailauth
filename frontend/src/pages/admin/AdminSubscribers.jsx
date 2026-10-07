@@ -40,26 +40,22 @@ const AdminSubscribers = () => {
         {error && <div style={{ color: 'red', padding: '1rem' }}>{error}</div>}
 
         <div className="admin-table-container">
-          {loading ? (
-            <div style={{ padding: '3rem', textAlign: 'center' }}>
-              <div className="loading-spinner" style={{ margin: '0 auto' }} />
-            </div>
-          ) : subscribers.length === 0 ? (
-            <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>
-              No subscribers yet.
-            </div>
-          ) : (
-            <div className="admin-table-wrapper">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Email Address</th>
-                    <th>Subscribed Date</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {subscribers.map((sub) => (
+          <div className="admin-table-wrapper">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Email Address</th>
+                  <th>Subscribed Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr><td colSpan="3" style={{ textAlign: 'center', padding: '2rem', color: '#71717a' }}>Loading subscribers...</td></tr>
+                ) : subscribers.length === 0 ? (
+                  <tr><td colSpan="3" style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>No subscribers yet.</td></tr>
+                ) : (
+                  subscribers.map((sub) => (
                     <tr key={sub._id}>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: 600 }}>
@@ -83,11 +79,11 @@ const AdminSubscribers = () => {
                         <span className="badge-success" style={{ padding: '0.25rem 0.75rem', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 700, backgroundColor: '#e6f4ea', color: '#1e8e3e' }}>Active</span>
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

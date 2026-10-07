@@ -109,40 +109,40 @@ const AdminDashboard = () => {
         {/* Users Table */}
         <div className="admin-table-container">
           <div className="admin-table-header-title"><h2>Registered Users</h2></div>
-          {loading ? (
-            <div style={{ padding: '3rem', textAlign: 'center' }}><div className="loading-spinner" style={{ margin: '0 auto' }} /></div>
-          ) : (
-            <>
-              <div className="admin-table-wrapper">
-                <table className="admin-table">
-                  <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Joined</th></tr></thead>
-                  <tbody>
-                    {currentUsers.map((user, i) => (
-                      <tr key={user._id}>
-                        <td style={{ color: 'var(--color-text-muted)', fontFamily: 'monospace' }}>{indexOfFirst + i + 1}</td>
-                        <td style={{ fontWeight: 600 }}>{user.name}</td>
-                        <td style={{ color: 'var(--color-text-muted)' }}>{user.email}</td>
-                        <td style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{formatDate(user.createdAt)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              {totalPages > 0 && (
-                <div className="admin-pagination">
-                  <span className="admin-page-info">Showing {indexOfFirst + 1}–{Math.min(indexOfLast, users.length)} of {users.length}</span>
-                  <div className="admin-page-controls">
-                    <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="admin-page-btn">Prev</button>
-                    <div className="admin-page-numbers">
-                      {Array.from({ length: totalPages }, (_, i) => (
-                        <button key={i+1} onClick={() => setCurrentPage(i+1)} className={`admin-page-num ${currentPage === i+1 ? 'active' : ''}`}>{i+1}</button>
-                      ))}
-                    </div>
-                    <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="admin-page-btn">Next</button>
-                  </div>
+          <div className="admin-table-wrapper">
+            <table className="admin-table">
+              <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Joined</th></tr></thead>
+              <tbody>
+                {loading ? (
+                  <tr><td colSpan="4" style={{ textAlign: 'center', padding: '2rem', color: '#71717a' }}>Loading data...</td></tr>
+                ) : currentUsers.length > 0 ? (
+                  currentUsers.map((user, i) => (
+                    <tr key={user._id}>
+                      <td style={{ color: 'var(--color-text-muted)', fontFamily: 'monospace' }}>{indexOfFirst + i + 1}</td>
+                      <td style={{ fontWeight: 600 }}>{user.name}</td>
+                      <td style={{ color: 'var(--color-text-muted)' }}>{user.email}</td>
+                      <td style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{formatDate(user.createdAt)}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr><td colSpan="4" style={{ textAlign: 'center', padding: '2rem' }}>No users found</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+          {!loading && totalPages > 0 && (
+            <div className="admin-pagination">
+              <span className="admin-page-info">Showing {indexOfFirst + 1}–{Math.min(indexOfLast, users.length)} of {users.length}</span>
+              <div className="admin-page-controls">
+                <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="admin-page-btn">Prev</button>
+                <div className="admin-page-numbers">
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <button key={i+1} onClick={() => setCurrentPage(i+1)} className={`admin-page-num ${currentPage === i+1 ? 'active' : ''}`}>{i+1}</button>
+                  ))}
                 </div>
-              )}
-            </>
+                <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="admin-page-btn">Next</button>
+              </div>
+            </div>
           )}
         </div>
       </div>

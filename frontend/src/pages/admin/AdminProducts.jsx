@@ -77,20 +77,20 @@ const AdminProducts = () => {
         </div>
 
         <div className="admin-table-container">
-          {loading ? (
-            <div style={{ padding: '3rem', textAlign: 'center' }}><div className="loading-spinner" style={{ margin: '0 auto' }} /></div>
-          ) : products.length === 0 ? (
-            <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>No products yet. <Link to="/admin/products/add" style={{ color: 'var(--color-primary)' }}>Add one now.</Link></div>
-          ) : (
-            <div className="admin-table-wrapper">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Discount</th><th>Stock</th><th>Status</th><th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.filter(p => {
+          <div className="admin-table-wrapper">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Discount</th><th>Stock</th><th>Status</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem', color: '#71717a' }}>Loading products...</td></tr>
+                ) : products.length === 0 ? (
+                  <tr><td colSpan="8" style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>No products yet. <Link to="/admin/products/add" style={{ color: 'var(--color-primary)' }}>Add one now.</Link></td></tr>
+                ) : (
+                  products.filter(p => {
                     if (filter === 'out-of-stock' && p.stock > 0) return false;
                     if (filter === 'in-stock' && p.stock === 0) return false;
                     
@@ -123,11 +123,11 @@ const AdminProducts = () => {
                         </div>
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {deleting && (

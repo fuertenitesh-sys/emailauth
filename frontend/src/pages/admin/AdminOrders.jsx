@@ -50,18 +50,18 @@ const AdminOrders = () => {
         </div>
 
         <div className="admin-table-container">
-          {loading ? (
-            <div style={{ padding: '3rem', textAlign: 'center' }}><div className="loading-spinner" style={{ margin: '0 auto' }} /></div>
-          ) : orders.length === 0 ? (
-            <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>No orders yet.</div>
-          ) : (
-            <div className="admin-table-wrapper">
-              <table className="admin-table">
-                <thead>
-                  <tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Details</th></tr>
-                </thead>
-                <tbody>
-                  {orders.map(order => (
+          <div className="admin-table-wrapper">
+            <table className="admin-table">
+              <thead>
+                <tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Details</th></tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem', color: '#71717a' }}>Loading orders...</td></tr>
+                ) : orders.length === 0 ? (
+                  <tr><td colSpan="7" style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>No orders yet.</td></tr>
+                ) : (
+                  orders.map(order => (
                     <>
                       <tr key={order._id}>
                         <td style={{ fontWeight: 600, fontFamily: 'monospace', color: 'var(--color-primary)' }}>#{order._id.slice(-8).toUpperCase()}</td>
@@ -121,11 +121,11 @@ const AdminOrders = () => {
                         </tr>
                       )}
                     </>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

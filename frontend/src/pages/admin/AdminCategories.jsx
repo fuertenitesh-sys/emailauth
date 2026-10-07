@@ -42,33 +42,33 @@ const AdminCategories = () => {
 
             {/* Table */}
             <div className="admin-table-container">
-              {loading ? (
-                <div style={{ padding: '3rem', textAlign: 'center' }}><div className="loading-spinner" style={{ margin: '0 auto' }} /></div>
-              ) : categories.length === 0 ? (
-                <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>No categories yet. Create one above.</div>
-              ) : (
                 <div className="admin-table-wrapper">
                   <table className="admin-table">
                     <thead><tr><th>Image</th><th>Name</th><th>Description</th><th>Status</th><th>Actions</th></tr></thead>
                     <tbody>
-                      {categories.map(cat => (
-                        <tr key={cat._id}>
-                          <td>{cat.imageUrl ? <img src={cat.imageUrl} alt={cat.name} className="admin-product-img" /> : <div className="admin-product-img-placeholder" />}</td>
-                          <td style={{ fontWeight: 600 }}>{cat.name}</td>
-                          <td style={{ color: 'var(--color-text-muted)', maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{cat.description || '-'}</td>
-                          <td><span className={`admin-status-badge ${cat.status === 'active' ? 'admin-status-active' : 'admin-status-inactive'}`}>{cat.status}</span></td>
-                          <td>
-                            <div className="admin-table-actions">
-                              <Link to={`/admin/categories/edit/${cat._id}`} state={{ category: cat }} className="admin-table-action-btn edit"><Pencil size={15} /></Link>
-                              <button className="admin-table-action-btn delete" onClick={() => setDeleting(cat)}><Trash2 size={15} /></button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
+                      {loading ? (
+                        <tr><td colSpan="5" style={{ textAlign: 'center', padding: '2rem', color: '#71717a' }}>Loading categories...</td></tr>
+                      ) : categories.length === 0 ? (
+                        <tr><td colSpan="5" style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>No categories yet. Create one above.</td></tr>
+                      ) : (
+                        categories.map(cat => (
+                          <tr key={cat._id}>
+                            <td>{cat.imageUrl ? <img src={cat.imageUrl} alt={cat.name} className="admin-product-img" /> : <div className="admin-product-img-placeholder" />}</td>
+                            <td style={{ fontWeight: 600 }}>{cat.name}</td>
+                            <td style={{ color: 'var(--color-text-muted)', maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{cat.description || '-'}</td>
+                            <td><span className={`admin-status-badge ${cat.status === 'active' ? 'admin-status-active' : 'admin-status-inactive'}`}>{cat.status}</span></td>
+                            <td>
+                              <div className="admin-table-actions">
+                                <Link to={`/admin/categories/edit/${cat._id}`} state={{ category: cat }} className="admin-table-action-btn edit"><Pencil size={15} /></Link>
+                                <button className="admin-table-action-btn delete" onClick={() => setDeleting(cat)}><Trash2 size={15} /></button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>
-              )}
             </div>
 
         {/* Delete confirm */}
