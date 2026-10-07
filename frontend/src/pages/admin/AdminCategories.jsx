@@ -6,9 +6,11 @@ import './Admin.css';
 import AdminNav from './AdminNav';
 import AdminHeader from '../../components/admin/AdminHeader';
 
+let cachedCategories = null;
+
 const AdminCategories = () => {
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState(cachedCategories || []);
+  const [loading, setLoading] = useState(!cachedCategories);
   const [deleting, setDeleting] = useState(null);
   const navigate = useNavigate();
 
@@ -17,6 +19,7 @@ const AdminCategories = () => {
   const fetchCategories = async () => {
     try {
       const res = await axios.get('/api/admin/categories');
+      cachedCategories = res.data;
       setCategories(res.data);
     } catch (err) {
       if (err.response?.status === 401) navigate('/admin');

@@ -6,9 +6,11 @@ import './Admin.css';
 import AdminNav from './AdminNav';
 import AdminHeader from '../../components/admin/AdminHeader';
 
+let cachedProducts = null;
+
 const AdminProducts = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState(cachedProducts || []);
+  const [loading, setLoading] = useState(!cachedProducts);
   const [deleting, setDeleting] = useState(null);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -26,6 +28,7 @@ const AdminProducts = () => {
   const fetchProducts = async () => {
     try {
       const res = await axios.get('/api/admin/products');
+      cachedProducts = res.data;
       setProducts(res.data);
     } catch (err) {
       if (err.response?.status === 401) navigate('/admin');

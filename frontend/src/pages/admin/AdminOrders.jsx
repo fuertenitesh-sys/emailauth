@@ -9,9 +9,11 @@ import AdminHeader from '../../components/admin/AdminHeader';
 const statusOptions = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
 const statusColors = { pending: 'badge-warning', processing: 'badge-primary', shipped: 'badge-primary', delivered: 'badge-success', cancelled: 'badge-danger' };
 
+let cachedOrders = null;
+
 const AdminOrders = () => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [orders, setOrders] = useState(cachedOrders || []);
+  const [loading, setLoading] = useState(!cachedOrders);
   const [updatingId, setUpdatingId] = useState(null);
   const [expanded, setExpanded] = useState(null);
   const navigate = useNavigate();
@@ -21,6 +23,7 @@ const AdminOrders = () => {
   const fetchOrders = async () => {
     try {
       const res = await axios.get('/api/admin/orders');
+      cachedOrders = res.data;
       setOrders(res.data);
     } catch (err) {
       if (err.response?.status === 401) navigate('/admin');

@@ -5,9 +5,11 @@ import AdminNav from './AdminNav';
 import AdminHeader from '../../components/admin/AdminHeader';
 import './Admin.css';
 
+let cachedSubscribers = null;
+
 const AdminSubscribers = () => {
-  const [subscribers, setSubscribers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [subscribers, setSubscribers] = useState(cachedSubscribers || []);
+  const [loading, setLoading] = useState(!cachedSubscribers);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -16,8 +18,9 @@ const AdminSubscribers = () => {
 
   const fetchSubscribers = async () => {
     try {
-      setLoading(true);
+      if (!cachedSubscribers) setLoading(true);
       const res = await axios.get('/api/subscribers');
+      cachedSubscribers = res.data.data;
       setSubscribers(res.data.data);
       setError(null);
     } catch (err) {
