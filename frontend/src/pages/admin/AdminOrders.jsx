@@ -185,7 +185,7 @@ const AdminOrders = () => {
             </table>
           </div>
           
-          {orders.length > itemsPerPage && (
+          {orders.length > 0 && (
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', borderTop: '1px solid var(--color-border)', backgroundColor: 'var(--color-bg)' }}>
               <div style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
                 Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, orders.length)} of {orders.length} orders
