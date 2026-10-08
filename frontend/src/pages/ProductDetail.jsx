@@ -54,8 +54,11 @@ const ProductDetail = () => {
     else setAdding(true);
     try {
       await addToCart(product._id, quantity);
-      addToast(`${product.name} added to cart!`, 'success');
-      if (buyNow) navigate('/cart');
+      if (buyNow) {
+        navigate('/checkout');
+      } else {
+        addToast(`${product.name} added to cart!`, 'success');
+      }
     } catch (err) {
       if (err.response?.status === 401) {
         addToast('Please login to add items to cart', 'warning');
