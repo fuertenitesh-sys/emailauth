@@ -9,6 +9,7 @@ import './ProductDetail.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const location = useLocation();
   const initialProduct = location.state?.product || null;
   const [product, setProduct] = useState(initialProduct);
@@ -57,11 +58,7 @@ const ProductDetail = () => {
       } catch (e) {
         console.error("Session storage failed", e);
       }
-      try {
-        navigate('/checkout');
-      } catch (err) {
-        window.location.href = '/checkout';
-      }
+      navigate('/checkout');
       setTimeout(() => setBuying(false), 500);
       return;
     }
