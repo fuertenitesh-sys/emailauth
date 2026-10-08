@@ -3,6 +3,7 @@ import dotenv from 'dotenv'; // Dotenv ko import kar rahe hain, ye humari .env f
 import cors from 'cors'; // CORS (Cross-Origin Resource Sharing) ko import kar rahe hain, ye frontend (React) aur backend ko ek dusre se data share karne ki permission deta hai.
 import helmet from 'helmet'; // Helmet ek security package hai, jo humari APIs ko basic hack attacks se bachane ke liye headers set karta hai.
 import cookieParser from 'cookie-parser'; // Cookie-parser import kar rahe hain, isse server frontend ke bheje gaye cookies (jisme JWT token hota hai) ko easily read kar pata hai.
+import compression from 'compression';
 import connectDB from './config/db.js'; // Humari khud ki banayi file jisme MongoDB (database) se connect karne ka code hai, usko import kar rahe hain.
 import authRoutes from './routes/authRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
@@ -21,6 +22,7 @@ connectDB(); // Database se connection banaya ja raha hai. Ye asynchronous kaam 
 const app = express(); // Express app ka ek object 'app' naam se banaya. Iske zariye hum poora server control karenge.
 
 // Middleware (Security aur data parsing ke liye beech ke functions)
+app.use(compression());
 app.use(helmet()); // Har aane wali request par Helmet security apply kar di.
 app.use(cors({
   // CORS rules: Kaun humare server se baat kar sakta hai?

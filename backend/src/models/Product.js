@@ -9,4 +9,7 @@ const productSchema = new mongoose.Schema({
   stock: { type: Number, required: true, min: 0, default: 0 },
   status: { type: String, enum: ['active', 'inactive'], default: 'active' }
 }, { timestamps: true });
+
+productSchema.index({ category: 1 });
+
 export default mongoose.model('Product', productSchema);
