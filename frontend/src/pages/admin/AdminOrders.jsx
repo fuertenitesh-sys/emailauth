@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Shield, LogOut, ChevronDown } from 'lucide-react';
 import './Admin.css';
@@ -26,6 +26,10 @@ const AdminOrders = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const navigate = useNavigate();
+  const location = useLocation();
+  const filterStatus = new URLSearchParams(location.search).get('status') || 'all';
+
+  const filteredOrders = filterStatus === 'all' ? orders : orders.filter(o => o.orderStatus === filterStatus);
 
   useEffect(() => { 
     fetchOrders(); 
@@ -69,7 +73,19 @@ const AdminOrders = () => {
         <AdminHeader title="Orders Management" />
 
         <div className="admin-action-bar">
-          <h2>Orders ({orders.length})</h2>
+          <h2>{filterStatus === 'all' ? 'All Orders' : `${filterStatus.charAt(0).toUpperCase() + filterStatus.slice(1)} Orders`} ({filteredOrders.length})</h2>
+          
+          <select 
+            value={filterStatus} 
+            onChange={(e) => {
+              setCurrentPage(1);
+              navigate(e.target.value === 'all' ? '/admin/orders' : `/admin/orders?status=${e.target.value}`);
+            }}
+            style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid var(--color-border)', backgroundColor: 'var(--color-bg)', fontWeight: 600 }}
+          >
+            <option value="all">All Status</option>
+            {statusOptions.map(s => <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
+          </select>
         </div>
 
         <div className="admin-table-container">
@@ -91,10 +107,10 @@ const AdminOrders = () => {
                       <td><div className="skeleton-cell short"></div></td>
                     </tr>
                   ))
-                ) : orders.length === 0 ? (
-                  <tr><td colSpan="8" style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>No orders yet.</td></tr>
+                ) : filteredOrders.length === 0 ? (
+                  <tr><td colSpan="8" style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>No orders found for this status.</td></tr>
                 ) : (
-                  orders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(order => (
+                  filteredOrders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(order => (
                     <>
                       <tr key={order._id}>
                         <td style={{ fontWeight: 600, fontFamily: 'monospace', color: 'var(--color-primary)' }}>#{order._id.slice(-8).toUpperCase()}</td>
@@ -185,10 +201,10 @@ const AdminOrders = () => {
             </table>
           </div>
           
-          {orders.length > 0 && (
+          {filteredOrders.length > 0 && (
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', borderTop: '1px solid var(--color-border)', backgroundColor: 'var(--color-bg)' }}>
               <div style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
-                Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, orders.length)} of {orders.length} orders
+                Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredOrders.length)} of {filteredOrders.length} orders
               </div>
               <div style={{ display: 'flex', gap: '0.5rem' }}>
                 <button 
@@ -199,9 +215,9 @@ const AdminOrders = () => {
                   Previous
                 </button>
                 <button 
-                  disabled={currentPage * itemsPerPage >= orders.length}
+                  disabled={currentPage * itemsPerPage >= filteredOrders.length}
                   onClick={() => setCurrentPage(prev => prev + 1)}
-                  style={{ padding: '0.5rem 1rem', borderRadius: '4px', border: '1px solid var(--color-border)', backgroundColor: currentPage * itemsPerPage >= orders.length ? 'transparent' : 'var(--color-bg-alt)', cursor: currentPage * itemsPerPage >= orders.length ? 'not-allowed' : 'pointer', opacity: currentPage * itemsPerPage >= orders.length ? 0.5 : 1 }}
+                  style={{ padding: '0.5rem 1rem', borderRadius: '4px', border: '1px solid var(--color-border)', backgroundColor: currentPage * itemsPerPage >= filteredOrders.length ? 'transparent' : 'var(--color-bg-alt)', cursor: currentPage * itemsPerPage >= filteredOrders.length ? 'not-allowed' : 'pointer', opacity: currentPage * itemsPerPage >= filteredOrders.length ? 0.5 : 1 }}
                 >
                   Next
                 </button>

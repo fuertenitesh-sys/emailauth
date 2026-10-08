@@ -72,11 +72,11 @@ const AdminDashboard = () => {
             { label: 'Total Orders', value: stats?.totalOrders ?? '-', icon: ShoppingBag, link: '/admin/orders', color: '#10B981' },
             { label: 'Revenue', value: stats ? `₹${stats.revenue.toFixed(0)}` : '-', icon: TrendingUp, link: '/admin/orders', color: '#F59E0B' },
             { label: 'Successful Payments', value: stats?.successfulPayments ?? '-', icon: CreditCard, link: '/admin/payments', color: '#10B981' },
-            { label: 'Pending Orders', value: stats?.pendingOrders ?? '-', icon: Clock, link: '/admin/orders', color: '#F59E0B' },
-            { label: 'Processing Orders', value: stats?.processingOrders ?? '-', icon: RefreshCw, link: '/admin/orders', color: '#3B82F6' },
-            { label: 'Shipped Orders', value: stats?.shippedOrders ?? '-', icon: Truck, link: '/admin/orders', color: '#8B5CF6' },
-            { label: 'Delivered Orders', value: stats?.deliveredOrders ?? '-', icon: CheckCircle, link: '/admin/orders', color: '#10B981' },
-            { label: 'Cancelled Orders', value: stats?.cancelledOrders ?? '-', icon: XCircle, link: '/admin/orders', color: '#EF4444' },
+            { label: 'Pending Orders', value: stats?.pendingOrders ?? '-', icon: Clock, link: '/admin/orders?status=pending', color: '#F59E0B' },
+            { label: 'Processing Orders', value: stats?.processingOrders ?? '-', icon: RefreshCw, link: '/admin/orders?status=processing', color: '#3B82F6' },
+            { label: 'Shipped Orders', value: stats?.shippedOrders ?? '-', icon: Truck, link: '/admin/orders?status=shipped', color: '#8B5CF6' },
+            { label: 'Delivered Orders', value: stats?.deliveredOrders ?? '-', icon: CheckCircle, link: '/admin/orders?status=delivered', color: '#10B981' },
+            { label: 'Cancelled Orders', value: stats?.cancelledOrders ?? '-', icon: XCircle, link: '/admin/orders?status=cancelled', color: '#EF4444' },
           ].map(({ label, value, icon: Icon, link, color }) => (
             <div 
               key={label} 
