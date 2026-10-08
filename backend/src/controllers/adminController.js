@@ -34,19 +34,24 @@ export const getAdminUsers = async (req, res) => {
 
 export const getDashboardStats = async (req, res) => {
   try {
-    const [totalUsers, totalProducts, totalCategories, totalOrders, pendingOrders, revenueAgg] = await Promise.all([
+    const [totalUsers, totalProducts, totalCategories, totalOrders, pendingOrders, processingOrders, shippedOrders, deliveredOrders, cancelledOrders, successfulPayments, revenueAgg] = await Promise.all([
       User.countDocuments(),
       Product.countDocuments(),
       Category.countDocuments(),
       Order.countDocuments(),
       Order.countDocuments({ orderStatus: 'pending' }),
+      Order.countDocuments({ orderStatus: 'processing' }),
+      Order.countDocuments({ orderStatus: 'shipped' }),
+      Order.countDocuments({ orderStatus: 'delivered' }),
+      Order.countDocuments({ orderStatus: 'cancelled' }),
+      Payment.countDocuments({ status: 'successful' }),
       Order.aggregate([
         { $match: { orderStatus: { $ne: 'cancelled' } } },
         { $group: { _id: null, totalRevenue: { $sum: '$totalAmount' } } }
       ])
     ]);
     const revenue = revenueAgg.length > 0 ? revenueAgg[0].totalRevenue : 0;
-    res.json({ totalUsers, totalProducts, totalCategories, totalOrders, revenue, pendingOrders });
+    res.json({ totalUsers, totalProducts, totalCategories, totalOrders, revenue, pendingOrders, processingOrders, shippedOrders, deliveredOrders, cancelledOrders, successfulPayments });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
