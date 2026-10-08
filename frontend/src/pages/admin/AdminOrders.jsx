@@ -197,8 +197,6 @@ const AdminOrders = () => {
                                       <p style={{ margin: 0 }}><span style={{ fontWeight: 600 }}>Last Updated:</span> {formatDate(order.updatedAt)}</p>
                                     )}
                                   </div>
-
-                                  </div>
                                 </div>
                               </div>
                             </div>
