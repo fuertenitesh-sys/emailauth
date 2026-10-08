@@ -57,7 +57,12 @@ const ProductDetail = () => {
       } catch (e) {
         console.error("Session storage failed", e);
       }
-      navigate('/checkout', { state: { directBuyItem: { product, quantity } } });
+      try {
+        navigate('/checkout');
+      } catch (err) {
+        window.location.href = '/checkout';
+      }
+      setTimeout(() => setBuying(false), 500);
       return;
     }
 
