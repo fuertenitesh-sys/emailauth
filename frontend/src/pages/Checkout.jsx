@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { MapPin, CheckCircle, Lock, RefreshCw, Headphones, Truck, ChevronRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
@@ -10,16 +10,23 @@ const STEPS = ['Cart', 'Details', 'Confirmation'];
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { cart, cartTotal, getDiscountedPrice } = useCart();
+  const location = useLocation();
+  const { cart, cartTotal: ctxCartTotal, getDiscountedPrice } = useCart();
   const { addToast } = useToast();
   const [placing, setPlacing] = useState(false);
   const [form, setForm] = useState({
     fullName: '', phone: '', email: '', address: '', city: '', state: '', pincode: ''
   });
 
+  const directBuyItem = location.state?.directBuyItem;
+  const items = directBuyItem ? [directBuyItem] : (cart?.items || []);
+
+  const cartTotal = directBuyItem 
+    ? getDiscountedPrice(directBuyItem.product.price, directBuyItem.product.discount) * directBuyItem.quantity
+    : ctxCartTotal;
+
   const deliveryCharge = cartTotal > 500 ? 0 : 50;
   const totalAmount = cartTotal + deliveryCharge;
-  const items = cart.items || [];
 
   const totalSavings = items.reduce((acc, item) => {
     const p = item.product;
@@ -49,7 +56,11 @@ const Checkout = () => {
     setPlacing(true);
     try {
       // 1. Create order in MongoDB (status: pending)
-      const res = await axios.post('/api/orders', { shippingAddress: form });
+      const payload = { shippingAddress: form };
+      if (directBuyItem) {
+        payload.directBuyItems = [{ product: directBuyItem.product._id, quantity: directBuyItem.quantity }];
+      }
+      const res = await axios.post('/api/orders', payload);
       const order = res.data;
 
       // 2. Load Cashfree script

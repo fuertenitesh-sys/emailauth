@@ -4,13 +4,27 @@ import Product from '../models/Product.js';
 import User from '../models/User.js';
 
 export const createOrder = async (req, res) => {
-  const { shippingAddress } = req.body;
+  const { shippingAddress, directBuyItems } = req.body;
   if (!shippingAddress) return res.status(400).json({ message: 'Shipping address is required' });
   try {
-    const cart = await Cart.findOne({ user: req.user._id }).populate('items.product');
-    if (!cart || cart.items.length === 0) return res.status(400).json({ message: 'Cart is empty' });
+    let rawItems = [];
+    let isDirectBuy = false;
+
+    if (directBuyItems && directBuyItems.length > 0) {
+      isDirectBuy = true;
+      for (const item of directBuyItems) {
+        const p = await Product.findById(item.product);
+        if (p) rawItems.push({ product: p, quantity: item.quantity });
+      }
+      if (rawItems.length === 0) return res.status(400).json({ message: 'Invalid products for direct buy' });
+    } else {
+      const cart = await Cart.findOne({ user: req.user._id }).populate('items.product');
+      if (!cart || cart.items.length === 0) return res.status(400).json({ message: 'Cart is empty' });
+      rawItems = cart.items;
+    }
+
     const orderItems = [];
-    for (const item of cart.items) {
+    for (const item of rawItems) {
       const product = item.product;
       if (!product || product.status !== 'active') {
         return res.status(400).json({ message: `Product ${product?.name || 'unknown'} is not available` });
@@ -39,7 +53,11 @@ export const createOrder = async (req, res) => {
       deliveryCharge,
       totalAmount
     });
-    await Cart.findOneAndUpdate({ user: req.user._id }, { items: [] });
+    
+    if (!isDirectBuy) {
+      await Cart.findOneAndUpdate({ user: req.user._id }, { items: [] });
+    }
+    
     res.status(201).json(order);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });

@@ -53,10 +53,10 @@ const ProductDetail = () => {
     if (buyNow) setBuying(true);
     else setAdding(true);
     try {
-      await addToCart(product._id, quantity);
       if (buyNow) {
-        navigate('/checkout');
+        navigate('/checkout', { state: { directBuyItem: { product, quantity } } });
       } else {
+        await addToCart(product._id, quantity);
         addToast(`${product.name} added to cart!`, 'success');
       }
     } catch (err) {
