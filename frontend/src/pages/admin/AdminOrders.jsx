@@ -166,6 +166,14 @@ const AdminOrders = () => {
                                       <span style={{ fontWeight: 600 }}>₹{(item.price * item.quantity).toFixed(2)}</span>
                                     </div>
                                   ))}
+                                  
+                                  <p style={{ fontWeight: 700, marginBottom: '0.5rem', fontSize: '0.875rem', marginTop: '1.5rem' }}>Shipping Address</p>
+                                  <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
+                                    {order.shippingAddress?.fullName}<br/>
+                                    {order.shippingAddress?.address}<br/>
+                                    {order.shippingAddress?.city}, {order.shippingAddress?.state} - {order.shippingAddress?.pincode}<br/>
+                                    {order.shippingAddress?.phone}
+                                  </p>
                                 </div>
                                 <div>
                                   <p style={{ fontWeight: 700, marginBottom: '0.5rem', fontSize: '0.875rem' }}>Payment Details</p>
@@ -190,13 +198,7 @@ const AdminOrders = () => {
                                     )}
                                   </div>
 
-                                  <p style={{ fontWeight: 700, marginBottom: '0.5rem', fontSize: '0.875rem' }}>Shipping Address</p>
-                                  <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
-                                    {order.shippingAddress?.fullName}<br/>
-                                    {order.shippingAddress?.address}<br/>
-                                    {order.shippingAddress?.city}, {order.shippingAddress?.state} - {order.shippingAddress?.pincode}<br/>
-                                    {order.shippingAddress?.phone}
-                                  </p>
+                                  </div>
                                 </div>
                               </div>
                             </div>
