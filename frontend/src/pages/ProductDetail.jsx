@@ -50,16 +50,21 @@ const ProductDetail = () => {
   const isOutOfStock = product.stock === 0;
 
   const handleAddToCart = async (buyNow = false) => {
-    if (buyNow) setBuying(true);
-    else setAdding(true);
-    try {
-      if (buyNow) {
+    if (buyNow) {
+      setBuying(true);
+      try {
         sessionStorage.setItem('directBuyItem', JSON.stringify({ product, quantity }));
-        navigate('/checkout');
-      } else {
-        await addToCart(product._id, quantity);
-        addToast(`${product.name} added to cart!`, 'success');
+      } catch (e) {
+        console.error("Session storage failed", e);
       }
+      navigate('/checkout', { state: { directBuyItem: { product, quantity } } });
+      return;
+    }
+
+    setAdding(true);
+    try {
+      await addToCart(product._id, quantity);
+      addToast(`${product.name} added to cart!`, 'success');
     } catch (err) {
       if (err.response?.status === 401) {
         addToast('Please login to add items to cart', 'warning');
@@ -69,7 +74,6 @@ const ProductDetail = () => {
       }
     } finally {
       setAdding(false);
-      setBuying(false);
     }
   };
 
