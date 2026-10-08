@@ -13,11 +13,15 @@ const statusColors = { pending: 'badge-warning', processing: 'badge-primary', sh
 const AdminOrders = () => {
   const [orders, setOrders] = useState(adminCache.orders || []);
   const [loading, setLoading] = useState(!adminCache.orders);
+  const [payments, setPayments] = useState(adminCache.payments || []);
   const [updatingId, setUpdatingId] = useState(null);
   const [expanded, setExpanded] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => { fetchOrders(); }, []);
+  useEffect(() => { 
+    fetchOrders(); 
+    fetchPayments();
+  }, []);
 
   const fetchOrders = async () => {
     try {
@@ -27,6 +31,14 @@ const AdminOrders = () => {
     } catch (err) {
       if (err.response?.status === 401) navigate('/admin');
     } finally { setLoading(false); }
+  };
+
+  const fetchPayments = async () => {
+    try {
+      const res = await axios.get('/api/admin/payments');
+      setAdminCache('payments', res.data);
+      setPayments(res.data);
+    } catch (err) {}
   };
 
 
@@ -131,6 +143,19 @@ const AdminOrders = () => {
                                   ))}
                                 </div>
                                 <div>
+                                  <p style={{ fontWeight: 700, marginBottom: '0.5rem', fontSize: '0.875rem' }}>Payment Details</p>
+                                  <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', padding: '0.5rem', background: 'rgba(0,0,0,0.02)', borderRadius: '4px', marginBottom: '1rem', border: '1px solid var(--color-border)' }}>
+                                    {payments.find(p => p.orderId === order._id) ? (
+                                      <>
+                                        <p style={{ margin: '0 0 4px 0' }}><span style={{ fontWeight: 600 }}>Gateway:</span> Cashfree Payments</p>
+                                        <p style={{ margin: '0 0 4px 0' }}><span style={{ fontWeight: 600 }}>Payment ID:</span> {payments.find(p => p.orderId === order._id)?.cfOrderId}</p>
+                                        <p style={{ margin: '0 0 4px 0' }}><span style={{ fontWeight: 600 }}>Status:</span> {payments.find(p => p.orderId === order._id)?.status}</p>
+                                        <p style={{ margin: 0 }}><span style={{ fontWeight: 600 }}>Session:</span> {payments.find(p => p.orderId === order._id)?.cfPaymentSessionId?.substring(0, 15)}...</p>
+                                      </>
+                                    ) : (
+                                      <p style={{ margin: 0, fontStyle: 'italic' }}>{order.paymentStatus === 'paid' ? 'Paid via Cashfree Gateway' : 'No payment records found yet'}</p>
+                                    )}
+                                  </div>
                                   <p style={{ fontWeight: 700, marginBottom: '0.5rem', fontSize: '0.875rem' }}>Shipping Address</p>
                                   <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
                                     {order.shippingAddress?.fullName}<br/>
