@@ -142,7 +142,7 @@ const AdminOrders = () => {
                             {statusOptions.map(s => <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
                           </select>
                         </td>
-                        <td style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{formatDate(order.orderStatus === 'pending' ? order.createdAt : order.updatedAt)}</td>
+                        <td style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{formatDate(order.createdAt)}</td>
                         <td>
                           <button
                             className="admin-table-action-btn edit"
@@ -181,6 +181,15 @@ const AdminOrders = () => {
                                       <p style={{ margin: 0, fontStyle: 'italic' }}>{order.paymentStatus === 'paid' ? 'Paid via Cashfree Gateway' : 'No payment records found yet'}</p>
                                     )}
                                   </div>
+
+                                  <p style={{ fontWeight: 700, marginBottom: '0.5rem', fontSize: '0.875rem' }}>Order Timeline</p>
+                                  <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', lineHeight: 1.6, padding: '0.5rem', background: 'rgba(0,0,0,0.02)', borderRadius: '4px', border: '1px solid var(--color-border)', marginBottom: '1rem' }}>
+                                    <p style={{ margin: '0 0 4px 0' }}><span style={{ fontWeight: 600 }}>Placed On:</span> {formatDate(order.createdAt)}</p>
+                                    {order.orderStatus !== 'pending' && (
+                                      <p style={{ margin: 0 }}><span style={{ fontWeight: 600 }}>Last Updated:</span> {formatDate(order.updatedAt)}</p>
+                                    )}
+                                  </div>
+
                                   <p style={{ fontWeight: 700, marginBottom: '0.5rem', fontSize: '0.875rem' }}>Shipping Address</p>
                                   <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
                                     {order.shippingAddress?.fullName}<br/>
