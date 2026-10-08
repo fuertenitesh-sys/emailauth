@@ -55,7 +55,7 @@ const AdminOrders = () => {
           <div className="admin-table-wrapper">
             <table className="admin-table">
               <thead>
-                <tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Details</th></tr>
+                <tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th>Details</th></tr>
               </thead>
               <tbody>
                 {loading ? (
@@ -71,7 +71,7 @@ const AdminOrders = () => {
                     </tr>
                   ))
                 ) : orders.length === 0 ? (
-                  <tr><td colSpan="7" style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>No orders yet.</td></tr>
+                  <tr><td colSpan="8" style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>No orders yet.</td></tr>
                 ) : (
                   orders.map(order => (
                     <>
@@ -83,6 +83,18 @@ const AdminOrders = () => {
                         </td>
                         <td style={{ color: 'var(--color-text-muted)' }}>{order.items.length} item{order.items.length !== 1 ? 's' : ''}</td>
                         <td style={{ fontWeight: 700 }}>₹{order.totalAmount.toFixed(2)}</td>
+                        <td>
+                          <span style={{ 
+                            padding: '4px 8px', 
+                            borderRadius: '4px', 
+                            fontSize: '0.75rem', 
+                            fontWeight: 600,
+                            backgroundColor: order.paymentStatus === 'paid' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)',
+                            color: order.paymentStatus === 'paid' ? 'rgb(16, 185, 129)' : 'rgb(245, 158, 11)'
+                          }}>
+                            {order.paymentStatus === 'paid' ? 'Paid' : 'Pending'}
+                          </span>
+                        </td>
                         <td>
                           <select
                             className="order-status-select"
@@ -106,7 +118,7 @@ const AdminOrders = () => {
                       </tr>
                       {expanded === order._id && (
                         <tr key={`${order._id}-detail`}>
-                          <td colSpan="7" style={{ padding: '0', background: 'var(--color-bg)' }}>
+                          <td colSpan="8" style={{ padding: '0', background: 'var(--color-bg)' }}>
                             <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid var(--color-border)' }}>
                               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                                 <div>
