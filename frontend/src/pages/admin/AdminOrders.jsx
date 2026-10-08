@@ -142,7 +142,7 @@ const AdminOrders = () => {
                             {statusOptions.map(s => <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
                           </select>
                         </td>
-                        <td style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{formatDate(order.createdAt)}</td>
+                        <td style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{formatDate(order.orderStatus === 'pending' ? order.createdAt : order.updatedAt)}</td>
                         <td>
                           <button
                             className="admin-table-action-btn edit"
