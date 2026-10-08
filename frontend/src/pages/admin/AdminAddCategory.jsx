@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Shield, LogOut, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import './Admin.css';
 import AdminNav from './AdminNav';
 import AdminHeader from '../../components/admin/AdminHeader';

@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Package, Tag, ShoppingBag, Users, Shield, Mail, CreditCard } from 'lucide-react';
-import axios from 'axios';
-import { adminCache, setAdminCache } from '../../utils/adminCache';
 import './Admin.css';
 
 const navItems = [

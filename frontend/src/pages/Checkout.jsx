@@ -221,7 +221,7 @@ const Checkout = () => {
                   if (!p) return null;
                   const price = getDiscountedPrice(p.price, p.discount);
                   return (
-                    <div key={item._id} className="checkout-item">
+                    <div key={item._id || p._id} className="checkout-item">
                       <div className="checkout-item-img">
                         {p.images?.[0] ? <img src={p.images[0]} alt={p.name} /> : <div className="checkout-img-placeholder" />}
                         <span className="checkout-item-qty-badge">{item.quantity}</span>

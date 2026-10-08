@@ -23,7 +23,7 @@ export const useIntersection = (options = {}) => {
     return () => {
       observer.unobserve(element);
     };
-  }, [options.rootMargin, options.threshold]);
+  }, [options?.rootMargin, options?.threshold, options]);
 
   return [ref, isIntersecting];
 };

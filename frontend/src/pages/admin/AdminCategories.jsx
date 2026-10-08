@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Plus, Pencil, Trash2, Shield, LogOut } from 'lucide-react';
+import { Plus, Pencil, Trash2 } from 'lucide-react';
 import './Admin.css';
 import AdminNav from './AdminNav';
 import AdminHeader from '../../components/admin/AdminHeader';

@@ -5,7 +5,6 @@ import ScrollToTop from './components/layout/ScrollToTop';
 import AnnouncementBar from './components/layout/AnnouncementBar';
 
 // Auth pages
-import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
@@ -70,9 +69,9 @@ function App() {
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/welcome" element={<ProtectedRoute><PostSignupWelcome /></ProtectedRoute>} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/orders" element={<Orders />} />
-          <Route path="/orders/:id" element={<OrderDetail />} />
+          <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+          <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+          <Route path="/orders/:id" element={<ProtectedRoute><OrderDetail /></ProtectedRoute>} />
 
           {/* Footer Info Routes */}
           <Route path="/stores" element={<StoresPage />} />

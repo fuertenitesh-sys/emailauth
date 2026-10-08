@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Shield, LogOut, Users, ShoppingBag, Package, Tag, TrendingUp, Clock, ChevronRight, LogIn } from 'lucide-react';
+import { Users, ShoppingBag, Package, Tag, TrendingUp, Clock, ChevronRight } from 'lucide-react';
 import './Admin.css';
 import AdminNav from './AdminNav';
 import AdminHeader from '../../components/admin/AdminHeader';
@@ -18,7 +18,7 @@ const AdminDashboard = () => {
   const location = useLocation();
   const isDashboard = location.pathname === '/admin/dashboard';
 
-  useEffect(() => { fetchData(); }, [location.pathname]);
+  useEffect(() => { fetchData(); }, [location.pathname, fetchData]);
 
   const fetchData = async () => {
     try {
