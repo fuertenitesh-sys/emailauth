@@ -229,7 +229,9 @@ const OrderDetail = () => {
             <div className="order-payment-card">
               <h3>Payment</h3>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.75rem' }}>
-                <span style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>Online Payment (Cashfree)</span>
+                <span style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
+                  {order.paymentMethod === 'cod' ? 'Cash on Delivery (COD)' : 'Online Payment (Cashfree)'}
+                </span>
                 <span
                   style={{
                     fontSize: '0.72rem',
@@ -246,7 +248,7 @@ const OrderDetail = () => {
               </div>
             </div>
 
-            {order.paymentStatus === 'pending' && !['cancelled', 'delivered'].includes(order.orderStatus) && (
+            {order.paymentMethod !== 'cod' && order.paymentStatus === 'pending' && !['cancelled', 'delivered'].includes(order.orderStatus) && (
               <button 
                 className="btn btn-primary btn-full" 
                 style={{ marginTop: '1rem', justifyContent: 'center' }}

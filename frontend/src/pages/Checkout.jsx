@@ -14,6 +14,7 @@ const Checkout = () => {
   const { cart, cartTotal: ctxCartTotal, getDiscountedPrice } = useCart();
   const { addToast } = useToast();
   const [placing, setPlacing] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('online');
   const [form, setForm] = useState({
     fullName: '', phone: '', email: '', address: '', city: '', state: '', pincode: ''
   });
@@ -57,12 +58,18 @@ const Checkout = () => {
     setPlacing(true);
     try {
       // 1. Create order in MongoDB (status: pending)
-      const payload = { shippingAddress: form };
+      const payload = { shippingAddress: form, paymentMethod };
       if (directBuyItem) {
         payload.directBuyItems = [{ product: directBuyItem.product._id, quantity: directBuyItem.quantity }];
       }
       const res = await axios.post('/api/orders', payload);
       const order = res.data;
+
+      if (paymentMethod === 'cod') {
+        addToast('Order Placed Successfully! 🎉', 'success');
+        navigate(`/orders/${order._id}`);
+        return;
+      }
 
       // 2. Load Cashfree script
       const resScript = await loadCashfreeScript();
@@ -190,13 +197,34 @@ const Checkout = () => {
             {/* Payment Method */}
             <div className="checkout-form-card" style={{ marginTop: '1.25rem' }}>
               <h2 className="checkout-section-title">Payment Method</h2>
-              <div className="payment-option selected">
-                <div className="payment-option-radio" />
+              
+              <div 
+                className={`payment-option ${paymentMethod === 'online' ? 'selected' : ''}`}
+                onClick={() => setPaymentMethod('online')}
+                style={{ cursor: 'pointer', marginBottom: '1rem' }}
+              >
+                <div className="payment-option-radio">
+                  {paymentMethod === 'online' && <div className="payment-option-radio-inner" style={{ width: 10, height: 10, borderRadius: '50%', background: '#111', margin: 'auto', marginTop: 2 }} />}
+                </div>
                 <div className="payment-option-info">
                   <span>Cashfree (Online Payment)</span>
                   <small>Securely pay via UPI, Cards, or Netbanking</small>
                 </div>
                 <Lock size={20} style={{ color: '#111', marginLeft: 'auto' }} />
+              </div>
+
+              <div 
+                className={`payment-option ${paymentMethod === 'cod' ? 'selected' : ''}`}
+                onClick={() => setPaymentMethod('cod')}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="payment-option-radio">
+                  {paymentMethod === 'cod' && <div className="payment-option-radio-inner" style={{ width: 10, height: 10, borderRadius: '50%', background: '#111', margin: 'auto', marginTop: 2 }} />}
+                </div>
+                <div className="payment-option-info">
+                  <span>Cash on Delivery (COD)</span>
+                  <small>Pay when your order arrives at your doorstep</small>
+                </div>
               </div>
             </div>
 
@@ -206,8 +234,8 @@ const Checkout = () => {
               disabled={placing}
               style={{ marginTop: '1.5rem' }}
             >
-              <Lock size={16} />
-              {placing ? 'Processing...' : `Pay Now • ₹${totalAmount.toFixed(2)}`}
+              {paymentMethod === 'online' ? <Lock size={16} /> : <CheckCircle size={16} />}
+              {placing ? 'Processing...' : (paymentMethod === 'online' ? `Pay Now • ₹${totalAmount.toFixed(2)}` : `Place Order • ₹${totalAmount.toFixed(2)}`)}
             </button>
           </form>
 

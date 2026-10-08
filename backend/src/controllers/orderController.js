@@ -51,7 +51,8 @@ export const createOrder = async (req, res) => {
       shippingAddress,
       subtotal,
       deliveryCharge,
-      totalAmount
+      totalAmount,
+      paymentMethod: req.body.paymentMethod || 'online'
     });
     
     if (!isDirectBuy) {
@@ -99,9 +100,20 @@ export const updateOrderStatus = async (req, res) => {
   const { orderStatus } = req.body;
   if (!orderStatus) return res.status(400).json({ message: 'Order status is required' });
   try {
-    const order = await Order.findByIdAndUpdate(req.params.id, { orderStatus }, { new: true }).populate('user', 'name email');
-    if (!order) return res.status(404).json({ message: 'Order not found' });
-    res.json(order);
+    const existingOrder = await Order.findById(req.params.id);
+    if (!existingOrder) return res.status(404).json({ message: 'Order not found' });
+    
+    existingOrder.orderStatus = orderStatus;
+    if (orderStatus === 'delivered' && existingOrder.paymentMethod === 'cod') {
+      existingOrder.paymentStatus = 'paid';
+    }
+    
+    await existingOrder.save();
+    
+    // Repopulate user to match old response
+    await existingOrder.populate('user', 'name email');
+    
+    res.json(existingOrder);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
