@@ -22,6 +22,7 @@ const orderSchema = new mongoose.Schema({
   subtotal: { type: Number, required: true },
   deliveryCharge: { type: Number, default: 0 },
   totalAmount: { type: Number, required: true },
+  deliveryOtp: { type: String },
   paymentMethod: { type: String, enum: ['online', 'cod'], default: 'online' },
   paymentStatus: { type: String, enum: ['pending', 'paid'], default: 'pending' },
   orderStatus: { type: String, enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'], default: 'pending' }

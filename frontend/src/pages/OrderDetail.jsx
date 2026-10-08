@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import { Package, MapPin, ArrowLeft, CheckCircle, Clock, Truck, Home } from 'lucide-react';
+import { Package, MapPin, ArrowLeft, CheckCircle, Clock, Truck, Home, Lock } from 'lucide-react';
 import './OrderDetail.css';
 
 const STATUS_CONFIG = {
@@ -247,6 +247,20 @@ const OrderDetail = () => {
                 </span>
               </div>
             </div>
+
+            {order.orderStatus !== 'delivered' && order.orderStatus !== 'cancelled' && order.deliveryOtp && (
+              <div className="order-payment-card" style={{ marginTop: '1rem', background: '#eff6ff', border: '1px solid #bfdbfe' }}>
+                <h3 style={{ color: '#1e40af', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Lock size={16} /> Delivery OTP
+                </h3>
+                <div style={{ marginTop: '0.75rem', fontSize: '0.85rem', color: '#1e3a8a', lineHeight: 1.5 }}>
+                  Share this OTP with the delivery executive to confirm your delivery.
+                </div>
+                <div style={{ marginTop: '0.75rem', fontSize: '1.75rem', fontWeight: 800, color: '#1d4ed8', letterSpacing: '4px', textAlign: 'center', padding: '0.5rem', background: '#fff', borderRadius: '4px', border: '1px dashed #bfdbfe' }}>
+                  {order.deliveryOtp}
+                </div>
+              </div>
+            )}
 
             {order.paymentMethod !== 'cod' && order.paymentStatus === 'pending' && !['cancelled', 'delivered'].includes(order.orderStatus) && (
               <button 

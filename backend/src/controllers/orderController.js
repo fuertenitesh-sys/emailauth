@@ -45,6 +45,7 @@ export const createOrder = async (req, res) => {
     const subtotal = orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const deliveryCharge = subtotal > 500 ? 0 : 50;
     const totalAmount = subtotal + deliveryCharge;
+    const deliveryOtp = Math.floor(100000 + Math.random() * 900000).toString();
     const order = await Order.create({
       user: req.user._id,
       items: orderItems,
@@ -52,6 +53,7 @@ export const createOrder = async (req, res) => {
       subtotal,
       deliveryCharge,
       totalAmount,
+      deliveryOtp,
       paymentMethod: req.body.paymentMethod || 'online'
     });
     
@@ -164,6 +166,34 @@ export const confirmDelivery = async (req, res) => {
     
     order.orderStatus = 'delivered';
     order.paymentStatus = 'paid';
+    await order.save();
+    
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+export const verifyDeliveryOtp = async (req, res) => {
+  const { otp } = req.body;
+  if (!otp) return res.status(400).json({ message: 'OTP is required' });
+  
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+    
+    if (order.deliveryOtp !== otp) {
+      return res.status(400).json({ message: 'Invalid OTP' });
+    }
+    
+    if (order.orderStatus === 'delivered' || order.orderStatus === 'cancelled') {
+      return res.status(400).json({ message: `Order is already ${order.orderStatus}` });
+    }
+    
+    order.orderStatus = 'delivered';
+    if (order.paymentMethod === 'cod') {
+      order.paymentStatus = 'paid';
+    }
     await order.save();
     
     res.json(order);

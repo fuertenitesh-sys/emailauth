@@ -21,6 +21,7 @@ const Checkout = lazy(() => import('./pages/Checkout'));
 const Orders = lazy(() => import('./pages/Orders'));
 const OrderDetail = lazy(() => import('./pages/OrderDetail'));
 const BlogDetail = lazy(() => import('./pages/BlogDetail'));
+const DeliveryVerify = lazy(() => import('./pages/DeliveryVerify'));
 
 // Info pages
 const ContactPage = lazy(() => import('./pages/info/ContactPage'));
@@ -66,6 +67,7 @@ function App() {
             <Route path="/products/:id" element={<ProductDetail />} />
             <Route path="/blog/:id" element={<BlogDetail />} />
             <Route path="/category/:id" element={<CategoryProducts />} />
+            <Route path="/delivery-verify" element={<DeliveryVerify />} />
 
             {/* Protected user routes */}
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
