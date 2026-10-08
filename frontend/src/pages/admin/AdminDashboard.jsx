@@ -18,7 +18,8 @@ const AdminDashboard = () => {
   const location = useLocation();
   const isDashboard = location.pathname === '/admin/dashboard';
 
-  useEffect(() => { fetchData(); }, [location.pathname, fetchData]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { fetchData(); }, [location.pathname]);
 
   const fetchData = async () => {
     try {
