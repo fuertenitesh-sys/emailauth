@@ -8,7 +8,14 @@ import AdminHeader from '../../components/admin/AdminHeader';
 import { adminCache, setAdminCache } from '../../utils/adminCache';
 
 const statusOptions = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
-const statusColors = { pending: 'badge-warning', processing: 'badge-primary', shipped: 'badge-primary', delivered: 'badge-success', cancelled: 'badge-danger' };
+const getStatusStyle = (status) => {
+  switch(status) {
+    case 'delivered': return { backgroundColor: 'rgba(16, 185, 129, 0.1)', color: 'rgb(16, 185, 129)', fontWeight: 600, border: 'none', padding: '4px 8px', borderRadius: '4px' };
+    case 'cancelled': return { backgroundColor: 'rgba(239, 68, 68, 0.1)', color: 'rgb(239, 68, 68)', fontWeight: 600, border: 'none', padding: '4px 8px', borderRadius: '4px' };
+    case 'pending': return { backgroundColor: 'rgba(245, 158, 11, 0.1)', color: 'rgb(245, 158, 11)', fontWeight: 600, border: 'none', padding: '4px 8px', borderRadius: '4px' };
+    default: return { backgroundColor: 'rgba(59, 130, 246, 0.1)', color: 'rgb(59, 130, 246)', fontWeight: 600, border: 'none', padding: '4px 8px', borderRadius: '4px' };
+  }
+};
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState(adminCache.orders || []);
@@ -16,6 +23,8 @@ const AdminOrders = () => {
   const [payments, setPayments] = useState(adminCache.payments || []);
   const [updatingId, setUpdatingId] = useState(null);
   const [expanded, setExpanded] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const navigate = useNavigate();
 
   useEffect(() => { 
@@ -85,7 +94,7 @@ const AdminOrders = () => {
                 ) : orders.length === 0 ? (
                   <tr><td colSpan="8" style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>No orders yet.</td></tr>
                 ) : (
-                  orders.map(order => (
+                  orders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(order => (
                     <>
                       <tr key={order._id}>
                         <td style={{ fontWeight: 600, fontFamily: 'monospace', color: 'var(--color-primary)' }}>#{order._id.slice(-8).toUpperCase()}</td>
@@ -109,7 +118,7 @@ const AdminOrders = () => {
                         </td>
                         <td>
                           <select
-                            className="order-status-select"
+                            style={getStatusStyle(order.orderStatus)}
                             value={order.orderStatus}
                             onChange={e => handleStatusChange(order._id, e.target.value)}
                             disabled={updatingId === order._id}
@@ -175,6 +184,30 @@ const AdminOrders = () => {
               </tbody>
             </table>
           </div>
+          
+          {orders.length > itemsPerPage && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', borderTop: '1px solid var(--color-border)', backgroundColor: 'var(--color-bg)' }}>
+              <div style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
+                Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, orders.length)} of {orders.length} orders
+              </div>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button 
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  style={{ padding: '0.5rem 1rem', borderRadius: '4px', border: '1px solid var(--color-border)', backgroundColor: currentPage === 1 ? 'transparent' : 'var(--color-bg-alt)', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', opacity: currentPage === 1 ? 0.5 : 1 }}
+                >
+                  Previous
+                </button>
+                <button 
+                  disabled={currentPage * itemsPerPage >= orders.length}
+                  onClick={() => setCurrentPage(prev => prev + 1)}
+                  style={{ padding: '0.5rem 1rem', borderRadius: '4px', border: '1px solid var(--color-border)', backgroundColor: currentPage * itemsPerPage >= orders.length ? 'transparent' : 'var(--color-bg-alt)', cursor: currentPage * itemsPerPage >= orders.length ? 'not-allowed' : 'pointer', opacity: currentPage * itemsPerPage >= orders.length ? 0.5 : 1 }}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
