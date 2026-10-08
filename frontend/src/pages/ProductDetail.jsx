@@ -54,6 +54,7 @@ const ProductDetail = () => {
     else setAdding(true);
     try {
       if (buyNow) {
+        sessionStorage.setItem('directBuyItem', JSON.stringify({ product, quantity }));
         navigate('/checkout', { state: { directBuyItem: { product, quantity } } });
       } else {
         await addToCart(product._id, quantity);

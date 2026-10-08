@@ -18,7 +18,8 @@ const Checkout = () => {
     fullName: '', phone: '', email: '', address: '', city: '', state: '', pincode: ''
   });
 
-  const directBuyItem = location.state?.directBuyItem;
+  const storedItem = sessionStorage.getItem('directBuyItem');
+  const directBuyItem = location.state?.directBuyItem || (storedItem ? JSON.parse(storedItem) : null);
   const items = directBuyItem ? [directBuyItem] : (cart?.items || []);
 
   const cartTotal = directBuyItem 
