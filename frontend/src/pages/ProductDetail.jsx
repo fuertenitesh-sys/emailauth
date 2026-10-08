@@ -55,7 +55,7 @@ const ProductDetail = () => {
     try {
       if (buyNow) {
         sessionStorage.setItem('directBuyItem', JSON.stringify({ product, quantity }));
-        window.location.href = '/checkout';
+        navigate('/checkout');
       } else {
         await addToCart(product._id, quantity);
         addToast(`${product.name} added to cart!`, 'success');
