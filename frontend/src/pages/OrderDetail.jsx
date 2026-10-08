@@ -246,7 +246,7 @@ const OrderDetail = () => {
               </div>
             </div>
 
-            {order.paymentStatus === 'pending' && order.orderStatus !== 'cancelled' && (
+            {order.paymentStatus === 'pending' && !['cancelled', 'delivered'].includes(order.orderStatus) && (
               <button 
                 className="btn btn-primary btn-full" 
                 style={{ marginTop: '1rem', justifyContent: 'center' }}
