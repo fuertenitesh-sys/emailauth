@@ -94,7 +94,7 @@ export const uploadImage = async (req, res) => {
       return res.status(400).json({ message: 'No image provided' });
     }
     const uploadRes = await cloudinary.uploader.upload(image, {
-      folder: 'lumen_ecommerce',
+      folder: 'Lumen_ECommerce',
       resource_type: 'auto',
     });
     res.json({
