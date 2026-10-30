@@ -47,6 +47,9 @@ const AdminAddProduct = () => {
     setUploading(true);
     setError('');
 
+    const selectedCat = categories.find(c => c._id === form.category);
+    const categoryName = selectedCat ? selectedCat.name : '';
+
     try {
       for (const file of files) {
         const base64 = await new Promise((resolve, reject) => {
@@ -56,7 +59,11 @@ const AdminAddProduct = () => {
           reader.readAsDataURL(file);
         });
 
-        const res = await axios.post('/api/admin/upload', { image: base64, subfolder: 'products' });
+        const res = await axios.post('/api/admin/upload', {
+          image: base64,
+          subfolder: 'products',
+          category: categoryName
+        });
         if (res.data?.url) {
           setForm(p => ({ ...p, images: [...p.images, res.data.url] }));
         }
