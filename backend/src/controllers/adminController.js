@@ -1,3 +1,4 @@
+import cloudinary from '../config/cloudinary.js';
 import User from '../models/User.js';
 import Order from '../models/Order.js';
 import Product from '../models/Product.js';
@@ -83,5 +84,26 @@ export const updateAdminOrderStatus = async (req, res) => {
     res.json(order);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+export const uploadImage = async (req, res) => {
+  try {
+    const { image } = req.body;
+    if (!image) {
+      return res.status(400).json({ message: 'No image provided' });
+    }
+    const uploadRes = await cloudinary.uploader.upload(image, {
+      folder: 'lumen_ecommerce',
+      resource_type: 'auto',
+    });
+    res.json({
+      success: true,
+      url: uploadRes.secure_url,
+      public_id: uploadRes.public_id,
+    });
+  } catch (error) {
+    console.error('Cloudinary upload error:', error);
+    res.status(500).json({ message: error.message || 'Image upload failed' });
   }
 };

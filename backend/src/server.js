@@ -29,8 +29,8 @@ app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Sirf humari React website (localhost:5173) ko permission mili hai.
   credentials: true, // Frontend ko cookies (JWT token) bhejne ki permission de rahe hain. Iske bina login maintain nahi hoga.
 }));
-app.use(express.json()); // Ye line check karti hai ki aane wala data JSON format mein hai toh usko sahi se read kare (req.body mein daal de).
-app.use(express.urlencoded({ extended: true })); // Agar data form (URL-encoded) se aa raha hai, toh use parse karne ke liye.
+app.use(express.json({ limit: '50mb' })); // Ye line check karti hai ki aane wala data JSON format mein hai toh usko sahi se read kare (req.body mein daal de).
+app.use(express.urlencoded({ extended: true, limit: '50mb' })); // Agar data form (URL-encoded) se aa raha hai, toh use parse karne ke liye.
 app.use(cookieParser()); // Har request ke sath aane wali cookies ko asani se req.cookies mein read karne ke liye.
 
 // Routes (Kaunse URL par kaunsa code chalega)

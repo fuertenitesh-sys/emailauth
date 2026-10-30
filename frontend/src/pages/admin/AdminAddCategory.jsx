@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft } from 'lucide-react';
@@ -13,6 +13,7 @@ const AdminAddCategory = () => {
   const location = useLocation();
 
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const [form, setForm] = useState(() => {
     if (isEdit && location.state?.category) {
@@ -35,13 +36,24 @@ const AdminAddCategory = () => {
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setForm(p => ({...p, imageUrl: reader.result}));
-      };
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      setUploading(true);
+      setError('');
+      try {
+        const res = await axios.post('/api/admin/upload', { image: reader.result });
+        if (res.data?.url) {
+          setForm(p => ({ ...p, imageUrl: res.data.url }));
+        }
+      } catch (err) {
+        setError(err.response?.data?.message || 'Failed to upload image to Cloudinary');
+      } finally {
+        setUploading(false);
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSave = async (e) => {
@@ -85,9 +97,17 @@ const AdminAddCategory = () => {
                   </select>
                 </div>
                 <div className="input-group admin-form-full">
-                  <label className="input-label">Image Upload</label>
-                  <input type="file" accept="image/*" className="input-field" onChange={handleImageUpload} />
-                  {form.imageUrl && <img src={form.imageUrl} alt="Preview" style={{ marginTop: '1rem', maxHeight: '150px', borderRadius: '4px', objectFit: 'contain' }} />}
+                  <label className="input-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Image Upload</span>
+                    {uploading && <span style={{ color: 'var(--color-primary)', fontSize: '0.8rem', fontWeight: 600 }}>Uploading to Cloudinary...</span>}
+                  </label>
+                  <input type="file" accept="image/*" className="input-field" onChange={handleImageUpload} disabled={uploading} />
+                  {form.imageUrl && (
+                    <div style={{ marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <img src={form.imageUrl} alt="Preview" style={{ maxHeight: '100px', borderRadius: '6px', objectFit: 'contain', border: '1px solid var(--color-border)' }} />
+                      <span style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: 600 }}>✓ Uploaded to Cloudinary</span>
+                    </div>
+                  )}
                 </div>
                 <div className="input-group admin-form-full">
                   <label className="input-label">Description</label>
@@ -95,7 +115,7 @@ const AdminAddCategory = () => {
                 </div>
               </div>
               <div className="admin-form-actions">
-                <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Saving...' : (isEdit ? 'Update Category' : 'Create Category')}</button>
+                <button type="submit" className="btn btn-primary" disabled={saving || uploading}>{saving ? 'Saving...' : (isEdit ? 'Update Category' : 'Create Category')}</button>
                 <Link to="/admin/categories" className="btn btn-ghost">Cancel</Link>
               </div>
             </form>

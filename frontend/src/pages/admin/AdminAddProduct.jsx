@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, X } from 'lucide-react';
@@ -13,6 +13,7 @@ const AdminAddProduct = () => {
   const isEdit = Boolean(id);
   const [categories, setCategories] = useState([]);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const location = useLocation();
   const [form, setForm] = useState(() => {
@@ -39,18 +40,33 @@ const AdminAddProduct = () => {
     }
   }, [id]);
 
-
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files);
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setForm(p => ({ ...p, images: [...p.images, reader.result] }));
-      };
-      reader.readAsDataURL(file);
-    });
-    // Clear the input so same files can be selected again if needed
-    e.target.value = null;
+    if (files.length === 0) return;
+
+    setUploading(true);
+    setError('');
+
+    try {
+      for (const file of files) {
+        const base64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+
+        const res = await axios.post('/api/admin/upload', { image: base64 });
+        if (res.data?.url) {
+          setForm(p => ({ ...p, images: [...p.images, res.data.url] }));
+        }
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to upload image(s) to Cloudinary');
+    } finally {
+      setUploading(false);
+      e.target.value = null;
+    }
   };
 
   const removeImage = (idx) => setForm(p => ({ ...p, images: p.images.filter((_, i) => i !== idx) }));
@@ -120,9 +136,12 @@ const AdminAddProduct = () => {
                 <textarea className="input-field" value={form.description} onChange={e => setForm(p => ({...p, description: e.target.value}))} required rows={4} style={{ resize: 'vertical' }} placeholder="Describe the product..." />
               </div>
               <div className="input-group admin-form-full">
-                <label className="input-label">Product Images (Upload)</label>
+                <label className="input-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span>Product Images (Upload)</span>
+                  {uploading && <span style={{ color: 'var(--color-primary)', fontSize: '0.8rem', fontWeight: 600 }}>Uploading to Cloudinary...</span>}
+                </label>
                 <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                  <input type="file" accept="image/*" multiple className="input-field" onChange={handleImageUpload} style={{ flex: 1 }} />
+                  <input type="file" accept="image/*" multiple className="input-field" onChange={handleImageUpload} disabled={uploading} style={{ flex: 1 }} />
                 </div>
                 {form.images.length > 0 && (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -138,7 +157,7 @@ const AdminAddProduct = () => {
               </div>
             </div>
             <div className="admin-form-actions">
-              <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Saving...' : (isEdit ? 'Update Product' : 'Create Product')}</button>
+              <button type="submit" className="btn btn-primary" disabled={saving || uploading}>{saving ? 'Saving...' : (isEdit ? 'Update Product' : 'Create Product')}</button>
               <Link to="/admin/products" className="btn btn-ghost">Cancel</Link>
             </div>
           </form>
