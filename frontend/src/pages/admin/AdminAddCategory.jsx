@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft } from 'lucide-react';
@@ -43,7 +43,7 @@ const AdminAddCategory = () => {
       setUploading(true);
       setError('');
       try {
-        const res = await axios.post('/api/admin/upload', { image: reader.result });
+        const res = await axios.post('/api/admin/upload', { image: reader.result, subfolder: 'categories' });
         if (res.data?.url) {
           setForm(p => ({ ...p, imageUrl: res.data.url }));
         }
@@ -105,7 +105,7 @@ const AdminAddCategory = () => {
                   {form.imageUrl && (
                     <div style={{ marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                       <img src={form.imageUrl} alt="Preview" style={{ maxHeight: '100px', borderRadius: '6px', objectFit: 'contain', border: '1px solid var(--color-border)' }} />
-                      <span style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: 600 }}>✓ Uploaded to Cloudinary</span>
+                      <span style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: 600 }}>? Uploaded to Cloudinary</span>
                     </div>
                   )}
                 </div>

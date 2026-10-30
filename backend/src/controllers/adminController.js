@@ -89,12 +89,13 @@ export const updateAdminOrderStatus = async (req, res) => {
 
 export const uploadImage = async (req, res) => {
   try {
-    const { image } = req.body;
+    const { image, subfolder } = req.body;
+    const targetFolder = subfolder ? `Lumen_ECommerce/${subfolder}` : 'Lumen_ECommerce/products';
     if (!image) {
       return res.status(400).json({ message: 'No image provided' });
     }
     const uploadRes = await cloudinary.uploader.upload(image, {
-      folder: 'Lumen_ECommerce',
+      folder: targetFolder,
       resource_type: 'auto',
     });
     res.json({

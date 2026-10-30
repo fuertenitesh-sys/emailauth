@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, X } from 'lucide-react';
@@ -56,7 +56,7 @@ const AdminAddProduct = () => {
           reader.readAsDataURL(file);
         });
 
-        const res = await axios.post('/api/admin/upload', { image: base64 });
+        const res = await axios.post('/api/admin/upload', { image: base64, subfolder: 'products' });
         if (res.data?.url) {
           setForm(p => ({ ...p, images: [...p.images, res.data.url] }));
         }
@@ -120,7 +120,7 @@ const AdminAddProduct = () => {
                 </select>
               </div>
               <div className="input-group">
-                <label className="input-label">Price (₹) *</label>
+                <label className="input-label">Price (?) *</label>
                 <input type="number" className="input-field" value={form.price} onChange={e => setForm(p => ({...p, price: e.target.value}))} required min="0" step="0.01" placeholder="0.00" />
               </div>
               <div className="input-group">
